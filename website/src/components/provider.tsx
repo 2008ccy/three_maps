@@ -16,9 +16,6 @@ const translations: Partial<Translations> = {
   'No Headings(table of contents)': '本页暂无小节',
   'Next Page(pagination)': '下一篇', 'Previous Page(pagination)': '上一篇',
   'Edit on GitHub(edit page)': '在 GitHub 编辑',
-  'Toggle Theme(theme switcher)(aria-label)': '切换主题',
-  'Light(theme switcher)(aria-label)': '浅色', 'Dark(theme switcher)(aria-label)': '深色',
-  'System(theme switcher)(aria-label)': '跟随系统', 'Theme(site menu)': '主题',
   'Toggle Menu(home layout header)(aria-label)': '展开导航',
   'Open Sidebar(aria-label)': '展开目录', 'Open Sidebar(sidebar)(aria-label)': '展开目录',
   'Close Sidebar(aria-label)': '收起目录', 'Close Sidebar(sidebar)(aria-label)': '收起目录',
@@ -30,5 +27,5 @@ const translations: Partial<Translations> = {
 };
 
 export function Provider({ children }: { children: ReactNode }) {
-  return <RootProvider search={{ SearchDialog }} theme={{ defaultTheme: 'dark' }} i18n={{ translations }}>{children}</RootProvider>;
+  return <RootProvider search={{ SearchDialog }} theme={{ defaultTheme: 'dark', forcedTheme: 'dark', enableSystem: false, hotKey: false }} i18n={{ translations }}>{children}</RootProvider>;
 }

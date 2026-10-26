@@ -69,8 +69,11 @@ PowerShell 可先执行 `$env:NEXT_PUBLIC_BASE_PATH="/three_maps"`，再执行 `
 | `--home-branch-width`、`--home-branch-color` | 连线粗细、颜色 |
 | `--home-card-width`、`--home-card-radius` | 地图卡片宽度、圆角 |
 | `--home-enter-duration`、`--home-reveal-duration` | 首次进入、下滑渐显的动画时长 |
+| `--home-cue-pulse-duration`、`--home-cue-glow` | 下滑提示的闪光周期、光晕颜色及强度 |
 
-地图文案、入口和三条探索路线集中在 `src/app/(home)/home-content.ts`，主标题在同目录 `page.tsx`。更换标题或增大框的间距后，检查 1280×720 电脑和 375×667 手机首屏；极矮窗口或放大文字时内容会自然延展。系统开启“减少动态效果”后直接显示全部内容，关闭 JavaScript 后仍可使用普通链接。
+地图文案、入口和三条探索路线集中在 `src/app/(home)/home-content.ts`，主标题在同目录 `page.tsx`。更换标题或增大框的间距后，检查 1280×720 电脑和 375×667 手机首屏；极矮窗口或放大文字时内容会自然延展。系统开启“减少动态效果”后直接显示全部内容，下滑提示保持静态发光；关闭 JavaScript 后仍可使用普通链接。
+
+全站固定使用夜间配色，导航和文档页均不显示主题切换，主题快捷键也已关闭。历史浅色偏好或系统外观不会覆盖夜间配色，静态 HTML 从首帧开始就是深色。
 
 ### 文档正文
 
@@ -145,7 +148,7 @@ GitHub Pages 只负责静态页面。后续 AI 接入需要额外服务端，密
 - `npm run types:check`：路由类型和 TypeScript。
 - `npm run check:export`：实际导出的全部 HTML、站内链接、锚点、脚本及样式资源，包含部署前缀。
 - `npm test`：直接读取导出的搜索索引，用网站同一个查询模块测试中英文搜索、无结果、三条跨图路径、公式和编辑同步。
-- 浏览器人工验收：手机与桌面布局、鼠标导航、搜索结果点击、目录、主题和长表格。
+- 浏览器人工验收：手机与桌面布局、鼠标导航、搜索结果点击、目录、夜间配色和长表格。
 
 搜索索引在构建时生成，首次搜索会下载索引，以后在浏览器内查询。构建和查询必须使用相同的 CJK 编码器，统一维护 `src/lib/static-search.mjs`。内容较多时再评估搜索服务。
 

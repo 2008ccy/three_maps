@@ -4,6 +4,7 @@ import { Network } from 'lucide-react';
 
 export function baseOptions(): BaseLayoutProps {
   return {
+    themeSwitch: { enabled: false },
     nav: {
       // JSX supported
       title: <><Network size={22} className="text-fd-primary" /><span>{appName}</span><span className="brand-note">模型构建</span></>,

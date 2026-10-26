@@ -4,7 +4,7 @@
   --home-frame-radius: 20px; /* 主框圆角 */
   --home-frame-border-width: 1px; /* 主框边框粗细 */
   --home-frame-border: color-mix(in srgb, var(--color-fd-primary) 36%, var(--color-fd-border));
-  --home-frame-background: var(--color-fd-card); /* 跟随深浅主题 */
+  --home-frame-background: var(--color-fd-card); /* 夜间卡片背景 */
   --home-frame-glow: 0 0 64px -24px color-mix(in srgb, var(--color-fd-primary) 16%, transparent);
   --home-frame-padding: 26px 34px; /* 主框内边距 */
   --home-frame-padding-compact: 20px 30px; /* 较矮电脑窗口 */
@@ -17,6 +17,8 @@
   --home-card-radius: 14px;
   --home-enter-duration: 600ms;
   --home-reveal-duration: 500ms;
+  --home-cue-pulse-duration: 2.6s; /* 下滑提示呼吸闪光的周期 */
+  --home-cue-glow: color-mix(in srgb, var(--color-fd-primary) 65%, transparent); /* 提示光晕颜色和强度 */
   --home-easing: cubic-bezier(.22, 1, .36, 1);
   --home-nav-height: 56px; /* 客户端自动同步实际导航高度 */
   color: var(--color-fd-foreground);
@@ -90,8 +92,10 @@
 .constellation:has(.ecosystem:is(:hover, :focus-visible)) .branchEcosystem,
 .constellation:has(.cognition:is(:hover, :focus-visible)) .branchCognition { border-color: var(--color-fd-primary); }
 
-.scrollCue { display: inline-flex; align-items: center; justify-content: center; align-self: center; gap: 12px; min-height: 36px; padding: 6px 10px; color: var(--color-fd-muted-foreground); font-size: 11px; letter-spacing: .08em; transition: color 200ms ease; }
-.scrollCue:hover { color: var(--color-fd-primary); }
+.scrollCue { display: inline-flex; align-items: center; justify-content: center; align-self: center; gap: 12px; min-height: 36px; padding: 6px 10px; color: var(--color-fd-primary); font-size: 12px; font-weight: 550; letter-spacing: .08em; text-shadow: 0 0 12px var(--home-cue-glow); animation: cueGlow var(--home-cue-pulse-duration) ease-in-out infinite; }
+.scrollCue svg { filter: drop-shadow(0 0 5px var(--home-cue-glow)); animation: cueNudge var(--home-cue-pulse-duration) ease-in-out infinite; }
+.scrollCue:is(:hover, :focus-visible) { animation: none; opacity: 1; text-shadow: 0 0 8px var(--home-cue-glow), 0 0 20px var(--home-cue-glow); }
+.scrollCue:is(:hover, :focus-visible) svg { animation: none; transform: translateY(3px); }
 .exploration { padding-block: 86px 80px; scroll-margin-top: calc(var(--home-nav-height) + 24px); }
 .exploration:focus { outline: none; }
 .sectionHeading { display: flex; align-items: flex-end; justify-content: space-between; gap: 32px; margin-bottom: 38px; }
@@ -130,6 +134,11 @@
 .home [data-reveal-state='pending']:not(:focus-within) { opacity: 0; transform: translateY(16px); }
 @keyframes enter { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 @keyframes connect { from { opacity: 0; } to { opacity: 1; } }
+@keyframes cueGlow {
+  0%, 100% { opacity: .62; text-shadow: 0 0 3px var(--home-cue-glow); }
+  50% { opacity: 1; text-shadow: 0 0 8px var(--home-cue-glow), 0 0 20px var(--home-cue-glow); }
+}
+@keyframes cueNudge { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(3px); } }
 
 @media (min-width: 761px) and (max-height: 760px) {
   .home { --home-frame-padding: var(--home-frame-padding-compact); --home-branch-gap: var(--home-branch-gap-compact); }
@@ -170,7 +179,7 @@
   .mapNumber { display: none; }
   .mapCopy h2 { font-size: 17px; margin-block: 0 3px; line-height: 1.4; }
   .mapCopy p { font-size: 12px; }
-  .scrollCue { min-height: 36px; font-size: 10px; }
+  .scrollCue { min-height: 36px; font-size: 11px; }
   .exploration { padding-block: 54px 48px; }
   .sectionHeading { flex-direction: column; align-items: flex-start; gap: 16px; margin-bottom: 24px; }
   .sectionHeading h2 { font-size: 25px; }
@@ -191,7 +200,9 @@
   .footer nav { gap: 22px; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .frame, .branch, .mapCard { animation: none; }
+  .frame, .branch, .mapCard, .scrollCue, .scrollCue svg { animation: none; }
+  .scrollCue { opacity: 1; }
+  .scrollCue:is(:hover, :focus-visible) svg { transform: none; }
   .home *, .home *::before, .home *::after { transition: none !important; }
   .home [data-reveal-state='pending']:not(:focus-within) { opacity: 1; transform: none; }
   .mapCard:is(:hover, :focus-visible) .mapArrow { transform: none; }
