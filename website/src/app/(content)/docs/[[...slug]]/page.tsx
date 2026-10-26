@@ -9,8 +9,9 @@ import { notFound } from 'next/navigation';
 import { getMDXComponents } from '@/components/mdx';
 import type { Metadata } from 'next';
 import { gitConfig } from '@/lib/shared';
-import { NodeGrid } from '@/components/content';
-import { findNeighbour } from 'fumadocs-core/page-tree';
+import { documentReturnTarget } from '@/lib/document-navigation';
+import Link from 'next/link';
+import { ArrowLeft } from 'lucide-react';
 
 export default async function Page(props: PageProps<'/docs/[[...slug]]'>) {
   const params = await props.params;
@@ -18,13 +19,10 @@ export default async function Page(props: PageProps<'/docs/[[...slug]]'>) {
   if (!page) notFound();
 
   const MDX = page.data.body;
-  const neighbours = findNeighbour(source.getPageTree(), page.url);
+  const returnTarget = documentReturnTarget(page.url);
 
   return (
-    <DocsPage toc={page.data.toc} full={page.data.full} footer={{ items: {
-      previous: neighbours.previous && { ...neighbours.previous, description: '上一篇' },
-      next: neighbours.next && { ...neighbours.next, description: '下一篇' },
-    } }}>
+    <DocsPage toc={page.data.toc} full={page.data.full} footer={{ enabled: false }}>
       <DocsTitle>{page.data.title}</DocsTitle>
       <DocsDescription>{page.data.description}</DocsDescription>
       <div className="content-meta">
@@ -34,11 +32,13 @@ export default async function Page(props: PageProps<'/docs/[[...slug]]'>) {
       </div>
       <DocsBody>
         <MDX components={getMDXComponents()} />
-        {page.data.related.length > 0 && <section className="related-section" aria-label="相关条目">
-          <h2>沿着关系继续探索</h2>
-          <NodeGrid ids={page.data.related} />
-        </section>}
       </DocsBody>
+      <nav className="document-return" aria-label="正文返回导航">
+        <Link className="document-return-link" href={returnTarget.href}>
+          <ArrowLeft size={17} aria-hidden="true" />
+          {returnTarget.title}
+        </Link>
+      </nav>
     </DocsPage>
   );
 }

@@ -2,6 +2,7 @@
 import SearchDialog from '@/components/search';
 import { RootProvider } from 'fumadocs-ui/provider/next';
 import { type ReactNode } from 'react';
+import { NavigationHistory } from './navigation-history';
 import type { Translations } from 'fumadocs-ui/i18n';
 
 const translations: Partial<Translations> = {
@@ -14,7 +15,6 @@ const translations: Partial<Translations> = {
   'On this page(table of contents)': '本页目录',
   'Table of Contents(inline table of contents)': '本页目录',
   'No Headings(table of contents)': '本页暂无小节',
-  'Next Page(pagination)': '下一篇', 'Previous Page(pagination)': '上一篇',
   'Edit on GitHub(edit page)': '在 GitHub 编辑',
   'Toggle Menu(home layout header)(aria-label)': '展开导航',
   'Open Sidebar(aria-label)': '展开目录', 'Open Sidebar(sidebar)(aria-label)': '展开目录',
@@ -27,5 +27,5 @@ const translations: Partial<Translations> = {
 };
 
 export function Provider({ children }: { children: ReactNode }) {
-  return <RootProvider search={{ SearchDialog }} theme={{ defaultTheme: 'dark', forcedTheme: 'dark', enableSystem: false, hotKey: false }} i18n={{ translations }}>{children}</RootProvider>;
+  return <RootProvider search={{ SearchDialog }} theme={{ defaultTheme: 'dark', forcedTheme: 'dark', enableSystem: false, hotKey: false }} i18n={{ translations }}><NavigationHistory />{children}</RootProvider>;
 }

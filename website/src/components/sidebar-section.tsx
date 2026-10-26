@@ -6,7 +6,7 @@ import { usePathname } from 'next/navigation';
 import { ChevronRight } from 'lucide-react';
 
 // Render only the section entry; its overview contains the child-page cards.
-// Keep the complete page tree available for breadcrumbs and previous/next links.
+// Keep the complete page tree available for breadcrumbs and search.
 export const SidebarSection: SidebarPageTreeComponents['Folder'] = ({ item }) => {
   const pathname = usePathname();
   const page = item.index ?? item.children.find((child) => child.type === 'page');

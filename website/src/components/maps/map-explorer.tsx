@@ -203,7 +203,7 @@ export function MapExplorer({ map, links }: { map: MapDefinition; links: MapLink
 
         {ready ? <>
           <div className={styles.mapIntro}><span><Layers3 size={14} aria-hidden />三图探索 / {map.number}</span><p>点击分支展开 · 点击要点阅读</p></div>
-          <div className={styles.stage} ref={stage}>
+          <div className={styles.viewport}><div className={styles.stage} ref={stage}>
             <svg className={styles.connectors} aria-hidden="true">{lines.map((line) => <g key={line.id} data-active={highlight === line.id || state.expanded[0] === line.id}><path d={line.d} /><circle cx={line.x} cy={line.y} r="2.5" /></g>)}</svg>
             <div className={styles.center} data-map-center>
               <span className={styles.centerLabel}><span />THREE LIVING MAPS</span>
@@ -212,7 +212,7 @@ export function MapExplorer({ map, links }: { map: MapDefinition; links: MapLink
             </div>
             {column(map.branches.slice(0, split), 'left')}
             {column(map.branches.slice(split), 'right')}
-          </div>
+          </div></div>
         </> : <section className={styles.fallback} aria-label="地图层级内容"><h1>{map.title}</h1><p>{map.description}</p><p>展开主题查看要点，沿正文与来源继续阅读。</p><Outline nodes={map.branches} links={links} /></section>}
 
         <footer className={styles.mapFooter}>
