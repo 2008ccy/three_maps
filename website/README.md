@@ -108,7 +108,7 @@ related: ["K-RAG", "C-RANKING"]
 - `updated` 使用带引号的日期字符串，改内容时同步改日期。
 - `status` 说明材料或实践状态；相关条目由 `related` 自动生成卡片。
 - 在同目录 `meta.json` 的 `pages` 数组中加入文件名（不带 `.mdx`）。顺序用于页面树与上一篇/下一篇；`index` 是目录首页。侧边栏固定显示总览及五个顶层栏目，子页面通过各栏目正文的卡片进入。
-- 地图总览的 `<NodeGrid ids={["D-TASK", "D-PIPELINE"]} />` 决定卡片入口。新主题加入数组即可，新条目也可进入已有主题的索引卡片。
+- 三张地图总览使用可展开导图，结构维护见下面“导图维护”；文档页的 `<NodeGrid ids={["D-TASK", "D-PIPELINE"]} />` 仍用于主题或条目入口。
 - 使用二级标题 `##`，Fumadocs 自动生成本页目录和小节链接。
 
 也可点击页面上的“编辑本页”进入 GitHub 编辑器。建议通过分支和 Pull Request 修改，检查通过再合并；合并到 main 后自动重建。
@@ -116,6 +116,8 @@ related: ["K-RAG", "C-RANKING"]
 ## 4. 来源、图片和公式
 
 **来源：** 在 `sources/index.mdx` 新增 `## S22` 等唯一标题，写明原始入口、支持内容、版本/日期及局限。正文使用 `[S22](ref:S22)`。不要仅列论文名而不说明它支持什么。L1—L5 指向仓库原素材。
+
+L6 是浙大版讲解稿，归档 PDF 放在 `public/sources/ai-model-building-zju.pdf`，知识树原图在 `public/images/domain/zju-knowledge-tree.png`。学校课程信息来自讲解稿转述，正式培养方案原件仍待核验。更新归档材料时同步 `map__text` 与网站副本。
 
 **关系：** 正文使用 `[显示名称](node:稳定ID)`，例如 `[LoRA](node:K-LORA)`；不要手写完整域名或 `/three_maps`，避免更换部署地址后失效。普通站内链接使用 `/docs/...`。
 
@@ -147,9 +149,19 @@ GitHub Pages 只负责静态页面。后续 AI 接入需要额外服务端，密
 - `npm run check:content`：必填元数据、唯一 ID、关联、来源、图片和目录引用。
 - `npm run types:check`：路由类型和 TypeScript。
 - `npm run check:export`：实际导出的全部 HTML、站内链接、锚点、脚本及样式资源，包含部署前缀。
-- `npm test`：直接读取导出的搜索索引，用网站同一个查询模块测试中英文搜索、无结果、三条跨图路径、公式和编辑同步。
+- `npm test`：读取导出的搜索索引、HTML 和导图配置，验证搜索、跨图路径、公式、节点引用与来源、锚点恢复、分支切换、无 JavaScript 层级入口以及课程同步。
 - 浏览器人工验收：手机与桌面布局、鼠标导航、搜索结果点击、目录、夜间配色和长表格。
 
 搜索索引在构建时生成，首次搜索会下载索引，以后在浏览器内查询。构建和查询必须使用相同的 CJK 编码器，统一维护 `src/lib/static-search.mjs`。内容较多时再评估搜索服务。
 
 完整作业还需要真实 AI、实验/分析证据、三名非组员反馈和上线后的国内网络验证。本次不代填这些结果。
+
+## 8. 导图维护
+
+- `src/lib/maps/content.ts` 集中维护三张图。每个节点有独立 ID、标题、解释、使用边界、正文 ID、来源和可选子节点；嵌套关系表示内容归属。不要根据技术名称自动推断依赖。
+- 节点 ID 决定分享地址，例如 `/docs/domain/#node-rag`。修改标题时保持 ID 稳定；同层只展开一个分支，深层节点会恢复完整祖先路径。
+- `documents` 用现有正文 ID 查找网址，可加 `anchor` 定位小节；一个节点可对应多篇正文，一篇正文也可被多个节点引用。
+- `relations` 指向目标地图及节点，`label` 明确说明“提出”“实现”“用于评测”等关系。每个目标都会在构建与测试中核验。
+- `src/components/maps/maps.module.css` 顶部是中心框宽度、圆角、背景、光晕、分支间距、动画时长等中文注释变量。移动端用纵向分支，1100px 及以下用底部阅读抽屉；减弱动画设置会禁用渐显和位移。
+- `src/components/maps/map-explorer.tsx` 负责展开、焦点、连接线和阅读面板；`src/lib/maps/state.ts` 保存可独立测试的状态转换。没有 JavaScript 时，同一份内容通过原生 `details` 展开，正文与来源仍可访问。
+- 三个总览由 `src/app/(maps)/docs/` 下的固定路由生成；其余正文位于 `src/app/(content)/docs/`。正文的 `generateStaticParams` 排除三张总览，防止静态导出重复。内容目录的三份 `index.mdx` 仍提供搜索摘要和页面树信息。

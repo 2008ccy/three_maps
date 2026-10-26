@@ -44,7 +44,8 @@ export default async function Page(props: PageProps<'/docs/[[...slug]]'>) {
 }
 
 export async function generateStaticParams() {
-  return source.generateParams();
+  // 三张总览由全宽导图路由生成，正文仍使用文档布局。
+  return source.generateParams().filter(({ slug }) => !(slug?.length === 1 && ['domain', 'ecosystem', 'cognition'].includes(slug[0])));
 }
 
 export async function generateMetadata(props: PageProps<'/docs/[[...slug]]'>): Promise<Metadata> {

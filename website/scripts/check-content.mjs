@@ -25,8 +25,8 @@ for (const { file, data, content } of pages) {
   for (const match of content.matchAll(/\]\(([^\s)]+)\)/g)) {
     const href = match[1];
     if (/^(https?:|mailto:|node:|ref:|#)/.test(href)) continue;
-    if (href.startsWith('/images/')) {
-      if (!existsSync(`public${href}`)) errors.push(`${file}: missing image ${href}`);
+    if (href.startsWith('/images/') || href.startsWith('/sources/')) {
+      if (!existsSync(`public${href}`)) errors.push(`${file}: missing local asset ${href}`);
     } else if (href.startsWith('/docs')) {
       if (!routes.has(href.split('#')[0].replace(/\/$/, ''))) errors.push(`${file}: missing page ${href}`);
     } else errors.push(`${file}: use a node: ID or an absolute /docs link: ${href}`);
