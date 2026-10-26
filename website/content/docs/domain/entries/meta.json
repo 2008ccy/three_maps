@@ -1,0 +1,27 @@
+{
+  "title": "条目详情",
+  "pages": [
+    "index",
+    "k-token",
+    "k-embed",
+    "k-transformer",
+    "k-pretrain",
+    "k-sft",
+    "k-loss",
+    "k-lora",
+    "k-qlora",
+    "k-rag",
+    "k-eval",
+    "k-deploy",
+    "k-card",
+    "t-pytorch",
+    "t-transformers",
+    "t-peft",
+    "t-trl",
+    "t-retrieval",
+    "t-eval",
+    "t-vllm",
+    "t-ollama",
+    "m-base"
+  ]
+}

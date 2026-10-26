@@ -1,0 +1,30 @@
+---
+id: "P-CONNECTIONS"
+title: "跨图探索"
+description: "从方法到工具、参与者与分析案例，沿证据理解关系。"
+updated: "2026-10-26"
+status: "资料整理 · 理解程度待自评"
+related: ["K-RAG", "K-LORA", "K-DEPLOY"]
+---
+
+从任一重要节点，应能回答“它是什么、在任务中做什么、与哪些工具和课程相关、谁提出或实现、用什么案例检验、依据在哪里”。节点不必连接全部对象，但不能只有标题和一个孤立链接。
+
+| 起点 | 关系 | 终点 | 依据/性质 |
+| --- | --- | --- | --- |
+| 课程答疑任务 | 采用的第一版候选路线 | [K-RAG](node:K-RAG) | 本组执行方案，依据见[构建流程](node:D-PIPELINE)与[成本案例](node:C-COST) |
+| [K-RAG](node:K-RAG) | 研究来源 | [E-RAG](node:E-RAG) / RAG 论文 | [S02](ref:S02)，资料事实 |
+| [K-LORA](node:K-LORA) | 被工具实现 | [T-PEFT](node:T-PEFT) | [S05](ref:S05)，资料事实 |
+| [K-SFT](node:K-SFT) | 可使用的参数适配方案 | [K-LORA](node:K-LORA) | [S05](ref:S05)、[S06](ref:S06)，资料事实 |
+| [T-PEFT](node:T-PEFT) | 所需知识 | 低秩矩阵、微调与训练循环 | 本稿学习映射，非本校大纲结论 |
+| [K-TRANSFORMER](node:K-TRANSFORMER) | 自主拓展入口 | CS224N、CS336 | [S12](ref:S12)、[S13](ref:S13)，课程内容入口 |
+| [M-BASE](node:M-BASE) | 候选发布方 | [E-QWEN](node:E-QWEN) | [S11](ref:S11)，模型家族层面；具体型号待定 |
+| [K-LOSS](node:K-LOSS) | 被分析 | [案例 A：loss](node:C-LOSS) | 本稿分析；实验待补 |
+| [K-EVAL](node:K-EVAL) | 被分析 | [案例 B：榜单](node:C-RANKING) | 本稿分析；对照结果待补 |
+| [E-API](node:E-API) 与模型资源 | 被分析 | [案例 C：成本](node:C-COST) | 本稿方案判断；实际账单待补 |
+| 认识修正案例 | 修订 | 认知地图定义与资料边界 | [L5](ref:L5) 素材自述，成员确认待补 |
+
+## 三条推荐路径
+
+1. [K-RAG](node:K-RAG) → [T-RETRIEVAL](node:T-RETRIEVAL) → [E-RAG](node:E-RAG) → [榜单案例](node:C-RANKING)。
+2. [K-LORA](node:K-LORA) → [T-PEFT](node:T-PEFT) → [E-LORA](node:E-LORA) → [loss 案例](node:C-LOSS)。
+3. [K-DEPLOY](node:K-DEPLOY) → [E-API](node:E-API) → [成本分摊](node:E-COSTS) → [取舍案例](node:C-COST)。

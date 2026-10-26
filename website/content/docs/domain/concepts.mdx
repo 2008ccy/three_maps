@@ -1,0 +1,38 @@
+---
+id: "D-CONCEPTS"
+title: "核心概念与公式"
+description: "核心概念与原理分别解释什么"
+updated: "2026-10-26"
+status: "资料整理 · 理解程度待自评"
+related: ["D-TOOLS", "C-LOSS"]
+---
+
+## 核心概念一览
+
+| 节点 ID | 概念 | 通俗解释与任务作用 | 关系或边界 | 来源 |
+| --- | --- | --- | --- | --- |
+| [K-TOKEN](node:K-TOKEN) | Token 与分词 | 把文字转换为模型可处理的单位；影响输入长度与计费 | token 不固定等于一个汉字或一个单词 | [L3](ref:L3)、[S07](ref:S07) |
+| [K-EMBED](node:K-EMBED) | 嵌入 | 把文本表示成向量，使相似度计算成为可能 | 相似不等于事实正确；可服务检索 | [L3](ref:L3)、[S02](ref:S02) |
+| [K-TRANSFORMER](node:K-TRANSFORMER) | Transformer 与注意力 | 利用位置信息和相关性聚合上下文 | 是模型结构；本身不保证引用或事实正确 | [S01](ref:S01) |
+| [K-PRETRAIN](node:K-PRETRAIN) | 预训练 | 从大量数据学习语言模式与知识 | 是适配的基础，不作为本组大规模实验 | [L3](ref:L3)、[S07](ref:S07) |
+| [K-SFT](node:K-SFT) | 监督指令微调 | 用问题与示范回答继续训练模型的输出行为 | 是训练任务；可全参训练，也可结合 LoRA | [S06](ref:S06) |
+| [K-LOSS](node:K-LOSS) | 交叉熵与泛化 | 交叉熵衡量目标 token 的预测损失；泛化关心未见样本 | loss 下降不能替代下游答疑评测 | [L3](ref:L3)、[L5](ref:L5) |
+| [K-LORA](node:K-LORA) | LoRA | 冻结基座权重，用可训练的低秩增量适配模型 | 重点减少可训练参数，不使整套训练免费 | [S03](ref:S03)、[S05](ref:S05) |
+| [K-QLORA](node:K-QLORA) | QLoRA | 在量化冻结基座上训练低秩适配器，节约显存 | 实际训练还需激活、梯度与其他状态 | [S04](ref:S04) |
+| [K-RAG](node:K-RAG) | 检索增强生成 | 先找资料，再让模型结合资料回答 | 可更新资料；仍会出现检索错或生成错 | [S02](ref:S02) |
+| [K-EVAL](node:K-EVAL) | 评测与数据泄漏 | 用独立题目检查真实任务质量 | 公开榜单与课程自建评测互补 | [S09](ref:S09)、[L5](ref:L5) |
+| [K-DEPLOY](node:K-DEPLOY) | 推理与部署 | 把模型/API 接成可访问的服务 | 网站托管、模型推理、训练是三种资源需求 | [L2](ref:L2)、[S10](ref:S10) |
+| [K-CARD](node:K-CARD) | 数据卡与模型卡 | 记录来源、用途、版本、限制和责任边界 | 帮助他人判断是否适合复用 | [L3](ref:L3) |
+
+## 四个关键公式
+
+用公式明确模型在做什么，也说明它不能证明什么。
+
+- 语言建模交叉熵：$L=-\frac{1}{T}\sum_{t=1}^{T}\log p(x_t\mid x_{<t})$，表示预测真实后续 token 的平均损失，不能直接衡量教学价值。
+- 缩放点积注意力：$\operatorname{Attention}(Q,K,V)=\operatorname{softmax}(QK^\top/\sqrt{d_k})V$，先计算相关性，再聚合信息。[S01](ref:S01)
+- LoRA：$W'=W+\frac{\alpha}{r}BA$，训练低秩增量而非完整的 $W$；秩 $r$ 是待选择的超参数。[S03](ref:S03)
+- API 成本：$C=(T_{\mathrm{in}}P_{\mathrm{in}}+T_{\mathrm{out}}P_{\mathrm{out}})/10^6$，其中单价单位为元/百万 token。实际还要计入检索、缓存、推理模式等项目适用的费用。[S21](ref:S21)
+
+## 阅读每个概念
+
+<NodeGrid ids={["K-TOKEN","K-EMBED","K-TRANSFORMER","K-PRETRAIN","K-SFT","K-LOSS","K-LORA","K-QLORA","K-RAG","K-EVAL","K-DEPLOY","K-CARD"]} />

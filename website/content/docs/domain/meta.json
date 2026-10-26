@@ -1,0 +1,16 @@
+{
+  "title": "领域地图",
+  "pages": [
+    "index",
+    "tasks",
+    "pipeline",
+    "concepts",
+    "methods",
+    "tools",
+    "evaluation",
+    "learning",
+    "understanding",
+    "entries",
+    "figures"
+  ]
+}

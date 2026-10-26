@@ -1,0 +1,12 @@
+{
+  "title": "认知地图",
+  "pages": [
+    "index",
+    "perspectives",
+    "loss",
+    "ranking",
+    "tradeoffs",
+    "habits",
+    "revision"
+  ]
+}

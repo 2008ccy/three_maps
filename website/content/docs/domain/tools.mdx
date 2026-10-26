@@ -1,0 +1,22 @@
+---
+id: "D-TOOLS"
+title: "工具与模型"
+description: "软件、模型与框架能做什么，依赖什么"
+updated: "2026-10-26"
+status: "资料整理 · 理解程度待自评"
+related: ["E-HF", "D-LEARNING"]
+---
+
+| 工具/对象 ID | 在任务中的作用 | 相关概念与前置知识 | 学习入口 | 局限或替代 |
+| --- | --- | --- | --- | --- |
+| [T-PYTORCH](node:T-PYTORCH) | 张量、自动求导与训练循环 | Python、矩阵、梯度；[K-LOSS](node:K-LOSS) | [S08](ref:S08)；后续机器学习基础 | 大一先做小例子；网站调用 API 不需要装训练环境 |
+| [T-TRANSFORMERS](node:T-TRANSFORMERS) | 加载 tokenizer、模型与训练/推理接口 | [K-TOKEN](node:K-TOKEN)、[K-TRANSFORMER](node:K-TRANSFORMER) | [S07](ref:S07)；CS224N 自主拓展 | 必须查具体模型兼容性；不是所有模型都可直接运行 |
+| [T-PEFT](node:T-PEFT) | 给基座添加 LoRA 适配器 | [K-LORA](node:K-LORA)、微调流程 | [S05](ref:S05)；读 LoRA 论文 | 不提供课程数据质量保证，也不自动完成评测 |
+| [T-TRL](node:T-TRL) | 组织 SFT 等后训练过程 | [K-SFT](node:K-SFT)、训练样本与配置 | [S06](ref:S06) | 第一版可不用；版本、模板和损失设置需固定 |
+| [T-RETRIEVAL](node:T-RETRIEVAL) | 关键词/向量检索和证据排序 | [K-EMBED](node:K-EMBED)、[K-RAG](node:K-RAG) | [S02](ref:S02)；先理解索引和切块 | 关键词方案先跑通；FAISS 等只解决检索中的一部分 |
+| [T-EVAL](node:T-EVAL) | 用固定设置运行基准或自建题 | [K-EVAL](node:K-EVAL)、评分与统计 | [S09](ref:S09)；本节评测方案 | 通用题库不能替代课程问题与人工检查 |
+| [T-VLLM](node:T-VLLM) | 自托管场景的模型推理服务 | [K-DEPLOY](node:K-DEPLOY)、显存和并发 | [S10](ref:S10)；后续系统学习 | 普通网站 CPU 主机不等于合格模型服务器；第一版用 API |
+| [T-OLLAMA](node:T-OLLAMA) | 本地运行兼容模型的尝试入口 | 模型大小、量化与机器资源 | [L4](ref:L4) 中的实践线索；具体模型需查官方说明 | 易启动不等于所有机器都流畅；网站不依赖成员电脑 |
+| [M-BASE](node:M-BASE) | 已发布的指令语言模型 | [K-TRANSFORMER](node:K-TRANSFORMER)、[K-SFT](node:K-SFT) | 模型卡、官方示例；[S11](ref:S11) 是历史案例入口 | 最终型号、revision、许可和 API 模型 ID 待选定，不写成“最新最强” |
+
+重要工具的关联链是：**课程答疑任务→RAG/LoRA 等方法→检索或训练工具→需要的知识→课程或教程→可验收实践。** 例如，PEFT 不只是一个仓库名，它连接 LoRA、低秩矩阵、监督微调、同一测试集上的前后对比和适配器产物。

@@ -1,0 +1,133 @@
+# 三张活地图网站 · 维护说明
+
+本目录是独立的 Fumadocs + Next.js + TypeScript 项目。正文在 Markdown/MDX 文件中，构建后由 GitHub Pages 提供静态页面。使用系统字体、本地图片及本地搜索索引，浏览不需要登录或模型密钥。
+
+## 1. 运行和预览
+
+推荐 Node.js 24 LTS，使用项目内的 `package-lock.json` 固定依赖版本。
+
+```sh
+cd website
+npm ci
+npm run dev
+```
+
+开发地址通常是 `http://127.0.0.1:3000`。若端口占用，按终端实际显示的地址访问。
+
+生产静态预览：
+
+```sh
+npm run check
+npm run build
+npm run check:export
+npm test
+npm run preview
+```
+
+验证 GitHub Pages 子路径（macOS/Linux）：
+
+```sh
+NEXT_PUBLIC_BASE_PATH=/three_maps npm run build
+npm run check:export
+npm test
+npm run preview
+```
+
+PowerShell 可先执行 `$env:NEXT_PUBLIC_BASE_PATH="/three_maps"`，再执行 `npm run build`。预览服务器读取本次构建的路径配置，会打印准确地址；默认 3000 端口，`PORT=3001 npm run preview` 可换端口。
+
+当前显式采用 Next.js Webpack 构建，以兼容本机受限环境；不需要自行安装独立服务器。`out/` 是生成物，不直接修改或提交。
+
+## 2. 文件分工
+
+| 目录 | 维护内容 |
+| --- | --- |
+| `content/docs/domain` | 领域主题，`entries` 存概念与工具详情 |
+| `content/docs/ecosystem` | 生态主题，`entries` 存团队、平台与社区详情 |
+| `content/docs/cognition` | 认识方法、三个案例、习惯与修正 |
+| `content/docs/sources` | 全站共用的来源编号和链接 |
+| `content/docs/project` | 跨图探索、进度、更新、待补问题、作业覆盖与阶段安排 |
+| `src/components` | 搜索、关联卡片、内容渲染、中文界面 |
+| `src/app` | 首页、文档布局、静态搜索导出 |
+| `public/images/domain` | 从原素材复制的网站图片，原文件保留 |
+| `scripts` | 内容检查、导出检查、搜索与关联测试、静态预览 |
+
+网站正文是今后唯一需要日常编辑的展示内容。`../map__text` 是原始素材和首次整合底稿，修改它不会自动更新网站，避免误覆盖已整理页面。
+
+## 3. 修改或新增一篇内容
+
+普通段落、列表、表格按 Markdown 写。文件后缀为 `.mdx`，只有使用卡片等交互组件时才需要 JSX。
+
+新条目示例：在适合的地图目录中创建文件，替换以下内容。
+
+```mdx
+---
+id: "K-NEW-CONCEPT"
+title: "新概念"
+description: "用一句话解释它的作用。"
+updated: "2026-10-26"
+status: "资料整理 · 理解程度待自评"
+related: ["K-RAG", "C-RANKING"]
+---
+
+## 它是什么
+
+解释概念，标清适用条件。依据见 [S02](ref:S02)。
+
+## 与什么相关
+
+它与 [RAG](node:K-RAG) 的关系是……
+
+## 还不知道什么
+
+列出缺少的证据，不把计划写成结果。
+```
+
+- `id` 全站唯一，建立后保持稳定。改标题不改 ID；移动文件后，`node:` 链接会自动找到新地址。
+- `updated` 使用带引号的日期字符串，改内容时同步改日期。
+- `status` 说明材料或实践状态；相关条目由 `related` 自动生成卡片。
+- 在同目录 `meta.json` 的 `pages` 数组中加入文件名（不带 `.mdx`）。顺序就是侧边目录顺序；`index` 是目录首页。
+- 地图总览的 `<NodeGrid ids={["D-TASK", "D-PIPELINE"]} />` 决定卡片入口。新主题加入数组即可，新条目也可进入已有主题的索引卡片。
+- 使用二级标题 `##`，Fumadocs 自动生成本页目录和小节链接。
+
+也可点击页面上的“编辑本页”进入 GitHub 编辑器。建议通过分支和 Pull Request 修改，检查通过再合并；合并到 main 后自动重建。
+
+## 4. 来源、图片和公式
+
+**来源：** 在 `sources/index.mdx` 新增 `## S22` 等唯一标题，写明原始入口、支持内容、版本/日期及局限。正文使用 `[S22](ref:S22)`。不要仅列论文名而不说明它支持什么。L1—L5 指向仓库原素材。
+
+**关系：** 正文使用 `[显示名称](node:稳定ID)`，例如 `[LoRA](node:K-LORA)`；不要手写完整域名或 `/three_maps`，避免更换部署地址后失效。普通站内链接使用 `/docs/...`。
+
+**图片：** 放入 `public/images`，正文使用 `![描述](/images/文件名.png)`。路径前缀由组件处理；点击图片可看原图。
+
+**公式：** 行内用 `$...$`，独立公式用 `$$...$$`。KaTeX 在构建时渲染，字体随静态资源提供。MDX 中普通文本的花括号需要转义；公式放进数学标记内。
+
+## 5. 每周更新
+
+在 `project/updates.mdx` 顶部增加记录：日期、对象、依据、修改、原因、执行与复核人、尚未解决的问题。没有内容变化也记录检查结果。
+
+在 `project/gaps.mdx` 和 `project/coverage.mdx` 对照作业逐项复核。缺课堂原文、学校课程大纲、实验附件或成员确认的项目，保留“待补证”。登录、反馈和地图 AI 的当前状态在 `project/status.mdx` 中说明。
+
+## 6. GitHub Pages 部署
+
+默认仓库为 `2008ccy/three_maps`，目标地址为 `https://2008ccy.github.io/three_maps/`。该地址仅是配置目标，不表示已经上线。
+
+1. 将网站文件与根目录 `.github/workflows/website.yml` 推送到仓库。
+2. 在仓库 Settings → Pages → Build and deployment 中选择 **GitHub Actions**。
+3. 工作流会安装依赖、检查内容和类型、构建、检查导出链接、运行搜索与跨图测试；全部通过后发布。
+4. 首次发布后直接打开一个详情地址并刷新，验证图片和搜索；再用校园网及移动网络进行独立访问验证。
+
+Pull Request 只检查和构建，不部署。构建或测试失败时不会触发发布，已上线版本保持不变。可恢复上一条已知可用提交再重新运行工作流回滚。若更换仓库名或使用根域名，调整工作流中的 `NEXT_PUBLIC_BASE_PATH`，并同步 `src/lib/shared.ts` 的 GitHub 编辑入口。
+
+GitHub Pages 只负责静态页面。后续 AI 接入需要额外服务端，密钥不能写入正文、浏览器代码或 `NEXT_PUBLIC_*` 变量。反馈可另接 GitHub Discussions/giscus 或独立服务，本版没有预装登录或评论占位按钮。
+
+## 7. 检查项与已知边界
+
+- `npm run check:content`：必填元数据、唯一 ID、关联、来源、图片和目录引用。
+- `npm run types:check`：路由类型和 TypeScript。
+- `npm run check:export`：实际导出的全部 HTML、站内链接、锚点、脚本及样式资源，包含部署前缀。
+- `npm test`：直接读取导出的搜索索引，用网站同一个查询模块测试中英文搜索、无结果、三条跨图路径、公式和编辑同步。
+- 浏览器人工验收：手机与桌面布局、鼠标导航、搜索结果点击、目录、主题和长表格。
+
+搜索索引在构建时生成，首次搜索会下载索引，以后在浏览器内查询。构建和查询必须使用相同的 CJK 编码器，统一维护 `src/lib/static-search.mjs`。内容较多时再评估搜索服务。
+
+完整作业还需要真实 AI、实验/分析证据、三名非组员反馈和上线后的国内网络验证。本次不代填这些结果。
