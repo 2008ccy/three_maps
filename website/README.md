@@ -162,6 +162,6 @@ GitHub Pages 只负责静态页面。后续 AI 接入需要额外服务端，密
 - 节点 ID 决定分享地址，例如 `/docs/domain/#node-rag`。修改标题时保持 ID 稳定；同层只展开一个分支，深层节点会恢复完整祖先路径。
 - `documents` 用现有正文 ID 查找网址，可加 `anchor` 定位小节；一个节点可对应多篇正文，一篇正文也可被多个节点引用。
 - `relations` 指向目标地图及节点，`label` 明确说明“提出”“实现”“用于评测”等关系。每个目标都会在构建与测试中核验。
-- `src/components/maps/maps.module.css` 顶部是中心框宽度、圆角、背景、光晕、分支间距、动画时长等中文注释变量。移动端用纵向分支，1100px 及以下用底部阅读抽屉；减弱动画设置会禁用渐显和位移。
+- `src/components/maps/maps.module.css` 顶部是中心框宽度、圆角、背景、光晕、分支间距、侧栏宽度、同侧平移距离和动画时长等中文注释变量。桌面要点继承所属主干的左右方向，在同侧打开阅读侧栏，导图中心向同侧平移；关闭后回到居中位置。移动端用纵向分支，1100px 及以下用底部阅读抽屉；减弱动画设置会禁用渐显和位移。
 - `src/components/maps/map-explorer.tsx` 负责展开、焦点、连接线和阅读面板；`src/lib/maps/state.ts` 保存可独立测试的状态转换。没有 JavaScript 时，同一份内容通过原生 `details` 展开，正文与来源仍可访问。
 - 三个总览由 `src/app/(maps)/docs/` 下的固定路由生成；其余正文位于 `src/app/(content)/docs/`。正文的 `generateStaticParams` 排除三张总览，防止静态导出重复。内容目录的三份 `index.mdx` 仍提供搜索摘要和页面树信息。

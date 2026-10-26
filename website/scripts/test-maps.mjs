@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { load } from 'cheerio';
 import { maps, flattenNodes, documentKey } from '../src/lib/maps/content.ts';
-import { findPath, stateForNode, stateFromHash, stateHash, toggleBranch } from '../src/lib/maps/state.ts';
+import { findPath, nodeSide, stateForNode, stateFromHash, stateHash, toggleBranch } from '../src/lib/maps/state.ts';
 import { readPages } from './content-utils.mjs';
 
 const pages = readPages();
@@ -83,6 +83,20 @@ test('nested branches switch, collapse and reset without keeping stale leaf sele
   assert.deepEqual(toggleBranch(nodes, selected, 'costs'), { expanded: ['costs'], selected: null });
   const closedPanel = { ...selected, selected: null };
   assert.equal(stateHash(closedPanel), '#node-research-teams');
+});
+
+test('reading panels follow the root branch side, including nested nodes and restored hashes', () => {
+  for (const map of maps) {
+    map.branches.forEach((root, index) => {
+      const expected = index < Math.ceil(map.branches.length / 2) ? 'left' : 'right';
+      for (const node of flattenNodes([root])) {
+        assert.equal(nodeSide(map.branches, node.id), expected, `${map.id}/${node.id}`);
+        const restored = stateFromHash(map.branches, `#node-${node.id}`);
+        if (restored.selected) assert.equal(nodeSide(map.branches, restored.selected), expected);
+      }
+    });
+    assert.equal(nodeSide(map.branches, 'unknown'), undefined);
+  }
 });
 
 test('updated curriculum and its derivative-source boundary reach the site', () => {

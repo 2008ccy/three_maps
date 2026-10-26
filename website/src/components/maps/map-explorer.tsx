@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { ArrowDownRight, ArrowLeft, ArrowUpRight, BookOpen, Check, ChevronDown, Layers3, Minus, Plus, RotateCcw, X } from 'lucide-react';
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
-import { findPath, stateForNode, stateFromHash, stateHash, toggleBranch } from '@/lib/maps/state';
+import { findPath, nodeSide, stateForNode, stateFromHash, stateHash, toggleBranch } from '@/lib/maps/state';
 import type { DocumentRef, MapDefinition, MapLinks, MapNode, MapState } from '@/lib/maps/types';
 import styles from './maps.module.css';
 
@@ -94,6 +94,7 @@ export function MapExplorer({ map, links }: { map: MapDefinition; links: MapLink
   const lines = useConnectors(stage, ready);
   const path = state.selected ? findPath(map.branches, state.selected) : undefined;
   const selected = path?.at(-1);
+  const readingSide = selected ? nodeSide(map.branches, selected.id) : undefined;
   const split = Math.ceil(map.branches.length / 2);
 
   useEffect(() => {
@@ -192,7 +193,7 @@ export function MapExplorer({ map, links }: { map: MapDefinition; links: MapLink
   }
 
   return <div className={styles.map} data-map={map.id}>
-    <div className={styles.workspace} data-reading={!!selected}>
+    <div className={styles.workspace} data-reading={!!selected} data-reading-side={readingSide}>
       <div className={styles.explorer} ref={background}>
         <header className={styles.toolbar}>
           <Link href="/" className={styles.homeLink}><ArrowLeft size={15} aria-hidden />首页</Link>
@@ -222,7 +223,7 @@ export function MapExplorer({ map, links }: { map: MapDefinition; links: MapLink
       </div>
       {selected && <>
         {mobilePanel && <div className={styles.scrim} aria-hidden="true" onClick={close} />}
-        <aside ref={panel} className={styles.panel} id="map-reading-panel" role="dialog" aria-modal={mobilePanel || undefined} aria-labelledby="reading-title">
+        <aside key={readingSide} ref={panel} className={styles.panel} data-side={readingSide} id="map-reading-panel" role="dialog" aria-modal={mobilePanel || undefined} aria-labelledby="reading-title">
           <div className={styles.panelTop}><span>{map.title} / {path?.slice(0, -1).map((node) => node.title).join(' / ')}</span><button type="button" onClick={close} aria-label="关闭阅读面板"><X size={19} aria-hidden /></button></div>
           <h2 id="reading-title" ref={panelTitle} tabIndex={-1}>{selected.title}</h2>
           <NodeReading node={selected} links={links} />

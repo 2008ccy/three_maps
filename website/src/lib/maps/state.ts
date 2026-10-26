@@ -8,6 +8,13 @@ export function findPath(nodes: MapNode[], id: string): MapNode[] | undefined {
   }
 }
 
+// 所有层级的要点都继承所属一级分支的方向，地址片段恢复时也使用同一规则。
+export function nodeSide(nodes: MapNode[], id: string): 'left' | 'right' | undefined {
+  const root = findPath(nodes, id)?.[0];
+  if (!root) return;
+  return nodes.indexOf(root) < Math.ceil(nodes.length / 2) ? 'left' : 'right';
+}
+
 export function stateForNode(nodes: MapNode[], id: string): MapState {
   const path = findPath(nodes, id);
   if (!path) return { expanded: [], selected: null };
