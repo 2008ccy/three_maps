@@ -55,6 +55,25 @@ PowerShell 可先执行 `$env:NEXT_PUBLIC_BASE_PATH="/three_maps"`，再执行 `
 
 ## 3. 修改或新增一篇内容
 
+### 首页外观与探索路线
+
+首页主框、三图分支和滚动探索的样式独立放在 `src/app/(home)/home.module.css`，不会修改文档页外观。文件顶部是统一调节区：
+
+| 参数 | 调整内容 |
+| --- | --- |
+| `--home-frame-width`、`--home-frame-radius` | 主框宽度、圆角 |
+| `--home-frame-border-width`、`--home-frame-border` | 边框粗细、颜色 |
+| `--home-frame-background`、`--home-frame-glow` | 背景、光晕（设为 `none` 可关闭光晕） |
+| `--home-frame-padding` 及 `-compact`、`-mobile` | 常规、较矮电脑窗口、手机的内边距 |
+| `--home-branch-gap`、`--home-branch-gap-compact` | 主框到左右地图的距离，保持大于 `22px` |
+| `--home-branch-width`、`--home-branch-color` | 连线粗细、颜色 |
+| `--home-card-width`、`--home-card-radius` | 地图卡片宽度、圆角 |
+| `--home-enter-duration`、`--home-reveal-duration` | 首次进入、下滑渐显的动画时长 |
+
+地图文案、入口和三条探索路线集中在 `src/app/(home)/home-content.ts`，主标题在同目录 `page.tsx`。更换标题或增大框的间距后，检查 1280×720 电脑和 375×667 手机首屏；极矮窗口或放大文字时内容会自然延展。系统开启“减少动态效果”后直接显示全部内容，关闭 JavaScript 后仍可使用普通链接。
+
+### 文档正文
+
 普通段落、列表、表格按 Markdown 写。文件后缀为 `.mdx`，只有使用卡片等交互组件时才需要 JSX。
 
 新条目示例：在适合的地图目录中创建文件，替换以下内容。
