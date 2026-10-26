@@ -47,9 +47,24 @@ test('formulas render and sources remain navigable', () => {
   assert.equal($('.katex-error').length, 0);
   assert.ok($(`a[href="${basePath}/docs/sources/#s01"]`).length);
 });
-test('edited RAG title and description reach body and navigation', () => {
+test('edited RAG title and description reach body and concept cards', () => {
   const $=html('/docs/domain/entries/k-rag');
   assert.equal($('h1').text(), 'RAG · 检索增强生成');
   assert.ok($.text().includes('先检索，再生成：让回答有可以核对的资料依据。'));
-  assert.ok($(`aside a[href="${basePath}/docs/domain/entries/k-rag/"]`).text().includes('RAG'));
+  const concepts = html('/docs/domain/concepts');
+  assert.ok(concepts(`article a[href="${basePath}/docs/domain/entries/k-rag/"]`).text().includes('RAG'));
+});
+test('sidebar contains only the overview and five section links on deep pages', () => {
+  const $ = html('/docs/domain/entries/k-rag');
+  const links = $('#nd-sidebar a').toArray()
+    .map((a) => ({ href: $(a).attr('href'), text: $(a).text().trim() }))
+    .filter(({ href }) => href?.startsWith(`${basePath}/docs`));
+  assert.deepEqual(links, [
+    { href: `${basePath}/docs/`, text: '从预训练模型到课程答疑助手' },
+    { href: `${basePath}/docs/domain/`, text: '领域地图' },
+    { href: `${basePath}/docs/ecosystem/`, text: '生态地图' },
+    { href: `${basePath}/docs/cognition/`, text: '认知地图' },
+    { href: `${basePath}/docs/project/`, text: '项目与更新' },
+    { href: `${basePath}/docs/sources/`, text: '资料来源' },
+  ]);
 });
