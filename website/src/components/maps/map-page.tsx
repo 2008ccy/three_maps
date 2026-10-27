@@ -2,6 +2,7 @@ import { getNode } from '@/lib/source';
 import { documentKey, flattenNodes, getMap } from '@/lib/maps/content';
 import type { MapKey, MapLinks } from '@/lib/maps/types';
 import { MapExplorer } from './map-explorer';
+import { documentStatuses, sourceTitles } from '@/lib/reading-context';
 
 export function mapMetadata(id: MapKey) {
   const map = getMap(id);
@@ -27,5 +28,5 @@ export function MapPage({ id }: { id: MapKey }) {
       };
     }
   }
-  return <MapExplorer map={map} links={links} />;
+  return <MapExplorer map={map} links={links} statuses={documentStatuses()} sourceTitles={sourceTitles()} />;
 }

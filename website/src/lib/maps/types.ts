@@ -11,6 +11,9 @@ export type MapNode = {
   sources: string[];
   children?: MapNode[];
   relations?: MapRelation[];
+  type?: string;
+  understanding?: '待自评' | '已初步理解' | '已经尝试' | '待深入学习';
+  verification?: '待核实' | '已核实';
 };
 export type MapDefinition = {
   id: MapKey;

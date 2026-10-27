@@ -1,267 +1,134 @@
 'use client';
 
 import Link from 'next/link';
-import { ArrowDownRight, ArrowLeft, ArrowRight, ArrowUpRight, BookOpen, Check, ChevronDown, Layers3, Minus, Plus, RotateCcw, X } from 'lucide-react';
-import { useCallback, useEffect, useLayoutEffect, useRef, useState, type MouseEvent } from 'react';
-import { findPath, nodeSide, stateForNode, stateFromHash, stateHash, toggleBranch } from '@/lib/maps/state';
-import type { DocumentRef, MapDefinition, MapKey, MapLinks, MapNode, MapState } from '@/lib/maps/types';
+import { ArrowLeft, ArrowRight, ArrowUpRight, BookOpen, Check, ChevronDown, Grid2X2, Network, Search, SlidersHorizontal, X } from 'lucide-react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import type { MapDefinition, MapLinks } from '@/lib/maps/types';
+import { buildCatalog, buildEdges, catalogQuery, emptyFilters, filterCatalog, readCatalogQuery, understandingOptions, verificationOptions, type CatalogFilters, type CatalogNode } from '@/lib/maps/catalog';
+import { CatalogGraph } from './catalog-graph';
 import styles from './maps.module.css';
-import { cognitionNodeSide } from '@/lib/maps/cognition-diagram';
-import { CognitionGraph } from './cognition-graph';
 
-const keyOf = (ref: DocumentRef) => `${ref.id}${ref.anchor ? `#${ref.anchor}` : ''}`;
-const visibleNodeElement = (nodes: MapNode[], id: string | null) => id ? findPath(nodes, id)?.toReversed().map((node) => document.getElementById(`node-${node.id}`)).find((element) => element !== null) ?? null : null;
-const overview: MapState = { expanded: [], selected: null };
-const mapTabs = [{ id: 'domain', title: '领域' }, { id: 'ecosystem', title: '生态' }, { id: 'cognition', title: '认知' }];
+const keyOf = (ref: { id: string; anchor?: string }) => `${ref.id}${ref.anchor ? `#${ref.anchor}` : ''}`;
+const journeys = { domain: '任务 → 数据 → 模型 → 训练 → 可用的系统', ecosystem: '研究与成果 → 开源工具与平台 → 应用与资源 → 使用反馈', cognition: '认识视角 → 分析方法 → 案例检验 → 认识修正 → 成长习惯' };
 
-function NodeReading({ node, links, mapId, onNavigate }: { node: MapNode; links: MapLinks; mapId?: MapKey; onNavigate?: (id: string) => void }) {
-  return <>
-    <p className={styles.readingSummary}>{node.summary}</p>
-    {node.detail !== node.summary && <p className={styles.readingText}>{node.detail}</p>}
-    {node.boundary && <div className={styles.boundary}><span>理解与使用边界</span><p>{node.boundary}</p></div>}
-    <div className={styles.sources} aria-label="内容来源"><span>依据</span>{node.sources.map((id) => <Link key={id} href={`/docs/sources/#${id.toLowerCase()}`}>{id}<ArrowUpRight size={11} aria-hidden /></Link>)}</div>
-    {!!node.children?.length && onNavigate && <section className={styles.documents} aria-label="包含的要点"><h3>包含的要点</h3>{node.children.map((child) => <button type="button" className={styles.childNode} key={child.id} onClick={() => onNavigate(child.id)}>{child.title}<ArrowUpRight size={14} aria-hidden /></button>)}</section>}
-    {!!node.relations?.length && <section className={styles.relations} aria-label="跨图关联">
-      <h3>沿着关系继续看</h3>
-      {node.relations.map((relation) => {
-        const link = links[`relation:${relation.map}:${relation.node}`];
-        return <Link href={link.href} key={link.href} onClick={onNavigate && relation.map === mapId ? (event) => {
-          if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
-          event.preventDefault(); onNavigate(relation.node);
-        } : undefined}><span>{relation.label}</span><strong>{link.title}<ArrowUpRight size={14} aria-hidden /></strong></Link>;
-      })}
-    </section>}
-    <section className={styles.documents} aria-label="完整正文">
-      <h3><BookOpen size={15} aria-hidden />查看完整正文</h3>
-      {node.documents.map((ref) => { const link = links[keyOf(ref)]; return <Link key={keyOf(ref)} href={link.href}>{link.title}<ArrowUpRight size={14} aria-hidden /></Link>; })}
-    </section>
-  </>;
-}
-
-// 首次服务端输出的层级内容也能在没有 JavaScript 的环境中展开、阅读和跳转。
-function Outline({ nodes, links }: { nodes: MapNode[]; links: MapLinks }) {
-  return <div className={styles.outline}>{nodes.map((node) => <details key={node.id} id={`node-${node.id}`}>
-    <summary>{node.title}<span>{node.summary}</span></summary>
-    {node.children ? <><p>{node.detail}</p><Outline nodes={node.children} links={links} /><Link href={links[keyOf(node.documents[0])].href}>查看本主题正文 ↗</Link></> : <NodeReading node={node} links={links} />}
-  </details>)}</div>;
-}
-
-type Connector = { id: string; d: string; x: number; y: number };
-
-function useConnectors(stage: React.RefObject<HTMLDivElement | null>, ready: boolean) {
-  const [lines, setLines] = useState<Connector[]>([]);
-  useLayoutEffect(() => {
-    const root = stage.current;
-    if (!ready || !root) return;
-    let frame = 0;
-    const measure = () => {
-      const bounds = root.getBoundingClientRect();
-      const center = root.querySelector<HTMLElement>('[data-map-center]')!.getBoundingClientRect();
-      const mobile = window.matchMedia('(max-width: 760px)').matches;
-      setLines(Array.from(root.querySelectorAll<HTMLElement>('[data-map-branch]')).map((element) => {
-        const box = element.getBoundingClientRect();
-        if (mobile) {
-          const x1 = center.left + 10 - bounds.left;
-          const y1 = center.bottom - bounds.top;
-          const x2 = box.left - bounds.left;
-          const y2 = box.top + box.height / 2 - bounds.top;
-          return { id: element.dataset.mapBranch!, d: `M ${x1} ${y1} V ${y2 - 8} Q ${x1} ${y2}, ${x1 + 8} ${y2} H ${x2}`, x: x2, y: y2 };
-        }
-        const left = box.left < center.left;
-        const x1 = (left ? center.left : center.right) - bounds.left;
-        const y1 = center.top + center.height / 2 - bounds.top;
-        const x2 = (left ? box.right : box.left) - bounds.left;
-        const y2 = box.top + box.height / 2 - bounds.top;
-        const middle = (x1 + x2) / 2;
-        return { id: element.dataset.mapBranch!, d: `M ${x1} ${y1} C ${middle} ${y1}, ${middle} ${y2}, ${x2} ${y2}`, x: x2, y: y2 };
-      }));
-    };
-    const schedule = () => { cancelAnimationFrame(frame); frame = requestAnimationFrame(measure); };
-    const observer = new ResizeObserver(schedule);
-    observer.observe(root);
-    // 字体放大、内容展开、面板改变可用宽度时按实际节点边界重算。
-    root.querySelectorAll('[data-map-column], [data-map-center], [data-map-branch]').forEach((node) => observer.observe(node));
-    window.addEventListener('resize', schedule);
-    schedule();
-    return () => { observer.disconnect(); cancelAnimationFrame(frame); window.removeEventListener('resize', schedule); };
-  }, [ready, stage]);
-  return lines;
-}
-
-export function MapExplorer({ map, links }: { map: MapDefinition; links: MapLinks }) {
+export function MapExplorer({ map, links, statuses = {}, sourceTitles = {} }: { map: MapDefinition; links: MapLinks; statuses?: Record<string, string>; sourceTitles?: Record<string, string> }) {
+  const nodes = useMemo(() => buildCatalog(map, statuses), [map, statuses]);
+  const edges = useMemo(() => buildEdges(map), [map]);
   const [ready, setReady] = useState(false);
-  const [state, setState] = useState<MapState>(overview);
-  const [highlight, setHighlight] = useState<string | null>(null);
-  const [mobilePanel, setMobilePanel] = useState(false);
-  const stage = useRef<HTMLDivElement>(null);
-  const background = useRef<HTMLDivElement>(null);
-  const panel = useRef<HTMLElement>(null);
-  const panelTitle = useRef<HTMLHeadingElement>(null);
-  const returnFocus = useRef<HTMLElement | null>(null);
-  const directed = map.layout === 'directed';
-  const lines = useConnectors(stage, ready && !directed);
-  const path = state.selected ? findPath(map.branches, state.selected) : undefined;
-  const selected = path?.at(-1);
-  const readingSide = selected ? (directed ? cognitionNodeSide(map, selected.id) : undefined) ?? nodeSide(map.branches, selected.id) : undefined;
-  const split = Math.ceil(map.branches.length / 2);
+  const [view, setView] = useState<'cards' | 'graph'>('cards');
+  const [filters, setFilters] = useState<CatalogFilters>(emptyFilters);
+  const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [mobile, setMobile] = useState(false);
+  const panel = useRef<HTMLElement>(null), panelTitle = useRef<HTMLHeadingElement>(null), background = useRef<HTMLDivElement>(null);
+  const previousFocus = useRef<HTMLElement | null>(null);
+  const selected = nodes.find((node) => node.id === selectedId);
+  const matches = filterCatalog(nodes, filters);
+  const outside = !!selected && !matches.some((node) => node.id === selected.id);
+  const visible = outside ? [selected, ...matches] : matches;
+  const localEdges = edges.filter((edge) => edge.targetMap === map.id);
+  const storageKey = `three-maps-browse:${map.id}`;
 
   useEffect(() => {
-    setReady(true);
-    const read = () => setState(stateFromHash(map.branches, window.location.hash, directed));
-    const media = window.matchMedia('(max-width: 1100px)');
-    const resize = () => setMobilePanel(media.matches);
-    read(); resize();
-    window.addEventListener('hashchange', read);
-    window.addEventListener('popstate', read);
-    media.addEventListener('change', resize);
-    return () => { window.removeEventListener('hashchange', read); window.removeEventListener('popstate', read); media.removeEventListener('change', resize); };
-  }, [map, directed]);
+    const read = () => {
+      const query = readCatalogQuery(window.location.search);
+      setView(query.view); setFilters(query.filters);
+      const id = window.location.hash.startsWith('#node-') ? window.location.hash.slice(6) : '';
+      setSelectedId(nodes.some((node) => node.id === id) ? id : null);
+    };
+    const media = window.matchMedia('(max-width: 1000px)');
+    const resize = () => setMobile(media.matches);
+    read(); resize(); setReady(true);
+    try {
+      const saved = JSON.parse(sessionStorage.getItem(storageKey) ?? 'null');
+      if (saved?.url === window.location.pathname + window.location.search + window.location.hash) requestAnimationFrame(() => window.scrollTo(0, saved.scroll));
+    } catch { /* Storage can be unavailable in private browsing. */ }
+    window.addEventListener('popstate', read); window.addEventListener('hashchange', read); media.addEventListener('change', resize);
+    return () => { window.removeEventListener('popstate', read); window.removeEventListener('hashchange', read); media.removeEventListener('change', resize); };
+  }, [nodes, storageKey]);
 
-  const update = useCallback((next: MapState) => {
-    setState(next);
-    const hash = stateHash(next);
-    if (window.location.hash !== hash) window.history.pushState(null, '', `${window.location.pathname}${window.location.search}${hash}`);
+  const navigate = useCallback((nextView: typeof view, nextFilters: CatalogFilters, id: string | null, replace = false) => {
+    setView(nextView); setFilters(nextFilters); setSelectedId(id);
+    const url = `${window.location.pathname}${catalogQuery(nextView, nextFilters)}${id ? `#node-${id}` : ''}`;
+    if (url !== window.location.pathname + window.location.search + window.location.hash) window.history[replace ? 'replaceState' : 'pushState'](window.history.state, '', url);
   }, []);
-
+  const open = (id: string) => { previousFocus.current = document.activeElement as HTMLElement; navigate(view, filters, id); };
   const close = useCallback(() => {
-    update(directed ? overview : { expanded: state.expanded, selected: null });
-    requestAnimationFrame(() => {
-      const target = visibleNodeElement(map.branches, state.selected) ?? (returnFocus.current?.isConnected ? returnFocus.current : null);
-      target?.focus({ preventScroll: true });
-    });
-  }, [state, update, directed, map.branches]);
-
+    navigate(view, filters, null);
+    requestAnimationFrame(() => { const target = document.getElementById(`node-${selectedId}`) ?? previousFocus.current; if (target?.isConnected) (target.querySelector<HTMLElement>('button') ?? target).focus({ preventScroll: true }); });
+  }, [navigate, view, filters, selectedId]);
+  const remember = () => { try { sessionStorage.setItem(storageKey, JSON.stringify({ url: window.location.pathname + window.location.search + window.location.hash, scroll: window.scrollY })); } catch {} };
   useEffect(() => {
     if (!selected) return;
-    const frame = requestAnimationFrame(() => {
-      visibleNodeElement(map.branches, selected.id)?.scrollIntoView({ block: 'nearest', inline: 'nearest' });
-      panelTitle.current?.focus({ preventScroll: true });
-      if (panel.current) panel.current.scrollTop = 0;
-    });
-    return () => cancelAnimationFrame(frame);
-  }, [selected, map.branches]);
-
-  useEffect(() => {
-    if (!selected) return;
-    const previousOverflow = document.body.style.overflow;
-    if (mobilePanel) {
-      document.body.style.overflow = 'hidden';
-      if (background.current) background.current.inert = true;
+    panelTitle.current?.focus({ preventScroll: true }); if (panel.current) panel.current.scrollTop = 0;
+    if (view === 'cards') {
+      const frame = requestAnimationFrame(() => document.getElementById(`node-${selected.id}`)?.scrollIntoView({ block: 'nearest', inline: 'nearest' }));
+      return () => cancelAnimationFrame(frame);
     }
-    const onKey = (event: KeyboardEvent) => {
-      if (event.defaultPrevented) return;
+  }, [selected, view]);
+  useEffect(() => {
+    if (!selected) return;
+    const prior = document.body.style.overflow;
+    if (mobile) { document.body.style.overflow = 'hidden'; if (background.current) background.current.inert = true; }
+    const key = (event: KeyboardEvent) => {
       if (event.key === 'Escape') { event.preventDefault(); close(); }
-      if (event.key !== 'Tab' || !mobilePanel) return;
-      const focusable = Array.from(panel.current?.querySelectorAll<HTMLElement>('a[href], button') ?? []);
+      if (event.key !== 'Tab' || !mobile) return;
+      const focusable = Array.from(panel.current?.querySelectorAll<HTMLElement>('a[href],button') ?? []);
       const first = focusable[0], last = focusable.at(-1);
       if (event.shiftKey && (document.activeElement === first || document.activeElement === panelTitle.current)) { event.preventDefault(); last?.focus(); }
-      else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first?.focus(); }
+      if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first?.focus(); }
     };
-    document.addEventListener('keydown', onKey);
-    const backgroundElement = background.current;
-    return () => { document.removeEventListener('keydown', onKey); if (mobilePanel) document.body.style.overflow = previousOverflow; if (backgroundElement) backgroundElement.inert = false; };
-  }, [selected, mobilePanel, close]);
+    document.addEventListener('keydown', key);
+    const element = background.current;
+    return () => { document.removeEventListener('keydown', key); document.body.style.overflow = prior; if (element) element.inert = false; };
+  }, [selected, mobile, close]);
+  const changeFilter = (key: keyof CatalogFilters, value: string) => navigate(view, { ...filters, [key]: value }, selectedId, key === 'q');
 
-  const visitNode = (id: string) => {
-    const node = findPath(map.branches, id)?.at(-1);
-    if (!node) return;
-    returnFocus.current = visibleNodeElement(map.branches, id);
-    update(stateForNode(map.branches, node.id, directed));
-    if (node.children && !directed) requestAnimationFrame(() => document.getElementById(`node-${node.id}`)?.focus());
-  };
-
-  const openNode = (node: MapNode) => {
-    if (node.children) update(toggleBranch(map.branches, state, node.id));
-    else visitNode(node.id);
-  };
-
-  const followNode = (event: MouseEvent<HTMLAnchorElement>, id: string) => {
-    if (!ready || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
-    event.preventDefault(); visitNode(id);
-  };
-
-  function children(nodes: MapNode[]) {
-    return <ul className={styles.children}>{nodes.map((node) => {
-      const expanded = state.expanded.includes(node.id);
-      return <li key={node.id}>
-        <button type="button" id={`node-${node.id}`} data-node={node.id} className={styles.childNode}
-          aria-expanded={node.children ? expanded : undefined} aria-controls={node.children ? `children-${node.id}` : selected?.id === node.id ? 'map-reading-panel' : undefined}
-          aria-pressed={!node.children ? selected?.id === node.id : undefined} onClick={() => openNode(node)}>
-          <span>{node.title}</span>{node.children ? expanded ? <Minus size={14} aria-hidden /> : <Plus size={14} aria-hidden /> : <ArrowDownRight size={14} aria-hidden />}
-        </button>
-        {node.children && <div id={`children-${node.id}`} className={styles.reveal} data-open={expanded} aria-hidden={!expanded} inert={!expanded}><div className={styles.revealInner}>{children(node.children)}</div></div>}
-      </li>;
-    })}</ul>;
+  function reading(node: CatalogNode, interactive = true) {
+    const relatedEdges = edges.filter((edge) => edge.from === node.id || edge.targetMap === map.id && edge.to === node.id);
+    return <>
+      <p className={styles.readingSummary}>{node.summary}</p>
+      {node.detail !== node.summary && <p className={styles.readingText}>{node.detail}</p>}
+      {node.boundary && <div className={styles.boundary}><span>理解与使用边界</span><p>{node.boundary}</p></div>}
+      <div className={styles.badges}><span>{node.type}</span><span>{node.understanding}</span><span className={styles.pending}>{node.verification}</span></div>
+      <section className={styles.sources} aria-label="内容来源"><h3>来源与依据</h3>{node.sources.map((id) => <Link key={id} href={`/docs/sources/#${id.toLowerCase()}`} onClick={remember}><span>{sourceTitles[id] ?? id}</span><small>{id}<ArrowUpRight size={12} /></small></Link>)}</section>
+      {!!relatedEdges.length && <section className={styles.relations} aria-label="相关知识"><h3>沿着关系继续看</h3>{relatedEdges.map((edge) => {
+        const outgoing = edge.from === node.id;
+        const targetId = outgoing ? edge.to : edge.from;
+        const targetMap = outgoing ? edge.targetMap : map.id;
+        const target = nodes.find((item) => item.id === targetId && targetMap === map.id);
+        const resolved = links[`relation:${targetMap}:${targetId}`];
+        const href = targetMap === map.id ? `/docs/${map.id}/#node-${targetId}` : resolved?.href;
+        if (!href) return null;
+        return <Link href={href} key={`${edge.id}:${outgoing}`} onClick={(event) => { if (interactive && targetMap === map.id && event.button === 0 && !event.metaKey && !event.ctrlKey && !event.shiftKey && !event.altKey) { event.preventDefault(); open(targetId); } else remember(); }}><span>{outgoing ? edge.label : `来自「${target?.title}」：${edge.label}`}</span><strong>{target?.title ?? resolved?.title}<ArrowRight size={14} /></strong></Link>;
+      })}</section>}
+      <section className={styles.documents} aria-label="完整正文"><h3><BookOpen size={15} />完整正文</h3>{node.documents.map((ref) => <Link key={keyOf(ref)} href={links[keyOf(ref)].href} onClick={remember}>{links[keyOf(ref)].title}<ArrowUpRight size={15} /></Link>)}</section>
+    </>;
   }
 
-  function column(nodes: MapNode[], side: string) {
-    return <div className={styles.column} data-map-column data-side={side}>{nodes.map((node) => {
-      const expanded = state.expanded.includes(node.id);
-      const number = String(map.branches.indexOf(node) + 1).padStart(2, '0');
-      return <section key={node.id} className={styles.branch} data-open={expanded} aria-label={node.title}
-        onMouseEnter={() => setHighlight(node.id)} onMouseLeave={() => setHighlight(null)} onFocus={() => setHighlight(node.id)} onBlur={(e) => { if (!e.currentTarget.contains(e.relatedTarget)) setHighlight(null); }}>
-        <button type="button" className={styles.branchNode} id={`node-${node.id}`} data-node={node.id} data-map-branch={node.id}
-          aria-expanded={expanded} aria-controls={`children-${node.id}`} onClick={() => openNode(node)}>
-          <span className={styles.branchNumber}>{number}</span><span className={styles.branchCopy}><strong>{node.title}</strong><span>{node.summary}</span></span>
-          <span className={styles.expandIcon}>{expanded ? <Minus size={17} aria-hidden /> : <Plus size={17} aria-hidden />}</span>
-        </button>
-        <div id={`children-${node.id}`} className={styles.reveal} data-open={expanded} aria-hidden={!expanded} inert={!expanded}><div className={styles.revealInner}><div className={styles.branchContents}>{children(node.children!)}<Link className={styles.branchDocument} href={links[keyOf(node.documents[0])].href}>本主题正文<ArrowUpRight size={12} aria-hidden /></Link></div></div></div>
-      </section>;
-    })}</div>;
+  function outline(items: MapDefinition['branches']) {
+    return <div className={styles.outline}>{items.map((item) => <details id={`node-${item.id}`} key={item.id}><summary>{item.title}<span>{item.summary}</span></summary>{reading(nodes.find((node) => node.id === item.id)!, false)}{item.children && outline(item.children)}</details>)}</div>;
   }
 
   return <div className={styles.map} data-map={map.id}>
-    <div className={styles.workspace} data-reading={!!selected} data-reading-side={readingSide}>
+    <div className={styles.workspace} data-reading={!!selected} data-view={view}>
       <div className={styles.explorer} ref={background}>
-        <header className={styles.toolbar}>
-          <Link href="/" className={styles.homeLink}><ArrowLeft size={15} aria-hidden />首页</Link>
-          <nav className={styles.mapTabs} aria-label="切换地图">{mapTabs.map((tab) => <Link key={tab.id} href={`/docs/${tab.id}/`} aria-current={map.id === tab.id ? 'page' : undefined}>{tab.title}</Link>)}</nav>
-          {ready && <button className={styles.reset} type="button" onClick={() => { update(overview); document.getElementById('map-title')?.focus(); }}><RotateCcw size={14} aria-hidden />回到总览</button>}
-        </header>
-
+        <nav className={styles.breadcrumb} aria-label="面包屑"><Link href="/">首页</Link><span>/</span><span>{map.title}</span></nav>
+        <header className={styles.intro}><p className={styles.eyebrow}><Network size={15} /> THREE LIVING MAPS <span>/ {map.number}</span></p><h1 id="map-title">{map.title}</h1><p className={styles.description}>{map.question} {map.description}</p><p className={styles.journey}>{journeys[map.id]}</p></header>
+        <div className={styles.stats} aria-label="地图统计"><div><strong>{nodes.length}</strong><span>知识节点</span></div><div><strong>{localEdges.length}</strong><span>图内关系</span></div><div><strong>{edges.length - localEdges.length}</strong><span>跨图关系</span></div><p>先找到感兴趣的条目，<br />再沿着关系深入理解。</p></div>
         {ready ? <>
-          <div className={styles.mapIntro}><span><Layers3 size={14} aria-hidden />三图探索 / {map.number}</span><p>{directed ? '沿箭头读图 · 点击节点阅读' : '点击分支展开 · 点击要点阅读'}</p></div>
-          <div className={styles.viewport}>{directed ? <CognitionGraph map={map} selected={state.selected} onOpen={visitNode} stageClassName={styles.stage} /> : <div className={styles.stage} ref={stage}>
-            <svg className={styles.connectors} aria-hidden="true">{lines.map((line) => <g key={line.id} data-active={highlight === line.id || state.expanded[0] === line.id}><path d={line.d} /><circle cx={line.x} cy={line.y} r="2.5" /></g>)}</svg>
-            <div className={styles.center} data-map-center>
-              <span className={styles.centerLabel}><span />THREE LIVING MAPS</span>
-              <h1 id="map-title" tabIndex={-1}>{map.title}</h1><p>{map.question}</p>
-              <span className={styles.centerHint}>{map.branches.length} 条主干 · 逐层探索</span>
-            </div>
-            {column(map.branches.slice(0, split), 'left')}
-            {column(map.branches.slice(split), 'right')}
-          </div>}</div>
-        </> : <section className={styles.fallback} aria-label="地图层级内容"><h1>{map.title}</h1><p>{map.description}</p><p>展开主题查看要点，沿正文与来源继续阅读。</p><Outline nodes={map.branches} links={links} /></section>}
-
-        {!!map.connections?.length && (!ready || !directed) && <section className={styles.feedback} aria-label="指导与反馈闭环">
-          <h2>从判断到修正，再回到行动</h2>
-          <p>虚线连接方法选择、案例反馈与习惯更新</p>
-          <ul>{map.connections.map((connection) => {
-            const from = findPath(map.branches, connection.from)!.at(-1)!;
-            const to = findPath(map.branches, connection.to)!.at(-1)!;
-            return <li key={`${connection.from}-${connection.to}`} data-connection={`${connection.from}:${connection.to}`}>
-              <Link href={`/docs/${map.id}/#node-${from.id}`} onClick={(event) => followNode(event, from.id)}>{from.title}</Link>
-              <span className={styles.feedbackArrow}><span>{connection.label}</span><ArrowRight size={15} aria-hidden /></span>
-              <Link href={`/docs/${map.id}/#node-${to.id}`} onClick={(event) => followNode(event, to.id)}>{to.title}</Link>
-            </li>;
-          })}</ul>
-        </section>}
-
-        <footer className={styles.mapFooter}>
-          <div className={styles.legend}><span />{directed ? '实线表示内容归属 · 虚线表示指导与反馈' : '连线表示内容归属'}<span className={styles.legendDivider}>/</span><Check size={12} aria-hidden />每个要点保留依据</div>
-          <details className={styles.auxiliary}><summary><BookOpen size={15} aria-hidden />完整主题与学习入口<ChevronDown size={14} aria-hidden /></summary><nav aria-label="辅助阅读入口">{map.auxiliary.map((ref) => <Link key={keyOf(ref)} href={links[keyOf(ref)].href}>{links[keyOf(ref)].title}<ArrowUpRight size={13} aria-hidden /></Link>)}</nav></details>
-          <Link className={styles.allConnections} href="/docs/project/connections/">查看完整跨图关系<ArrowUpRight size={13} aria-hidden /></Link>
-        </footer>
+          <section className={styles.filters} aria-label="筛选知识节点"><div className={styles.filterTitle}><SlidersHorizontal size={15} /><span>筛选与查找</span><button type="button" onClick={() => navigate(view, emptyFilters, selectedId)}>重置筛选</button></div><div className={styles.filterFields}>
+            <label>类型<select value={filters.type} onChange={(event) => changeFilter('type', event.target.value)}><option value="">全部类型</option>{[...new Set(nodes.map((node) => node.type))].map((type) => <option key={type}>{type}</option>)}</select></label>
+            <label>理解程度<select value={filters.understanding} onChange={(event) => changeFilter('understanding', event.target.value)}><option value="">全部程度</option>{understandingOptions.map((value) => <option key={value}>{value}</option>)}</select></label>
+            <label>核实状态<select value={filters.verification} onChange={(event) => changeFilter('verification', event.target.value)}><option value="">全部状态</option>{verificationOptions.map((value) => <option key={value}>{value}</option>)}</select></label>
+            <label className={styles.searchLabel}>关键词<span><Search size={16} /><input type="search" placeholder="搜索名称、解释或关键词…" value={filters.q} onChange={(event) => changeFilter('q', event.target.value)} /></span></label>
+          </div></section>
+          <div className={styles.viewBar}><div className={styles.viewTabs} role="group" aria-label="地图视图"><button type="button" aria-pressed={view === 'cards'} onClick={() => navigate('cards', filters, selectedId)}><Grid2X2 size={16} />卡片</button><button type="button" aria-pressed={view === 'graph'} onClick={() => navigate('graph', filters, selectedId)}><Network size={16} />关系图</button></div><p aria-live="polite">显示 <strong>{matches.length}</strong> / {nodes.length} 个节点</p></div>
+          {outside && <p className={styles.notice}>当前节点不在筛选结果内，已临时显示。<button type="button" onClick={() => navigate(view, emptyFilters, selectedId)}>清除筛选查看全部</button></p>}
+          {!visible.length ? <div className={styles.empty}><Search size={28} /><h2>没有找到匹配的知识点</h2><p>试试其他关键词，或清除筛选后继续探索。</p><button type="button" onClick={() => navigate(view, emptyFilters, null)}>清除筛选</button></div> : view === 'cards' ? <div className={styles.cardGrid}>{visible.map((node) => <article tabIndex={-1} id={`node-${node.id}`} key={node.id} className={styles.card} data-selected={selectedId === node.id}><div className={styles.cardTop}><span>{node.group}</span><code>{node.id}</code></div><h2>{node.title}</h2><p>{node.detail === node.summary ? node.summary : node.detail}</p><div className={styles.badges}><span>{node.type}</span><span>{node.understanding}</span><span className={styles.pending}>{node.verification}</span></div><button type="button" onClick={() => open(node.id)} aria-label={`查看详情：${node.title}`} aria-haspopup="dialog" aria-expanded={selectedId === node.id}>查看详情<ArrowRight size={16} /></button></article>)}</div> : <CatalogGraph nodes={visible} edges={localEdges} selected={selectedId} onSelect={open} />}
+        </> : <section aria-label="地图层级内容"><p className={styles.notice}>展开条目阅读解释、关系和来源。</p>{outline(map.branches)}</section>}
+        <footer className={styles.footer}><div><Check size={14} /><span>理解程度与核实状态分别记录，未知的地方继续保留。</span></div><details><summary><BookOpen size={16} />完整主题与学习入口<ChevronDown size={14} /></summary><nav aria-label="辅助阅读入口">{map.auxiliary.map((ref) => <Link key={keyOf(ref)} href={links[keyOf(ref)].href} onClick={remember}>{links[keyOf(ref)].title}<ArrowUpRight size={13} /></Link>)}</nav></details><Link href="/docs/project/connections/" onClick={remember}>查看完整跨图关系<ArrowUpRight size={14} /></Link></footer>
       </div>
-      {selected && <>
-        {mobilePanel && <div className={styles.scrim} aria-hidden="true" onClick={close} />}
-        <aside key={readingSide} ref={panel} className={styles.panel} data-side={readingSide} id="map-reading-panel" role="dialog" aria-modal={mobilePanel || undefined} aria-labelledby="reading-title">
-          <div className={styles.panelTop}><span>{map.title} / {path?.slice(0, -1).map((node) => node.title).join(' / ')}</span><button type="button" onClick={close} aria-label="关闭阅读面板"><X size={19} aria-hidden /></button></div>
-          <h2 id="reading-title" ref={panelTitle} tabIndex={-1}>{selected.title}</h2>
-          <NodeReading node={selected} links={links} mapId={map.id} onNavigate={visitNode} />
-          <p className={styles.panelHint}>按 Esc 关闭，回到刚才的要点</p>
-        </aside>
-      </>}
+      {selected && <>{mobile && <div className={styles.scrim} onClick={close} aria-hidden="true" />}<aside ref={panel} id="map-reading-panel" className={styles.panel} role="dialog" aria-modal={mobile || undefined} aria-labelledby="reading-title"><div className={styles.panelTop}><span>{map.title}{selected.path.length > 0 && ` / ${selected.path.join(' / ')}`}</span><button type="button" aria-label="关闭阅读面板" onClick={close}><X size={19} /></button></div><div className={styles.panelIdentity}><span>{selected.type}</span><code>{selected.id}</code></div><h2 ref={panelTitle} id="reading-title" tabIndex={-1}>{selected.title}</h2>{reading(selected)}<p className={styles.panelHint}>按 Esc 关闭，继续探索地图</p></aside></>}
     </div>
   </div>;
 }

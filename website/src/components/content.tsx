@@ -16,12 +16,9 @@ export function NodeGrid({ ids, linked = true }: { ids: string[]; linked?: boole
   })}</div>;
 }
 
-// 文章内暂时只保留来源引用与页内定位，将跳往其他文章的入口呈现为普通文字。
-export function ArticleLink({ currentUrl, href = '', children, ...props }: ComponentProps<'a'> & { currentUrl: string }) {
-  const destination = href.startsWith('node:') ? getNode(href.slice(5)).url : href;
-  const route = destination.split(/[?#]/)[0].replace(/\/$/, '');
-  if ((route === '/docs' || route.startsWith('/docs/')) && route !== '/docs/sources' && route !== currentUrl.replace(/\/$/, '')) return <span>{children}</span>;
-  return <ContentLink href={href} {...props}>{children}</ContentLink>;
+// 正文中的节点、文章与来源链接保持可浏览。
+export function ArticleLink({ currentUrl: _currentUrl, ...props }: ComponentProps<'a'> & { currentUrl: string }) {
+  return <ContentLink {...props} />;
 }
 
 export function ContentLink({ href = '', children, ...props }: ComponentProps<'a'>) {

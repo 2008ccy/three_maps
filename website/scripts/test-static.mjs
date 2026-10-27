@@ -46,7 +46,7 @@ for (const chain of [
   }
 });
 
-test('document pages offer their own map return link without pagination or appended related cards', () => {
+test('document pages offer owning-node navigation and keep pagination absent', () => {
   const titles = { domain: '领域地图', ecosystem: '生态地图', cognition: '认知地图' };
   const overviewRoutes = new Set(Object.keys(titles).map((id) => `/docs/${id}`));
   for (const { url } of readPages()) {
@@ -56,8 +56,8 @@ test('document pages offer their own map return link without pagination or appen
     const map = url.split('/')[2];
     const link = article.find('nav[aria-label="正文返回导航"] a');
     assert.equal(link.length, 1, url);
-    assert.equal(link.attr('href'), titles[map] ? `${basePath}/docs/${map}/` : `${basePath}/`, url);
-    assert.equal(link.text().trim(), `返回${titles[map] ?? '首页'}`, url);
+    assert.ok(link.attr('href')?.startsWith(titles[map] ? `${basePath}/docs/${map}/` : `${basePath}/`), url);
+    assert.ok(link.text().trim().startsWith(`返回${titles[map] ?? '首页'}`), url);
     assert.ok(!article.text().includes('沿着关系继续探索'), url);
     assert.ok(!article.text().includes('上一篇'), url);
     assert.ok(!article.text().includes('下一篇'), url);
@@ -86,41 +86,27 @@ test('formulas render and sources remain navigable', () => {
   assert.equal($('.katex-error').length, 0);
   assert.ok($(`a[href="${basePath}/docs/sources/#s01"]`).length);
 });
-test('edited RAG title and description reach body and non-linked concept cards', () => {
+test('edited RAG title and description reach body and linked concept cards', () => {
   const $=html('/docs/domain/entries/k-rag');
   assert.equal($('h1').text(), 'RAG · 检索增强生成');
   assert.ok($.text().includes('先检索，再生成：让回答有可以核对的资料依据。'));
   const concepts = html('/docs/domain/concepts');
-  assert.ok(concepts('article .node-card-static').toArray().some((card) => concepts(card).text().includes('RAG · 检索增强生成')));
-  assert.equal(concepts(`.article-content a[href="${basePath}/docs/domain/entries/k-rag/"]`).length, 0);
+  assert.ok(concepts('article a.node-card').toArray().some((card) => concepts(card).text().includes('RAG · 检索增强生成')));
+  assert.ok(concepts(`.article-content a[href="${basePath}/docs/domain/entries/k-rag"]`).length || concepts(`.article-content a[href="${basePath}/docs/domain/entries/k-rag/"]`).length);
 });
 
-test('article bodies keep citations and local anchors without links to other articles', () => {
-  for (const { url } of readPages()) {
-    const $ = html(url);
-    for (const anchor of $('.article-content a[href]').toArray()) {
-      const href = $(anchor).attr('href');
-      if (!href.startsWith(`${basePath}/docs`)) continue;
-      const route = href.split(/[?#]/)[0].replace(/\/$/, '');
-      assert.ok(route === `${basePath}${url}` || route === `${basePath}/docs/sources`, `${url}: ${href}`);
-    }
-    assert.equal($('.article-content .node-card a, .article-content a.node-card').length, 0, url);
-  }
+test('article bodies expose knowledge links and preserve citations and old anchors', () => {
   const $ = html('/docs/domain/entries/k-rag');
-  assert.ok($('.article-content').text().includes('核心概念与公式'));
+  assert.ok($(`.article-content a[href="${basePath}/docs/domain/concepts"]`).length || $(`.article-content a[href="${basePath}/docs/domain/concepts/"]`).length);
   assert.ok($(`.article-content a[href="${basePath}/docs/sources/#s02"]`).length);
+  const lora = html('/docs/domain/entries/k-lora');
+  assert.equal(lora('#它是什么').length, 1);
+  assert.equal(lora('.article-content').text().includes('冻结基座权重，用可训练的低秩增量适配模型。'), false);
+  assert.ok(lora('nav[aria-label="相关知识"] a').length);
 });
-test('sidebar contains only the overview and five section links on deep pages', () => {
+test('deep pages use top navigation without a site-wide left sidebar', () => {
   const $ = html('/docs/domain/entries/k-rag');
-  const links = $('#nd-sidebar a').toArray()
-    .map((a) => ({ href: $(a).attr('href'), text: $(a).text().trim() }))
-    .filter(({ href }) => href?.startsWith(`${basePath}/docs`));
-  assert.deepEqual(links, [
-    { href: `${basePath}/docs/`, text: '从预训练模型到课程答疑助手' },
-    { href: `${basePath}/docs/domain/`, text: '领域地图' },
-    { href: `${basePath}/docs/ecosystem/`, text: '生态地图' },
-    { href: `${basePath}/docs/cognition/`, text: '认知地图' },
-    { href: `${basePath}/docs/project/`, text: '项目与更新' },
-    { href: `${basePath}/docs/sources/`, text: '资料来源' },
-  ]);
+  assert.equal($('#nd-sidebar').length, 0);
+  assert.ok($('nav[aria-label="正文所属路径"]').text().includes('领域地图'));
+  assert.ok($('nav[aria-label="相关知识"]').text().includes('关联阅读'));
 });

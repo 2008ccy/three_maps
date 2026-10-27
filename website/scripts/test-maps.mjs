@@ -99,12 +99,12 @@ test('cognition hierarchy and feedback directions match the supplied HTML relati
   assert.equal(hierarchy.length, 13);
   assert.deepEqual(new Set(diagram.edges.filter((edge) => edge.kind === 'hierarchy').map((edge) => JSON.stringify(edge))), new Set(hierarchy.map((edge) => JSON.stringify(edge))));
   assert.deepEqual(new Set(diagram.edges.filter((edge) => edge.kind === 'feedback').map(({kind, ...edge}) => JSON.stringify(edge))), new Set(feedback.map((edge) => JSON.stringify(edge))));
-  // 无 JS 的层级后保留同一组普通关系链接，交互图则绘制实际箭头。
+  // 无 JS 的目录中仍有节点解释、关系与引用。
   const $ = html('/docs/cognition');
   for (const connection of map.connections) {
-    const row = $(`[data-connection="${connection.from}:${connection.to}"]`);
-    assert.ok(row.text().includes(connection.label));
-    for (const id of [connection.from, connection.to]) assert.ok(findPath(map.branches, id) && row.find(`a[href="${basePath}/docs/cognition/#node-${id}"]`).length);
+    const node = $(`details[id="node-${connection.from}"]`);
+    assert.ok(node.text().includes(connection.label));
+    assert.ok(node.find(`a[href="${basePath}/docs/cognition/#node-${connection.to}"]`).length);
   }
 });
 
