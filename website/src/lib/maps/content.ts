@@ -109,7 +109,7 @@ export const maps: MapDefinition[] = [
     ],
   },
   {
-    id: 'cognition', title: '认知地图', indexId: 'C-INDEX', number: '03',
+    id: 'cognition', layout: 'directed', title: '认知地图', indexId: 'C-INDEX', number: '03',
     question: '探索和判断的方法 · 怎样理解、比较、检验',
     description: '认知地图＝探索和判断的方法。从三个观选择视角，用分析方法检验案例，再将认识修正反哺成长习惯。',
     auxiliary: [doc('C-PERSPECTIVES'), doc('C-LOSS'), doc('C-RANKING'), doc('C-COST'), doc('C-HABITS'), doc('C-REVISION')],

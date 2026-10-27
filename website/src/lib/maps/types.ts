@@ -17,6 +17,7 @@ export type MapDefinition = {
   title: string;
   indexId: string;
   number: string;
+  layout?: 'directed';
   question: string;
   description: string;
   branches: MapNode[];

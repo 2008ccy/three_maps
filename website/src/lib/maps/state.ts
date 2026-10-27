@@ -15,13 +15,13 @@ export function nodeSide(nodes: MapNode[], id: string): 'left' | 'right' | undef
   return nodes.indexOf(root) < Math.ceil(nodes.length / 2) ? 'left' : 'right';
 }
 
-export function stateForNode(nodes: MapNode[], id: string): MapState {
+export function stateForNode(nodes: MapNode[], id: string, readBranches = false): MapState {
   const path = findPath(nodes, id);
   if (!path) return { expanded: [], selected: null };
   const target = path.at(-1)!;
   return {
     expanded: path.filter((node) => node.children?.length).map((node) => node.id),
-    selected: target.children?.length ? null : target.id,
+    selected: !readBranches && target.children?.length ? null : target.id,
   };
 }
 
@@ -30,8 +30,8 @@ export function toggleBranch(nodes: MapNode[], state: MapState, id: string): Map
   return index < 0 ? stateForNode(nodes, id) : { expanded: state.expanded.slice(0, index), selected: null };
 }
 
-export function stateFromHash(nodes: MapNode[], hash: string): MapState {
-  return stateForNode(nodes, hash.startsWith('#node-') ? hash.slice(6) : '');
+export function stateFromHash(nodes: MapNode[], hash: string, readBranches = false): MapState {
+  return stateForNode(nodes, hash.startsWith('#node-') ? hash.slice(6) : '', readBranches);
 }
 
 export function stateHash(state: MapState) {

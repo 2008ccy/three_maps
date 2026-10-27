@@ -6,17 +6,21 @@ import { useCallback, useEffect, useLayoutEffect, useRef, useState, type MouseEv
 import { findPath, nodeSide, stateForNode, stateFromHash, stateHash, toggleBranch } from '@/lib/maps/state';
 import type { DocumentRef, MapDefinition, MapKey, MapLinks, MapNode, MapState } from '@/lib/maps/types';
 import styles from './maps.module.css';
+import { cognitionNodeSide } from '@/lib/maps/cognition-diagram';
+import { CognitionGraph } from './cognition-graph';
 
 const keyOf = (ref: DocumentRef) => `${ref.id}${ref.anchor ? `#${ref.anchor}` : ''}`;
+const visibleNodeElement = (nodes: MapNode[], id: string | null) => id ? findPath(nodes, id)?.toReversed().map((node) => document.getElementById(`node-${node.id}`)).find((element) => element !== null) ?? null : null;
 const overview: MapState = { expanded: [], selected: null };
 const mapTabs = [{ id: 'domain', title: '领域' }, { id: 'ecosystem', title: '生态' }, { id: 'cognition', title: '认知' }];
 
 function NodeReading({ node, links, mapId, onNavigate }: { node: MapNode; links: MapLinks; mapId?: MapKey; onNavigate?: (id: string) => void }) {
   return <>
     <p className={styles.readingSummary}>{node.summary}</p>
-    <p className={styles.readingText}>{node.detail}</p>
+    {node.detail !== node.summary && <p className={styles.readingText}>{node.detail}</p>}
     {node.boundary && <div className={styles.boundary}><span>理解与使用边界</span><p>{node.boundary}</p></div>}
     <div className={styles.sources} aria-label="内容来源"><span>依据</span>{node.sources.map((id) => <Link key={id} href={`/docs/sources/#${id.toLowerCase()}`}>{id}<ArrowUpRight size={11} aria-hidden /></Link>)}</div>
+    {!!node.children?.length && onNavigate && <section className={styles.documents} aria-label="包含的要点"><h3>包含的要点</h3>{node.children.map((child) => <button type="button" className={styles.childNode} key={child.id} onClick={() => onNavigate(child.id)}>{child.title}<ArrowUpRight size={14} aria-hidden /></button>)}</section>}
     {!!node.relations?.length && <section className={styles.relations} aria-label="跨图关联">
       <h3>沿着关系继续看</h3>
       {node.relations.map((relation) => {
@@ -94,15 +98,16 @@ export function MapExplorer({ map, links }: { map: MapDefinition; links: MapLink
   const panel = useRef<HTMLElement>(null);
   const panelTitle = useRef<HTMLHeadingElement>(null);
   const returnFocus = useRef<HTMLElement | null>(null);
-  const lines = useConnectors(stage, ready);
+  const directed = map.layout === 'directed';
+  const lines = useConnectors(stage, ready && !directed);
   const path = state.selected ? findPath(map.branches, state.selected) : undefined;
   const selected = path?.at(-1);
-  const readingSide = selected ? nodeSide(map.branches, selected.id) : undefined;
+  const readingSide = selected ? (directed ? cognitionNodeSide(map, selected.id) : undefined) ?? nodeSide(map.branches, selected.id) : undefined;
   const split = Math.ceil(map.branches.length / 2);
 
   useEffect(() => {
     setReady(true);
-    const read = () => setState(stateFromHash(map.branches, window.location.hash));
+    const read = () => setState(stateFromHash(map.branches, window.location.hash, directed));
     const media = window.matchMedia('(max-width: 1100px)');
     const resize = () => setMobilePanel(media.matches);
     read(); resize();
@@ -110,7 +115,7 @@ export function MapExplorer({ map, links }: { map: MapDefinition; links: MapLink
     window.addEventListener('popstate', read);
     media.addEventListener('change', resize);
     return () => { window.removeEventListener('hashchange', read); window.removeEventListener('popstate', read); media.removeEventListener('change', resize); };
-  }, [map]);
+  }, [map, directed]);
 
   const update = useCallback((next: MapState) => {
     setState(next);
@@ -119,22 +124,22 @@ export function MapExplorer({ map, links }: { map: MapDefinition; links: MapLink
   }, []);
 
   const close = useCallback(() => {
-    update({ expanded: state.expanded, selected: null });
+    update(directed ? overview : { expanded: state.expanded, selected: null });
     requestAnimationFrame(() => {
-      const target = returnFocus.current?.isConnected ? returnFocus.current : document.getElementById(`node-${state.selected}`);
+      const target = visibleNodeElement(map.branches, state.selected) ?? (returnFocus.current?.isConnected ? returnFocus.current : null);
       target?.focus({ preventScroll: true });
     });
-  }, [state, update]);
+  }, [state, update, directed, map.branches]);
 
   useEffect(() => {
     if (!selected) return;
     const frame = requestAnimationFrame(() => {
-      document.getElementById(`node-${selected.id}`)?.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+      visibleNodeElement(map.branches, selected.id)?.scrollIntoView({ block: 'nearest', inline: 'nearest' });
       panelTitle.current?.focus({ preventScroll: true });
       if (panel.current) panel.current.scrollTop = 0;
     });
     return () => cancelAnimationFrame(frame);
-  }, [selected]);
+  }, [selected, map.branches]);
 
   useEffect(() => {
     if (!selected) return;
@@ -160,9 +165,9 @@ export function MapExplorer({ map, links }: { map: MapDefinition; links: MapLink
   const visitNode = (id: string) => {
     const node = findPath(map.branches, id)?.at(-1);
     if (!node) return;
-    returnFocus.current = document.getElementById(`node-${node.id}`);
-    update(stateForNode(map.branches, node.id));
-    if (node.children) requestAnimationFrame(() => document.getElementById(`node-${node.id}`)?.focus());
+    returnFocus.current = visibleNodeElement(map.branches, id);
+    update(stateForNode(map.branches, node.id, directed));
+    if (node.children && !directed) requestAnimationFrame(() => document.getElementById(`node-${node.id}`)?.focus());
   };
 
   const openNode = (node: MapNode) => {
@@ -215,8 +220,8 @@ export function MapExplorer({ map, links }: { map: MapDefinition; links: MapLink
         </header>
 
         {ready ? <>
-          <div className={styles.mapIntro}><span><Layers3 size={14} aria-hidden />三图探索 / {map.number}</span><p>点击分支展开 · 点击要点阅读</p></div>
-          <div className={styles.viewport}><div className={styles.stage} ref={stage}>
+          <div className={styles.mapIntro}><span><Layers3 size={14} aria-hidden />三图探索 / {map.number}</span><p>{directed ? '沿箭头读图 · 点击节点阅读' : '点击分支展开 · 点击要点阅读'}</p></div>
+          <div className={styles.viewport}>{directed ? <CognitionGraph map={map} selected={state.selected} onOpen={visitNode} stageClassName={styles.stage} /> : <div className={styles.stage} ref={stage}>
             <svg className={styles.connectors} aria-hidden="true">{lines.map((line) => <g key={line.id} data-active={highlight === line.id || state.expanded[0] === line.id}><path d={line.d} /><circle cx={line.x} cy={line.y} r="2.5" /></g>)}</svg>
             <div className={styles.center} data-map-center>
               <span className={styles.centerLabel}><span />THREE LIVING MAPS</span>
@@ -225,10 +230,10 @@ export function MapExplorer({ map, links }: { map: MapDefinition; links: MapLink
             </div>
             {column(map.branches.slice(0, split), 'left')}
             {column(map.branches.slice(split), 'right')}
-          </div></div>
+          </div>}</div>
         </> : <section className={styles.fallback} aria-label="地图层级内容"><h1>{map.title}</h1><p>{map.description}</p><p>展开主题查看要点，沿正文与来源继续阅读。</p><Outline nodes={map.branches} links={links} /></section>}
 
-        {!!map.connections?.length && <section className={styles.feedback} aria-label="指导与反馈闭环">
+        {!!map.connections?.length && (!ready || !directed) && <section className={styles.feedback} aria-label="指导与反馈闭环">
           <h2>从判断到修正，再回到行动</h2>
           <p>虚线连接方法选择、案例反馈与习惯更新</p>
           <ul>{map.connections.map((connection) => {
@@ -243,7 +248,7 @@ export function MapExplorer({ map, links }: { map: MapDefinition; links: MapLink
         </section>}
 
         <footer className={styles.mapFooter}>
-          <div className={styles.legend}><span />连线表示内容归属<span className={styles.legendDivider}>/</span><Check size={12} aria-hidden />每个要点保留依据</div>
+          <div className={styles.legend}><span />{directed ? '实线表示内容归属 · 虚线表示指导与反馈' : '连线表示内容归属'}<span className={styles.legendDivider}>/</span><Check size={12} aria-hidden />每个要点保留依据</div>
           <details className={styles.auxiliary}><summary><BookOpen size={15} aria-hidden />完整主题与学习入口<ChevronDown size={14} aria-hidden /></summary><nav aria-label="辅助阅读入口">{map.auxiliary.map((ref) => <Link key={keyOf(ref)} href={links[keyOf(ref)].href}>{links[keyOf(ref)].title}<ArrowUpRight size={13} aria-hidden /></Link>)}</nav></details>
           <Link className={styles.allConnections} href="/docs/project/connections/">查看完整跨图关系<ArrowUpRight size={13} aria-hidden /></Link>
         </footer>

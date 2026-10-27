@@ -4,6 +4,7 @@ import { readFileSync } from 'node:fs';
 import { load } from 'cheerio';
 import { maps, flattenNodes, documentKey } from '../src/lib/maps/content.ts';
 import { findPath, nodeSide, stateForNode, stateFromHash, stateHash, toggleBranch } from '../src/lib/maps/state.ts';
+import { buildCognitionDiagram, cognitionNodeSide } from '../src/lib/maps/cognition-diagram.ts';
 import { readPages } from './content-utils.mjs';
 
 const pages = readPages();
@@ -84,9 +85,21 @@ test('cognition hierarchy and feedback directions match the supplied HTML relati
   assert.deepEqual(map.branches[1].children.map((node) => node.children[0].title), ['c1', 'c2', 'c3'].map((id) => definitions.get(id)));
   assert.equal(map.branches[2].children.length, 6);
   assert.equal(map.branches[3].children.length, 4);
-  const ids = { guan: 'perspectives', fangfa: 'analysis-methods', xiguan: 'habits', xiuzheng: 'revision', c1: 'loss-test', c2: 'ranking-task', c3: 'cost-api' };
+  const ids = { root: 'root', g1: 'system-view', g2: 'development-view', g3: 'third-view', f1: 'system-analysis', f2: 'comparison', f3: 'tradeoff-method', guan: 'perspectives', fangfa: 'analysis-methods', xiguan: 'habits', xiuzheng: 'revision', c1: 'loss-test', c2: 'ranking-task', c3: 'cost-api' };
   const feedback = [...original.matchAll(/(\w+) -\.->\|([^|]+)\| (\w+)/g)].map((match) => ({ from: ids[match[1]], to: ids[match[3]], label: match[2] }));
   assert.deepEqual(new Set(map.connections.map((edge) => JSON.stringify(edge))), new Set(feedback.map((edge) => JSON.stringify(edge))));
+  const diagram = buildCognitionDiagram(map);
+  assert.equal(map.layout, 'directed');
+  assert.equal(diagram.nodes.length, 14);
+  assert.equal(new Set(diagram.nodes.map((node) => node.id)).size, 14);
+  for (const [originalId, title] of definitions) {
+    assert.equal(diagram.nodes.find((node) => node.id === ids[originalId])?.title, title);
+  }
+  const hierarchy = [...original.matchAll(/(\w+) --> (\w+)/g)].map((match) => ({ from: ids[match[1]], to: ids[match[2]], kind: 'hierarchy' }));
+  assert.equal(hierarchy.length, 13);
+  assert.deepEqual(new Set(diagram.edges.filter((edge) => edge.kind === 'hierarchy').map((edge) => JSON.stringify(edge))), new Set(hierarchy.map((edge) => JSON.stringify(edge))));
+  assert.deepEqual(new Set(diagram.edges.filter((edge) => edge.kind === 'feedback').map(({kind, ...edge}) => JSON.stringify(edge))), new Set(feedback.map((edge) => JSON.stringify(edge))));
+  // 无 JS 的层级后保留同一组普通关系链接，交互图则绘制实际箭头。
   const $ = html('/docs/cognition');
   for (const connection of map.connections) {
     const row = $(`[data-connection="${connection.from}:${connection.to}"]`);
@@ -128,4 +141,24 @@ test('updated curriculum and its derivative-source boundary reach the site', () 
   assert.ok($('article').text().includes('正式培养方案原件'));
   assert.ok($(`a[href="${basePath}/docs/sources/#l6"]`).length);
   assert.ok(source(`a[href="${basePath}/sources/ai-model-building-zju.pdf"]`).length);
+});
+
+
+test('directed graph selection and hash recovery open both branch explanations and extra detail nodes', () => {
+  const map = maps.find((item) => item.id === 'cognition');
+  for (const node of flattenNodes(map.branches)) {
+    const state = stateForNode(map.branches, node.id, true);
+    assert.equal(state.selected, node.id);
+    assert.deepEqual(stateFromHash(map.branches, stateHash(state), true), state);
+  }
+  assert.deepEqual(stateFromHash(map.branches, '#node-missing', true), { expanded: [], selected: null });
+});
+
+test('directed diagram panels follow the visible column, including cases in the right column', () => {
+  const map = maps.find((item) => item.id === 'cognition');
+  for (const node of buildCognitionDiagram(map).nodes.filter((node) => node.id !== 'root')) {
+    assert.equal(cognitionNodeSide(map, node.id), node.column <= 2 ? 'left' : 'right');
+  }
+  assert.equal(cognitionNodeSide(map, 'loss-test'), 'right');
+  assert.equal(cognitionNodeSide(map, 'unknown'), undefined);
 });
