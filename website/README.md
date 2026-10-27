@@ -55,25 +55,20 @@ PowerShell 可先执行 `$env:NEXT_PUBLIC_BASE_PATH="/three_maps"`，再执行 `
 
 ## 3. 修改或新增一篇内容
 
-### 首页外观与探索路线
+### 整屏像素首页
 
-首页主框、三图分支和滚动探索的样式独立放在 `src/app/(home)/home.module.css`，不会修改文档页外观。文件顶部是统一调节区：
+首页首次访问只有中央介绍框和整屏 Canvas 像素纹理；点击或使用 Enter / 空格，约 900ms 内展开三张地图、顶部导航和页脚。领域、生态、认知分别以淡紫、青绿、冰蓝强调。原探索路线及下滑提示继续暂停展示，原内容仍在代码中。
 
-| 参数 | 调整内容 |
-| --- | --- |
-| `--home-frame-width`、`--home-frame-radius` | 主框宽度、圆角 |
-| `--home-frame-border-width`、`--home-frame-border` | 边框粗细、颜色 |
-| `--home-frame-background`、`--home-frame-glow` | 背景、光晕（设为 `none` 可关闭光晕） |
-| `--home-frame-padding` 及 `-compact`、`-mobile` | 常规、较矮电脑窗口、手机的内边距 |
-| `--home-branch-gap`、`--home-branch-gap-compact` | 主框到左右地图的距离，保持大于 `22px` |
-| `--home-branch-width`、`--home-branch-color` | 连线粗细、颜色 |
-| `--home-card-width`、`--home-card-radius` | 地图卡片宽度、圆角 |
-| `--home-enter-duration`、`--home-reveal-duration` | 首次进入、下滑渐显的动画时长 |
-| `--home-cue-pulse-duration`、`--home-cue-glow` | 下滑提示的闪光周期、光晕颜色及强度 |
+- `src/components/home-scene-state.tsx` 统一维护 `intro → revealing → expanded`；同一标签页通过 `sessionStorage` 的 `three-maps:home-expanded:v1` 记录展开状态，返回及刷新不重播。存储被禁用时，展开仍然可用。
+- `src/app/(home)/home-experience.tsx` 处理核心位移、导航显示、焦点和无脚本入口；初始搜索快捷键关闭，地图和正文页不受影响。
+- `src/app/(home)/home-particles.tsx` 的 `DigitalParticleField` 从规则点阵生成2—3px方形像素（桌面间距11px、窄屏10px），分三层向右上缓慢漂移，水平速度约2.2/4.2/7px每秒，窄屏为70%；叠加轻微弯曲流向与连续明暗纹理。像素在屏幕外24px缓冲区循环衔接，文字背后的亮度按移动后的位置平滑降至十分之一，峰值透明度0.56；点击展开后保留90%亮度。使用48级透明度分组绘制，桌面约30fps、窄屏约20fps；动画时间按实际帧间隔累计，后台或场景离开视口时暂停并保留进度，减少动态效果时只绘制静态纹理。Canvas失败仍可操作入口。
+- 鼠标周围110px内叠加轻微避让，各层最大偏移4/7/10px，约0.3秒柔和响应，移开后约1—2秒恢复至持续漂移的原轨迹。仅精细鼠标指针启用；触屏、减少动态效果、窗口失焦或离开视口时清除指针影响。使用被动监听，不拦截卡片点击、滚动与键盘；卸载时清理监听器。
+- `src/app/(home)/home.module.css` 末尾“全息星图”区集中维护新版外观与动效。`--scene-purple/teal/blue` 控制三色，`--home-frame-width` 控制核心宽度；`orbitFloat` 控制6秒/3px的浮动；`mapReveal` 在230/350/470ms开始、分别持续420ms，与`HOME_REVEAL_MS`的900ms保持同步，仅淡入，不切割、模糊或移动卡片。
+- 地图文案、入口与暂存探索路线仍在 `home-content.ts`，主标题在 `page.tsx`。`showExploration = false` 继续保持关闭。
 
-地图文案、入口和三条探索路线集中在 `src/app/(home)/home-content.ts`，主标题在同目录 `page.tsx`。更换标题或增大框的间距后，检查 1280×720 电脑和 375×667 手机首屏；极矮窗口或放大文字时内容会自然延展。系统开启“减少动态效果”后直接显示全部内容，下滑提示保持静态发光；关闭 JavaScript 后仍可使用普通链接。
+系统开启“减少动态效果”后仍需点击激活，但直接显示入口，像素背景保持静态，卡片无淡入或浮动。无 JavaScript 时介绍框下显示三张地图的直接链接。动画使用原生 API 与现有图标，未新增依赖或远程素材。像素场为本项目独立实现；已取消发射、汇聚、径向爆发、光环与扫光。
 
-全站固定使用夜间配色，导航和文档页均不显示主题切换，主题快捷键也已关闭。历史浅色偏好或系统外观不会覆盖夜间配色，静态 HTML 从首帧开始就是深色。
+验证 1366×768、1440×900、1920×1080 和 390px 窄屏，检查激活、返回、刷新、导航、焦点和降级。新增 `scripts/test-home.mjs` 检查会话存储边界、路由隔离及静态无脚本入口。全站继续固定夜间主题。
 
 ### 文档正文
 

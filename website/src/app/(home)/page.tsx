@@ -1,26 +1,34 @@
+'use client';
+
 import Link from 'next/link';
 import { ArrowDownRight, ArrowRight, ArrowUpRight } from 'lucide-react';
-import { HomeExperience, ScrollCue } from './home-experience';
+import { HomeCore, HomeExperience, ScrollCue } from './home-experience';
+import { useHomeScene } from '@/components/home-scene-state';
 import { maps, explorationPaths } from './home-content';
 import styles from './home.module.css';
 
+// 探索路线暂缓展示；确定新版方案后可在这里恢复整段内容及下滑提示。
+const showExploration = false;
+
 export default function HomePage() {
+  const { phase } = useHomeScene();
   return (
     <HomeExperience>
-      <section className={styles.hero} aria-labelledby="home-title">
+      <section className={styles.hero} aria-labelledby="home-title" data-home-hero>
         <div className={styles.constellation}>
-          <div className={styles.frame}>
+          <HomeCore>
             <p className={styles.eyebrow}><span aria-hidden="true" />三张活地图 / 模型构建</p>
             <h1 id="home-title">从预训练模型，<br />走向<span>有依据的回答。</span></h1>
             <p className={styles.description}>一个课程答疑助手怎样构建？<span className={styles.desktopDescription}>需要哪些知识，依靠谁的成果，又该怎样判断有效？</span><br className={styles.mobileBreak} />沿着三张相互关联的地图，找到答案与下一步。</p>
-          </div>
+          </HomeCore>
 
           <div className={`${styles.branch} ${styles.branchDomain}`} aria-hidden="true" />
           <div className={`${styles.branch} ${styles.branchEcosystem}`} aria-hidden="true" />
           <div className={`${styles.branch} ${styles.branchCognition}`} aria-hidden="true" />
 
           {maps.map((map) => (
-            <Link href={map.href} key={map.id} data-map={map.id} className={`${styles.mapCard} ${styles[map.id]}`}>
+            <div key={map.id} className={`${styles.orbit} ${styles[map.id]}`} inert={phase !== 'expanded'} aria-hidden={phase !== 'expanded'}>
+            <Link href={map.href} data-map={map.id} data-home-map={map.id} className={styles.mapCard}>
               <map.icon className={styles.mapIcon} size={25} aria-hidden="true" />
               <div className={styles.mapCopy}>
                 <span className={styles.mapNumber}>{map.num} / EXPLORE</span>
@@ -29,12 +37,13 @@ export default function HomePage() {
               </div>
               <ArrowUpRight className={styles.mapArrow} size={18} aria-hidden="true" />
             </Link>
+            </div>
           ))}
         </div>
-        <ScrollCue />
+        {showExploration && <ScrollCue />}
       </section>
 
-      <section id="explore" className={styles.exploration} aria-labelledby="explore-title" tabIndex={-1}>
+      {showExploration && <section id="explore" className={styles.exploration} aria-labelledby="explore-title" tabIndex={-1}>
         <div className={styles.sectionHeading} data-reveal>
           <div>
             <p className={styles.eyebrow}><span aria-hidden="true" />从一个问题出发</p>
@@ -70,9 +79,9 @@ export default function HomePage() {
         <div className={styles.mapNotes} data-reveal>
           {maps.map((map) => <p key={map.id}><strong>{map.name}</strong>{map.description}</p>)}
         </div>
-      </section>
+      </section>}
 
-      <footer className={styles.footer} data-reveal>
+      <footer className={styles.footer} hidden={phase === 'intro'} inert={phase !== 'expanded'} aria-hidden={phase !== 'expanded'}>
         <div><p className={styles.eyebrow}>一张会生长的地图</p><h2>持续更新，保留依据。</h2><p className={styles.footerNote}>记录认识的变化，也说明还不知道什么。</p></div>
         <nav aria-label="来源与项目记录">
           <Link href="/docs/sources">来源目录 <ArrowUpRight size={15} aria-hidden="true" /></Link>

@@ -217,3 +217,133 @@
   .home [data-reveal-state='pending']:not(:focus-within) { opacity: 1; transform: none; }
   .mapCard:is(:hover, :focus-visible) .mapArrow { transform: none; }
 }
+
+/* 全息星图：intro → revealing → expanded。光效参数与场景配色集中在这里。 */
+.shell {
+  --scene-purple: #b5a9ff;
+  --scene-teal: #8bd8c3;
+  --scene-blue: #94cafa;
+  position: relative;
+  isolation: isolate;
+  min-height: 100svh;
+  background: #09090e;
+}
+.shell::before {
+  content: '';
+  pointer-events: none;
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background: radial-gradient(ellipse at 50% 38%, #6655a519 0, #354c6c0a 35%, transparent 68%);
+}
+.shell :global(#nd-home-layout) { position: relative; z-index: 1; min-height: 100svh; }
+.shell :global(#nd-nav) { position: fixed; inset: 0 0 auto; width: 100%; }
+.shell[data-home-phase='revealing'] :global(#nd-nav) { animation: chromeIn 250ms ease 650ms both; pointer-events: none; }
+.particles { position: fixed; inset: 0; width: 100%; height: 100svh; z-index: 0; pointer-events: none; }
+.home { position: relative; --home-frame-width: 660px; --home-card-width: 310px; --home-branch-gap: 48px; --home-branch-color: #a697e64d; }
+.hero { position: relative; min-height: 100svh; display: flex; justify-content: center; padding-block: 90px 70px; }
+.constellation { position: relative; width: 100%; flex-shrink: 0; }
+.frame {
+  position: relative;
+  z-index: 3;
+  padding: 30px 34px;
+  background: rgb(18 17 27 / .91);
+  border: 1px solid #b5a9ff60;
+  box-shadow: 0 0 0 5px #b5a9ff03, 0 0 72px -32px #a893ff56, inset 0 1px 0 #e0d8ff0c;
+  backdrop-filter: blur(16px);
+  animation: none;
+}
+.frame h1 { font-size: clamp(34px, 3.65vw, 48px); }
+.frame h1 span { color: #b9afff; text-shadow: 0 0 30px #b1a1ff20; }
+.frame .eyebrow { color: #b3abc8; }
+.frame .eyebrow > span { background: #beb1ff; box-shadow: 0 0 12px #b5a9ffb0; }
+.description { color: #b6b2c5; }
+.activate { position: absolute; inset: 0; z-index: 4; border-radius: inherit; border: 0; background: transparent; cursor: pointer; }
+.activate:disabled { cursor: default; }
+.activate:focus-visible { outline: 2px solid #c3b5ff; outline-offset: -6px; }
+.frame:has(.activate:hover), .frame:has(.activate:focus-visible) { border-color: #c5b8ff; box-shadow: 0 0 80px -24px #a893ff6b, inset 0 1px 0 #e0d8ff18; }
+.activationHint { display: inline-flex; align-items: center; justify-content: center; gap: 9px; color: #c1b6ef; font-size: 12px; margin-top: 25px; letter-spacing: .06em; }
+.activationHint > span { width: 4px; height: 4px; border-radius: 50%; background: #b5a9ff; box-shadow: 0 0 10px #b5a9ff; animation: coreSignal 3s ease-in-out infinite; }
+.home[data-phase='intro'] .hero { height: 100svh; min-height: 0; padding: 0; overflow: clip; }
+.home[data-phase='intro'] .constellation { position: static; }
+.home[data-phase='intro'] .frame { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: min(660px, 100%); }
+.home[data-phase='intro'] .orbit, .home[data-phase='intro'] .branch { visibility: hidden; opacity: 0; pointer-events: none; }
+.orbit { width: 100%; display: flex; justify-content: center; align-items: flex-start; --orbit-color: var(--scene-purple); --reveal-delay: 230ms; }
+.domain { --orbit-color: var(--scene-purple); }
+.ecosystem { --orbit-color: var(--scene-teal); --reveal-delay: 350ms; }
+.cognition { --orbit-color: var(--scene-blue); --reveal-delay: 470ms; }
+.mapCard {
+  min-height: 114px;
+  background: rgb(18 18 27 / .88);
+  border-color: color-mix(in srgb, var(--orbit-color) 28%, #252530);
+  box-shadow: inset 0 1px 0 color-mix(in srgb, var(--orbit-color) 5%, transparent);
+  backdrop-filter: blur(12px);
+  animation: none;
+}
+.mapIcon { color: var(--orbit-color); filter: drop-shadow(0 0 10px color-mix(in srgb, var(--orbit-color) 20%, transparent)); }
+.mapNumber { color: color-mix(in srgb, var(--orbit-color) 60%, #82798e); }
+.mapArrow { color: color-mix(in srgb, var(--orbit-color) 65%, #82798e); }
+.mapCard:is(:hover, :focus-visible) { border-color: var(--orbit-color); box-shadow: 0 0 35px -18px var(--orbit-color); }
+.mapCard:is(:hover, :focus-visible) .mapArrow { color: var(--orbit-color); }
+.home .mapCard:focus-visible { outline-color: var(--orbit-color); }
+.home[data-phase='revealing'] .orbit { animation: mapReveal 420ms ease-out var(--reveal-delay) both; pointer-events: none; }
+.home[data-phase='expanded'] .mapCard { animation: orbitFloat 6s ease-in-out infinite; }
+.home[data-phase='expanded'] .ecosystem .mapCard { animation-delay: -2s; }
+.home[data-phase='expanded'] .cognition .mapCard { animation-delay: -4s; }
+.home[data-phase='expanded'] .mapCard:is(:hover, :focus-visible) { animation-play-state: paused; }
+.branch { z-index: 0; position: relative; animation: none; border-color: #a697e64d; transition: border-color 220ms ease, filter 220ms ease; }
+.branchDomain { border-color: #b5a9ff4d; }
+.branchEcosystem { border-color: #8bd8c34d; }
+.branchCognition { border-color: #94cafa4d; }
+.home[data-phase='revealing'] .branch { animation: connect 500ms ease 100ms both; }
+.branch::after { content: ''; position: absolute; width: 3px; height: 3px; border-radius: 50%; background: #bdb0ff; box-shadow: 0 0 9px 2px #bdb0ff60; top: -2px; left: 0; opacity: .7; animation: branchSignal 7s linear infinite; }
+.branchEcosystem::after { background: #8bd8c3; box-shadow: 0 0 9px 2px #8bd8c360; animation-direction: reverse; animation-delay: -3s; }
+.branchCognition::after { background: #94cafa; box-shadow: 0 0 9px 2px #94cafa60; top: 0; left: -2px; animation: verticalSignal 6s linear infinite; }
+.constellation:has(.domain .mapCard:is(:hover, :focus-visible)) .branchDomain { border-color: var(--scene-purple); filter: drop-shadow(0 0 5px #b5a9ff60); }
+.constellation:has(.ecosystem .mapCard:is(:hover, :focus-visible)) .branchEcosystem { border-color: var(--scene-teal); filter: drop-shadow(0 0 5px #8bd8c360); }
+.constellation:has(.cognition .mapCard:is(:hover, :focus-visible)) .branchCognition { border-color: var(--scene-blue); filter: drop-shadow(0 0 5px #94cafa60); }
+.footer { position: relative; border-color: #b5a9ff1c; }
+.footer[hidden] { display: none; }
+.home[data-phase='revealing'] .footer { animation: chromeIn 250ms ease 650ms both; }
+.noScript { display: flex; gap: 18px; flex-wrap: wrap; justify-content: center; padding-top: 22px; font-size: 13px; color: #c1b6ef; }
+.noScript a { display: inline-flex; align-items: center; gap: 6px; padding: 8px; }
+.srOnly { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0; }
+@keyframes coreSignal { 0%, 100% { opacity: .4; } 50% { opacity: 1; } }
+@keyframes mapReveal { from { opacity: 0; } to { opacity: 1; } }
+@keyframes orbitFloat { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-3px); } }
+@keyframes chromeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes branchSignal { 0% { left: 0; opacity: 0; } 15%, 75% { opacity: .75; } 100% { left: 100%; opacity: 0; } }
+@keyframes verticalSignal { 0% { top: 0; opacity: 0; } 15%, 75% { opacity: .75; } 100% { top: 100%; opacity: 0; } }
+@media (min-width: 769px) and (max-height: 800px) {
+  .hero { padding-block: 84px 46px; }
+  .frame { padding: 24px 30px; }
+  .frame h1 { font-size: clamp(34px, 3.4vw, 44px); margin-block: 12px; }
+  .home { --home-branch-gap: 42px; }
+  .mapCard { min-height: 104px; padding-block: 16px; }
+}
+@media (max-width: 768px) {
+  .home { width: calc(100% - 32px); }
+  .hero { padding-block: 88px 40px; }
+  .constellation { grid-template-columns: 32px minmax(0,1fr); grid-template-rows: auto repeat(3,auto); row-gap: 14px; }
+  .frame { grid-area: 1 / 1 / 2 / 3; padding: 27px 22px; width: 100%; }
+  .frame h1 { font-size: clamp(29px, 5.6vw, 38px); line-height: 1.3; margin-block: 17px; }
+  .description { font-size: 12px; line-height: 1.95; }
+  .branch { display: none; }
+  .desktopDescription { display: inline; }
+  .mobileBreak { display: initial; }
+  .activationHint { margin-top: 24px; font-size: 11px; }
+  .domain { grid-area: 2 / 2 / 3 / 3; margin-top: 0; }
+  .ecosystem { grid-area: 3 / 2 / 4 / 3; margin-top: 0; }
+  .cognition { grid-area: 4 / 2 / 5 / 3; }
+  .mapCard { width: 100%; min-height: 92px; padding: 18px; }
+  .mapCard::before { left: -17px; width: 16px; border-color: var(--orbit-color); }
+  .mapCard::after { left: -17px; border-color: #a697e64d; }
+  .mapIcon { width: 22px; }
+  .mapCopy h2 { font-size: 18px; }
+  .home[data-phase='expanded'] .mapCard { animation: none; }
+  .footer { gap: 20px; padding-block: 28px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .particles { display: block; }
+  .shell *, .shell *::before, .shell *::after { animation: none !important; transition: none !important; }
+}
