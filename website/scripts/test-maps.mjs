@@ -36,7 +36,7 @@ for (const map of maps) {
         assert.ok(relation.label, node.id);
         const target = maps.find((item) => item.id === relation.map);
         assert.ok(target && findPath(target.branches, relation.node), `${relation.map}/${relation.node}`);
-        assert.equal(stateForNode(target.branches, relation.node).selected, relation.node);
+        assert.equal(stateHash(stateForNode(target.branches, relation.node)), `#node-${relation.node}`);
       }
     }
   });
@@ -72,6 +72,28 @@ for (const map of maps) {
     assert.deepEqual(stateFromHash(map.branches, '#%E0%A4%A'), { expanded: [], selected: null });
   });
 }
+
+test('cognition hierarchy and feedback directions match the supplied HTML relationship graph', () => {
+  const original = readFileSync('../map__text/认知地图关系图.html', 'utf8');
+  const definitions = new Map([...original.matchAll(/(\w+)\["([^"\]]+)"\]/g)].map((match) => [match[1], match[2].split('<br/>')[0]]));
+  const map = maps.find((item) => item.id === 'cognition');
+  const roots = [...original.matchAll(/root --> (\w+)/g)].map((match) => definitions.get(match[1]));
+  assert.deepEqual(map.branches.map((node) => node.title), roots);
+  assert.deepEqual(map.branches[0].children.map((node) => node.title), ['g1', 'g2', 'g3'].map((id) => definitions.get(id)));
+  assert.deepEqual(map.branches[1].children.map((node) => node.title), ['f1', 'f2', 'f3'].map((id) => definitions.get(id)));
+  assert.deepEqual(map.branches[1].children.map((node) => node.children[0].title), ['c1', 'c2', 'c3'].map((id) => definitions.get(id)));
+  assert.equal(map.branches[2].children.length, 6);
+  assert.equal(map.branches[3].children.length, 4);
+  const ids = { guan: 'perspectives', fangfa: 'analysis-methods', xiguan: 'habits', xiuzheng: 'revision', c1: 'loss-test', c2: 'ranking-task', c3: 'cost-api' };
+  const feedback = [...original.matchAll(/(\w+) -\.->\|([^|]+)\| (\w+)/g)].map((match) => ({ from: ids[match[1]], to: ids[match[3]], label: match[2] }));
+  assert.deepEqual(new Set(map.connections.map((edge) => JSON.stringify(edge))), new Set(feedback.map((edge) => JSON.stringify(edge))));
+  const $ = html('/docs/cognition');
+  for (const connection of map.connections) {
+    const row = $(`[data-connection="${connection.from}:${connection.to}"]`);
+    assert.ok(row.text().includes(connection.label));
+    for (const id of [connection.from, connection.to]) assert.ok(findPath(map.branches, id) && row.find(`a[href="${basePath}/docs/cognition/#node-${id}"]`).length);
+  }
+});
 
 test('nested branches switch, collapse and reset without keeping stale leaf selection', () => {
   const nodes = maps[1].branches;

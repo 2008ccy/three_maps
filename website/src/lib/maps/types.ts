@@ -21,6 +21,7 @@ export type MapDefinition = {
   description: string;
   branches: MapNode[];
   auxiliary: DocumentRef[];
+  connections?: { from: string; to: string; label: string }[];
 };
 export type ResolvedLink = { title: string; href: string };
 export type MapLinks = Record<string, ResolvedLink>;

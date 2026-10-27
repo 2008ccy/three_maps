@@ -110,45 +110,46 @@ export const maps: MapDefinition[] = [
   },
   {
     id: 'cognition', title: '认知地图', indexId: 'C-INDEX', number: '03',
-    question: '我们凭什么相信，又怎样修正？',
-    description: '把认识方法落到具体比较、检查动作和改变判断的证据上。',
+    question: '探索和判断的方法 · 怎样理解、比较、检验',
+    description: '认知地图＝探索和判断的方法。从三个观选择视角，用分析方法检验案例，再将认识修正反哺成长习惯。',
     auxiliary: [doc('C-PERSPECTIVES'), doc('C-LOSS'), doc('C-RANKING'), doc('C-COST'), doc('C-HABITS'), doc('C-REVISION')],
+    connections: [
+      { from: 'perspectives', to: 'analysis-methods', label: '指导选方法' },
+      { from: 'loss-test', to: 'revision', label: '跑过后修正' },
+      { from: 'ranking-task', to: 'revision', label: '跑过后修正' },
+      { from: 'cost-api', to: 'revision', label: '跑过后修正' },
+      { from: 'revision', to: 'habits', label: '反哺习惯' },
+    ],
     branches: [
-      branch('perspectives', '认识方法', '先看关系，再找证据', 'C-PERSPECTIVES', ['L1', 'L5'], [
-        leaf('system-view', '系统拆解 · 系统观', '错误发生在哪一环', '回答出错时，把资料、检索、模型和界面分开检查。保留每个环节的输入输出，先定位瓶颈，再改变方案。', [doc('C-PERSPECTIVES')], ['L1', 'L5'], '素材引用的课堂原件尚待补充。', [relation('domain', 'rag', '用于排查检索与生成')]),
-        leaf('development-view', '发展背景 · 发展观', '新方法缓解了什么限制', '从全参微调到 LoRA/QLoRA、从闭卷回答到检索增强，比较各自的收益和新增边界。时间更晚不自动意味着对所有任务都更好。', [doc('C-PERSPECTIVES')], ['L1', 'S02', 'S03', 'S04']),
-        leaf('third-view', '第三个观 · 待核实', '课堂正式名称仍待原文确认', '素材使用“求真观”，但原课件尚未提供。当前保留打开原文、检查反例、区分事实与推断这些可执行动作，不认定该名称就是课堂原名。', [doc('C-PERSPECTIVES')], ['L5'], '提交前补充正式名称与原文页码。'),
-        leaf('comparison', '对照比较', '让变化可以归因', '使用同一批问题、明确的评分标准和固定设置比较方案。先控制其他变量，再观察某项改动带来的收益与失败。', [doc('C-PERSPECTIVES'), doc('C-LOSS')], ['L5']),
-        leaf('tradeoff-method', '多目标取舍', '质量、时延、成本一起看', '模型方案受到预算、设备和维护能力约束。把多个目标放在同一张对照表里，说明为什么接受某些损失来换取另一些收益。', [doc('C-PERSPECTIVES'), doc('C-COST')], ['L5']),
+      branch('perspectives', '三个观', '看问题的三个侧面', 'C-PERSPECTIVES', ['L7', 'L1', 'L5'], [
+        leaf('system-view', '系统观', '结构 · 瓶颈在哪一环', '回答出错时，先看资料、检索、模型和界面之间的结构与联系，再逐环保存输入输出，定位瓶颈。系统观提供观察整体的视角，具体检查可以用系统拆解与反例检查落实。', [doc('C-PERSPECTIVES', 'three-views')], ['L7', 'L1', 'L5'], '素材引用的课堂原件尚待补充。', [relation('domain', 'rag', '用于观察检索与生成')]),
+        leaf('development-view', '发展观', '历史 · 新方法带来新限制', '从全参到 LoRA/QLoRA、从闭卷回答到检索增强，比较新方法缓解的限制、带来的收益与新增边界。沿演进过程理解取舍，不能仅按出现时间判断优劣。', [doc('C-PERSPECTIVES', 'three-views')], ['L7', 'L1', 'S02', 'S03', 'S04']),
+        leaf('third-view', '求真观', '真伪 · 凭什么信、怎么检验', '新版关系图将第三个视角命名为求真观，关注结论的证据、检验方法与可能反例。执行时打开原文、保留反例，区分事实与推断；遇到新证据时重新判断。', [doc('C-PERSPECTIVES', 'three-views')], ['L7', 'L5'], '这里沿用新版关系图的名称；课堂正式名称与原文页码仍需对照课件核验。'),
       ]),
-      branch('loss-case', 'loss 案例', '训练更低，回答就更好吗', 'C-LOSS', ['L5'], [
-        leaf('loss-signal', '先看训练信号', 'loss 回答的是训练目标问题', '训练 loss 反映当前训练数据和目标上的优化情况。不能从这一个数字推断新问题的正确性、引用或使用体验。', [doc('C-LOSS')], ['L5', 'L6'], undefined, [relation('domain', 'loss', '对应损失概念')]),
-        leaf('loss-test', '再看独立评测', '用同一批新问题比较', '固定独立测试问题，比较微调前后回答的正确性、引用、拒答与延迟。保存失败例子，才能判断 loss 的变化是否变成任务收益。', [doc('C-LOSS')], ['L5'], '当前是检验方案，尚无本组完成实验的证据。', [relation('domain', 'evaluation-set', '使用独立评测集'), relation('domain', 'finetuning', '检验微调效果')]),
-        leaf('loss-counterexample', '寻找反例与泄漏', '低 loss 也可能来自记住答案', '检查重复材料、训练测试泄漏和过拟合。若换一批问题就失效，应修订“训练更低就更好”的判断，并保留条件与错误记录。', [doc('C-LOSS')], ['L5', 'L6']),
+      branch('analysis-methods', '分析方法', '六选二到三', 'C-PERSPECTIVES', ['L7', 'L5'], [
+        branch('system-analysis', '系统拆解 ＋ 反例检查', '从结构和失败例子检验判断', 'C-LOSS', ['L7', 'L5'], [
+          leaf('loss-test', '案例① 损失下降 ≠ 回答更好', '把训练信号放回真实任务检查', '训练 loss 只反映当前数据与训练目标上的优化情况。先拆解资料、训练、检索和回答环节，再寻找重复、泄漏、过拟合等反例；用同一套独立问题比较正确性、引用、拒答与时延，判断训练信号是否变成实际收益。', [doc('C-LOSS')], ['L7', 'L5', 'L6'], '这是待执行的检验框架，尚无本组完成实验的证据。跑过后记录判断如何改变，再进入认识修正。', [relation('domain', 'loss', '对应损失概念'), relation('domain', 'evaluation-set', '使用独立评测集'), relation('domain', 'finetuning', '检验微调效果'), relation('cognition', 'revision', '跑过后修正')]),
+        ]),
+        branch('comparison', '对照比较 ＋ 问题定义', '先定义答疑任务，再比较候选', 'C-RANKING', ['L7', 'L5'], [
+          leaf('ranking-task', '案例② 榜单排名 ≠ 适合答疑', '用课程问题复核通用排名', '先定义课程读者、问题类型和验收标准，再用固定的提示、检索资料与评分规则比较候选模型。通用榜单可以初筛，但解释是否易懂、引用是否支持结论、无答案时能否拒答，需要用真实课程问题重新检查。', [doc('C-RANKING')], ['L7', 'L5'], '比较框架仍需补本组实际记录；排名高不自动说明适合当前课程。', [relation('ecosystem', 'benchmarks', '参考通用题库'), relation('domain', 'evaluation-set', '使用课程评测集'), relation('cognition', 'revision', '跑过后修正')]),
+        ]),
+        branch('tradeoff-method', '多目标取舍 ＋ 演进分析', '沿方法演进比较收益与新限制', 'C-COST', ['L7', 'L5'], [
+          leaf('cost-api', '案例③ 效果与成本的取舍', '质量、时延、费用与维护一起比较', '比较 API 加检索、本地模型、自托管 GPU 和 LoRA/QLoRA 等方案，记录任务质量、时延、用量、设备与维护代价。再沿方法演进分析：新方案解决了什么限制，又增加了什么成本，从而说明当前条件下的选择。', [doc('C-COST')], ['L7', 'L5', 'S21'], '当前没有实测账单，不给出确定费用；适配参数更少也不能直接证明端到端总成本最低。', [relation('ecosystem', 'api-platforms', '由 API 平台提供服务'), relation('ecosystem', 'inference-cost', '对应推理成本'), relation('domain', 'deployment', '对应部署选择'), relation('cognition', 'revision', '跑过后修正')]),
+        ]),
       ]),
-      branch('ranking-case', '榜单案例', '排名高，适合课程吗', 'C-RANKING', ['L5'], [
-        leaf('ranking-screen', '通用榜单初筛', '先缩小候选范围', '通用榜单提供部分能力线索，阅读时要确认模型版本、任务和评测条件。它可以帮助筛选候选，不能完成本课程的最终验收。', [doc('C-RANKING')], ['L5'], undefined, [relation('ecosystem', 'benchmarks', '参考通用题库')]),
-        leaf('ranking-task', '课程任务复核', '检查解释、引用和拒答', '把真实课程问题、无答案问题和模糊问题放在同一套评测中。比较回答是否帮助读者理解，以及每个关键结论是否有依据。', [doc('C-RANKING')], ['L5'], undefined, [relation('domain', 'evaluation-set', '使用课程评测集')]),
-        leaf('ranking-controls', '固定比较条件', '区分模型与系统的变化', '对照时固定提示、检索资料、问题和评分规则；必要时分别比较只检索、直接回答和检索后回答，避免把多个变化都归因于模型。', [doc('C-RANKING')], ['L5'], '当前框架需要补充本组实际对照记录。'),
+      branch('habits', '成长习惯', '六类', 'C-HABITS', ['L7', 'L5'], [
+        leaf('define-problem', '先定义问题', '选工具前写一张任务卡', '记录读者、困难、输入输出和验收条件。范围变化时保留修改原因，用任务卡检查后续工作是否仍在解决同一个问题。', [doc('C-HABITS')], ['L7', 'L5']),
+        leaf('check-evidence', '找依据和反例', '为判断保留出处与条件', '重要结论打开原文，留下页码、支持条件和可能改变判断的反例。找不到依据时明确标记待核实。', [doc('C-HABITS')], ['L7', 'L5']),
+        leaf('small-trial', '小规模试跑', '先用少量资料跑通一轮', '保存环境、输入输出、成功与失败记录。先确认任务能够端到端运行，再判断需要扩大数据、模型或服务规模。', [doc('C-HABITS')], ['L7', 'L5']),
+        leaf('learn-from-gaps', '从困难反查知识', '知识缺口连接到课程和再尝试', '把讲不清或做不出的点写出来，选择对应教程或课程，学后回到同一个小任务复验，避免只积累学习清单。', [doc('C-HABITS'), doc('D-LEARNING')], ['L7', 'L5', 'L6']),
+        leaf('weekly-review', '每周分工与检查', '谁修改、谁复核、何时发布', '每周留下简短的修改说明、负责人和复核记录。完成与待办要以产物和检查结果区分，不只写“已经学习”。', [doc('C-HABITS'), doc('P-UPDATES')], ['L7', 'L5']),
+        leaf('independent-feedback', '独立反馈再修订', '让非组员先自行使用', '先观察同学能否独立完成查询，再解释和讨论。保留原始问题、核实过程、处理结果与理由，让反馈成为可追踪的修订。', [doc('C-HABITS')], ['L7', 'L5'], '这些是执行规则，尚无记录的项目不能称为已经形成的习惯。认识修正得到的经验还应反过来修改这些规则。', [relation('domain', 'monitoring', '推动系统更新')]),
       ]),
-      branch('cost-case', '成本取舍', '怎样兼顾效果与可用性', 'C-COST', ['L5'], [
-        leaf('cost-api', 'API + 检索', '较快接入，按用量与服务约束评估', '托管 API 可减少自行维护推理服务的工作，同时需要考虑调用费用、网络、服务限制与资料使用边界。用相同问题测质量、时延和用量。', [doc('C-COST')], ['L5', 'S21'], '当前没有实测账单，不给出确定费用。', [relation('ecosystem', 'api-platforms', '由 API 平台提供服务'), relation('ecosystem', 'inference-cost', '对应推理成本')]),
-        leaf('cost-local', '本地模型 / 自托管 GPU', '控制更多，也承担设备与维护', '本地或自托管方案需要评估显存、并发、部署时间和维护能力。设备已有并不意味着运行和排障的成本为零。', [doc('C-COST')], ['L5'], undefined, [relation('domain', 'deployment', '对应部署选择')]),
-        leaf('cost-adaptation', 'LoRA / QLoRA', '先确认适配收益是否值得投入', '适配增加数据、训练与评测工作，可能改善稳定的格式或行为问题。先定义要改善的指标，再比较效果收益与额外维护成本。', [doc('C-COST')], ['L5', 'S03', 'S04'], '不能把减少可训练参数直接解释为端到端总成本一定最低。', [relation('domain', 'finetuning', '对应微调方法')]),
-      ]),
-      branch('habits', '成长习惯', '让每次行动留下证据', 'C-HABITS', ['L5'], [
-        leaf('define-problem', '先定义问题', '选工具前写一张任务卡', '记录读者、困难、输入输出和验收条件。范围变化时保留修改原因，用任务卡检查后续工作是否仍在解决同一个问题。', [doc('C-HABITS')], ['L5']),
-        leaf('check-evidence', '找依据和反例', '为判断保留出处与条件', '重要结论打开原文，留下页码、支持条件和可能改变判断的反例。找不到依据时明确标记待核实。', [doc('C-HABITS')], ['L5']),
-        leaf('small-trial', '小规模试跑', '先用少量资料跑通一轮', '保存环境、输入输出、成功与失败记录。先确认任务能够端到端运行，再判断需要扩大数据、模型或服务规模。', [doc('C-HABITS')], ['L5']),
-        leaf('learn-from-gaps', '从困难反查知识', '知识缺口连接到课程和再尝试', '把讲不清或做不出的点写出来，选择对应教程或课程，学后回到同一个小任务复验，避免只积累学习清单。', [doc('C-HABITS'), doc('D-LEARNING')], ['L5', 'L6']),
-        leaf('weekly-review', '每周分工与检查', '谁修改、谁复核、何时发布', '每周留下简短的修改说明、负责人和复核记录。完成与待办要以产物和检查结果区分，不只写“已经学习”。', [doc('C-HABITS'), doc('P-UPDATES')], ['L5']),
-        leaf('independent-feedback', '独立反馈再修订', '让非组员先自行使用', '先观察同学能否独立完成查询，再解释和讨论。保留原始问题、核实过程、处理结果与理由，让反馈成为可追踪的修订。', [doc('C-HABITS')], ['L5'], '这些是执行规则，尚无记录的项目不能称为已经形成的习惯。', [relation('domain', 'monitoring', '推动系统更新')]),
-      ]),
-      branch('revision', '认识修正', '什么证据改变了理解', 'C-REVISION', ['L5'], [
-        leaf('revision-before', '原来的理解', '曾沿心理学 cognitive map 搜集资料', '素材自述曾把课程中的认知地图理解为空间认知与心理学意义上的 cognitive map，因此搜集了不同方向的材料。', [doc('C-REVISION')], ['L5'], '经历与日期仍需相关成员确认。'),
-        leaf('revision-evidence', '改变判断的依据', '重新对照作业与课件说明', '对照作业认知地图要求及素材所指课件第 11、28 页，发现关注点是思考方法、分析案例和成长习惯，资料边界因此需要改变。', [doc('C-REVISION')], ['L5'], '原课件与查阅记录尚待补充。'),
-        leaf('revision-after', '现在的理解', '围绕本组选题中的判断与检验', '用损失、榜单和成本等问题组织案例，说明如何提出问题、依据什么判断，以及怎样检验和修正。定义、案例和资料筛选随之调整。', [doc('C-REVISION')], ['L5']),
-        leaf('revision-open', '仍不知道什么', '把未确认的地方留在图上', '第三个观的正式名称、课堂原文，以及技术实验能否带来新的认识修正，都需要后续核实或实践。未经确认的自述不能当作已完成的真实经历提交。', [doc('C-REVISION'), doc('P-GAPS')], ['L5']),
+      branch('revision', '认识修正', '四问', 'C-REVISION', ['L7', 'L5'], [
+        leaf('revision-before', '原来怎样理解', '先说清旧判断与当时的依据', '素材自述曾把课程中的认知地图理解为空间认知与心理学意义上的 cognitive map，因此搜集了不同方向的材料。技术案例也应先记录原来的判断，而不是事后重写起点。', [doc('C-REVISION')], ['L7', 'L5'], '经历与日期仍需相关成员确认。'),
+        leaf('revision-evidence', '什么带来变化', '指出改变判断的具体证据', '素材案例通过对照作业说明及所指课件第 11、28 页改变理解。技术案例则应保留实际比较、失败样例和新证据，说明它们怎样影响判断。', [doc('C-REVISION')], ['L7', 'L5'], '原课件与查阅记录尚待补充。'),
+        leaf('revision-after', '现在怎样理解', '说明新判断及资料边界的变化', '用损失、榜单和成本等问题组织案例，说明如何提出问题、依据什么判断，以及怎样检验和修正。定义、案例和资料筛选随之调整，并将经验反哺成长习惯。', [doc('C-REVISION')], ['L7', 'L5'], undefined, [relation('cognition', 'habits', '反哺习惯')]),
+        leaf('revision-open', '仍不知道什么', '把未确认的地方留在图上', '第三个观的课堂正式名称、课堂原文，以及技术实验能否带来新的认识修正，都需要后续核实或实践。未经确认的自述不能当作已完成的真实经历提交。', [doc('C-REVISION'), doc('P-GAPS')], ['L7', 'L5']),
       ]),
     ],
   },

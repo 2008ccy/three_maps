@@ -1,17 +1,17 @@
 'use client';
 
 import Link from 'next/link';
-import { ArrowDownRight, ArrowLeft, ArrowUpRight, BookOpen, Check, ChevronDown, Layers3, Minus, Plus, RotateCcw, X } from 'lucide-react';
-import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { ArrowDownRight, ArrowLeft, ArrowRight, ArrowUpRight, BookOpen, Check, ChevronDown, Layers3, Minus, Plus, RotateCcw, X } from 'lucide-react';
+import { useCallback, useEffect, useLayoutEffect, useRef, useState, type MouseEvent } from 'react';
 import { findPath, nodeSide, stateForNode, stateFromHash, stateHash, toggleBranch } from '@/lib/maps/state';
-import type { DocumentRef, MapDefinition, MapLinks, MapNode, MapState } from '@/lib/maps/types';
+import type { DocumentRef, MapDefinition, MapKey, MapLinks, MapNode, MapState } from '@/lib/maps/types';
 import styles from './maps.module.css';
 
 const keyOf = (ref: DocumentRef) => `${ref.id}${ref.anchor ? `#${ref.anchor}` : ''}`;
 const overview: MapState = { expanded: [], selected: null };
 const mapTabs = [{ id: 'domain', title: '领域' }, { id: 'ecosystem', title: '生态' }, { id: 'cognition', title: '认知' }];
 
-function NodeReading({ node, links }: { node: MapNode; links: MapLinks }) {
+function NodeReading({ node, links, mapId, onNavigate }: { node: MapNode; links: MapLinks; mapId?: MapKey; onNavigate?: (id: string) => void }) {
   return <>
     <p className={styles.readingSummary}>{node.summary}</p>
     <p className={styles.readingText}>{node.detail}</p>
@@ -21,7 +21,10 @@ function NodeReading({ node, links }: { node: MapNode; links: MapLinks }) {
       <h3>沿着关系继续看</h3>
       {node.relations.map((relation) => {
         const link = links[`relation:${relation.map}:${relation.node}`];
-        return <Link href={link.href} key={link.href}><span>{relation.label}</span><strong>{link.title}<ArrowUpRight size={14} aria-hidden /></strong></Link>;
+        return <Link href={link.href} key={link.href} onClick={onNavigate && relation.map === mapId ? (event) => {
+          if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+          event.preventDefault(); onNavigate(relation.node);
+        } : undefined}><span>{relation.label}</span><strong>{link.title}<ArrowUpRight size={14} aria-hidden /></strong></Link>;
       })}
     </section>}
     <section className={styles.documents} aria-label="完整正文">
@@ -154,12 +157,22 @@ export function MapExplorer({ map, links }: { map: MapDefinition; links: MapLink
     return () => { document.removeEventListener('keydown', onKey); if (mobilePanel) document.body.style.overflow = previousOverflow; if (backgroundElement) backgroundElement.inert = false; };
   }, [selected, mobilePanel, close]);
 
+  const visitNode = (id: string) => {
+    const node = findPath(map.branches, id)?.at(-1);
+    if (!node) return;
+    returnFocus.current = document.getElementById(`node-${node.id}`);
+    update(stateForNode(map.branches, node.id));
+    if (node.children) requestAnimationFrame(() => document.getElementById(`node-${node.id}`)?.focus());
+  };
+
   const openNode = (node: MapNode) => {
     if (node.children) update(toggleBranch(map.branches, state, node.id));
-    else {
-      returnFocus.current = document.getElementById(`node-${node.id}`);
-      update(stateForNode(map.branches, node.id));
-    }
+    else visitNode(node.id);
+  };
+
+  const followNode = (event: MouseEvent<HTMLAnchorElement>, id: string) => {
+    if (!ready || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+    event.preventDefault(); visitNode(id);
   };
 
   function children(nodes: MapNode[]) {
@@ -215,6 +228,20 @@ export function MapExplorer({ map, links }: { map: MapDefinition; links: MapLink
           </div></div>
         </> : <section className={styles.fallback} aria-label="地图层级内容"><h1>{map.title}</h1><p>{map.description}</p><p>展开主题查看要点，沿正文与来源继续阅读。</p><Outline nodes={map.branches} links={links} /></section>}
 
+        {!!map.connections?.length && <section className={styles.feedback} aria-label="指导与反馈闭环">
+          <h2>从判断到修正，再回到行动</h2>
+          <p>虚线连接方法选择、案例反馈与习惯更新</p>
+          <ul>{map.connections.map((connection) => {
+            const from = findPath(map.branches, connection.from)!.at(-1)!;
+            const to = findPath(map.branches, connection.to)!.at(-1)!;
+            return <li key={`${connection.from}-${connection.to}`} data-connection={`${connection.from}:${connection.to}`}>
+              <Link href={`/docs/${map.id}/#node-${from.id}`} onClick={(event) => followNode(event, from.id)}>{from.title}</Link>
+              <span className={styles.feedbackArrow}><span>{connection.label}</span><ArrowRight size={15} aria-hidden /></span>
+              <Link href={`/docs/${map.id}/#node-${to.id}`} onClick={(event) => followNode(event, to.id)}>{to.title}</Link>
+            </li>;
+          })}</ul>
+        </section>}
+
         <footer className={styles.mapFooter}>
           <div className={styles.legend}><span />连线表示内容归属<span className={styles.legendDivider}>/</span><Check size={12} aria-hidden />每个要点保留依据</div>
           <details className={styles.auxiliary}><summary><BookOpen size={15} aria-hidden />完整主题与学习入口<ChevronDown size={14} aria-hidden /></summary><nav aria-label="辅助阅读入口">{map.auxiliary.map((ref) => <Link key={keyOf(ref)} href={links[keyOf(ref)].href}>{links[keyOf(ref)].title}<ArrowUpRight size={13} aria-hidden /></Link>)}</nav></details>
@@ -226,7 +253,7 @@ export function MapExplorer({ map, links }: { map: MapDefinition; links: MapLink
         <aside key={readingSide} ref={panel} className={styles.panel} data-side={readingSide} id="map-reading-panel" role="dialog" aria-modal={mobilePanel || undefined} aria-labelledby="reading-title">
           <div className={styles.panelTop}><span>{map.title} / {path?.slice(0, -1).map((node) => node.title).join(' / ')}</span><button type="button" onClick={close} aria-label="关闭阅读面板"><X size={19} aria-hidden /></button></div>
           <h2 id="reading-title" ref={panelTitle} tabIndex={-1}>{selected.title}</h2>
-          <NodeReading node={selected} links={links} />
+          <NodeReading node={selected} links={links} mapId={map.id} onNavigate={visitNode} />
           <p className={styles.panelHint}>按 Esc 关闭，回到刚才的要点</p>
         </aside>
       </>}
