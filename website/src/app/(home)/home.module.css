@@ -19,6 +19,15 @@
   --home-reveal-duration: 500ms;
   --home-cue-pulse-duration: 2.6s; /* 下滑提示呼吸闪光的周期 */
   --home-cue-glow: color-mix(in srgb, var(--color-fd-primary) 65%, transparent); /* 提示光晕颜色和强度 */
+  --home-step-background: #24212f; /* 任务按钮：石墨黑与低饱和雾紫 */
+  --home-step-border: #514660; /* 默认细边框 */
+  --home-step-foreground: #e8e4f0; /* 按钮名称 */
+  --home-step-muted: #aaa3b7; /* 分类文字 */
+  --home-step-accent: #b9acda; /* 箭头与键盘聚焦轮廓 */
+  --home-step-hover-background: #302a40; /* 悬停和聚焦底色 */
+  --home-step-hover-border: #8f80ad; /* 悬停和聚焦边框 */
+  --home-step-glow: 0 0 18px -6px rgb(185 172 218 / .18); /* 轻微雾紫光晕 */
+  --home-step-duration: 200ms; /* 颜色与光晕过渡时长 */
   --home-easing: cubic-bezier(.22, 1, .36, 1);
   --home-nav-height: 56px; /* 客户端自动同步实际导航高度 */
   color: var(--color-fd-foreground);
@@ -113,11 +122,12 @@
 .pathDirection { color: var(--color-fd-primary); margin-left: auto; flex-shrink: 0; opacity: .65; }
 .steps { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 28px; list-style: none; margin-top: 26px; padding: 0; }
 .steps li { min-width: 0; position: relative; }
-.step { display: flex; flex-direction: column; gap: 9px; padding: 15px 16px; border: 1px solid var(--color-fd-border); border-radius: 9px; transition: border-color 200ms ease, background-color 200ms ease; }
-.step:is(:hover, :focus-visible) { border-color: var(--color-fd-primary); background: var(--color-fd-accent); }
-.stepCategory { font-size: 10px; color: var(--color-fd-muted-foreground); letter-spacing: .04em; }
+.step { display: flex; flex-direction: column; gap: 9px; padding: 15px 16px; border: 1px solid var(--home-step-border); border-radius: 9px; background: var(--home-step-background); color: var(--home-step-foreground); transition: border-color var(--home-step-duration) ease, background-color var(--home-step-duration) ease, box-shadow var(--home-step-duration) ease; }
+.step:is(:hover, :focus-visible) { border-color: var(--home-step-hover-border); background: var(--home-step-hover-background); box-shadow: var(--home-step-glow); }
+.home .step:focus-visible { outline: 2px solid var(--home-step-accent); outline-offset: 4px; }
+.stepCategory { font-size: 10px; color: var(--home-step-muted); opacity: 1; letter-spacing: .04em; }
 .stepName { display: flex; align-items: center; justify-content: space-between; gap: 6px; font-size: 13px; font-weight: 550; }
-.stepName svg { color: var(--color-fd-muted-foreground); flex-shrink: 0; }
+.stepName svg { color: var(--home-step-accent); opacity: 1; flex-shrink: 0; }
 .stepArrow { position: absolute; top: calc(50% - 7px); right: -22px; color: var(--color-fd-primary); opacity: .55; }
 .mapNotes { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 36px; margin-top: 34px; }
 .mapNotes p { color: var(--color-fd-muted-foreground); font-size: 12px; line-height: 1.9; }

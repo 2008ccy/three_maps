@@ -12,6 +12,7 @@ import { gitConfig } from '@/lib/shared';
 import { documentReturnTarget } from '@/lib/document-navigation';
 import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
+import { ArticleLink, NodeGrid } from '@/components/content';
 
 export default async function Page(props: PageProps<'/docs/[[...slug]]'>) {
   const params = await props.params;
@@ -30,8 +31,11 @@ export default async function Page(props: PageProps<'/docs/[[...slug]]'>) {
         <span>更新于 {page.data.updated}</span>
         <a target="_blank" rel="noreferrer" href={`https://github.com/${gitConfig.user}/${gitConfig.repo}/edit/${gitConfig.branch}/website/content/docs/${page.path}`}>编辑本页 ↗</a>
       </div>
-      <DocsBody>
-        <MDX components={getMDXComponents()} />
+      <DocsBody className="article-content">
+        <MDX components={getMDXComponents({
+          a: (props) => <ArticleLink {...props} currentUrl={page.url} />,
+          NodeGrid: (props: { ids: string[] }) => <NodeGrid {...props} linked={false} />,
+        })} />
       </DocsBody>
       <nav className="document-return" aria-label="正文返回导航">
         <Link className="document-return-link" href={returnTarget.href}>

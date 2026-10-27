@@ -86,12 +86,29 @@ test('formulas render and sources remain navigable', () => {
   assert.equal($('.katex-error').length, 0);
   assert.ok($(`a[href="${basePath}/docs/sources/#s01"]`).length);
 });
-test('edited RAG title and description reach body and concept cards', () => {
+test('edited RAG title and description reach body and non-linked concept cards', () => {
   const $=html('/docs/domain/entries/k-rag');
   assert.equal($('h1').text(), 'RAG · 检索增强生成');
   assert.ok($.text().includes('先检索，再生成：让回答有可以核对的资料依据。'));
   const concepts = html('/docs/domain/concepts');
-  assert.ok(concepts(`article a[href="${basePath}/docs/domain/entries/k-rag/"]`).text().includes('RAG'));
+  assert.ok(concepts('article .node-card-static').toArray().some((card) => concepts(card).text().includes('RAG · 检索增强生成')));
+  assert.equal(concepts(`.article-content a[href="${basePath}/docs/domain/entries/k-rag/"]`).length, 0);
+});
+
+test('article bodies keep citations and local anchors without links to other articles', () => {
+  for (const { url } of readPages()) {
+    const $ = html(url);
+    for (const anchor of $('.article-content a[href]').toArray()) {
+      const href = $(anchor).attr('href');
+      if (!href.startsWith(`${basePath}/docs`)) continue;
+      const route = href.split(/[?#]/)[0].replace(/\/$/, '');
+      assert.ok(route === `${basePath}${url}` || route === `${basePath}/docs/sources`, `${url}: ${href}`);
+    }
+    assert.equal($('.article-content .node-card a, .article-content a.node-card').length, 0, url);
+  }
+  const $ = html('/docs/domain/entries/k-rag');
+  assert.ok($('.article-content').text().includes('核心概念与公式'));
+  assert.ok($(`.article-content a[href="${basePath}/docs/sources/#s02"]`).length);
 });
 test('sidebar contains only the overview and five section links on deep pages', () => {
   const $ = html('/docs/domain/entries/k-rag');
