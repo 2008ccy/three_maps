@@ -1,14 +1,13 @@
 'use client';
 
 import Link from 'next/link';
-import { ArrowLeft, ArrowRight, ArrowUpRight, BookOpen, Check, ChevronDown, Grid2X2, Layers3, Network, Search, SlidersHorizontal, X } from 'lucide-react';
+import { ArrowLeft, ArrowRight, ArrowUpRight, Check, Grid2X2, Layers3, Network, Search, SlidersHorizontal, X } from 'lucide-react';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { MapDefinition, MapLinks } from '@/lib/maps/types';
 import { buildCatalog, buildEdges, catalogQuery, emptyFilters, filterCatalog, groupCatalog, catalogChildren, readCatalogQuery, understandingOptions, verificationOptions, type CatalogFilters, type CatalogNode } from '@/lib/maps/catalog';
 import { CatalogGraph } from './catalog-graph';
 import styles from './maps.module.css';
 
-const keyOf = (ref: { id: string; anchor?: string }) => `${ref.id}${ref.anchor ? `#${ref.anchor}` : ''}`;
 const journeys = { domain: '任务 → 数据 → 模型 → 训练 → 可用的系统', ecosystem: '研究与成果 → 开源工具与平台 → 应用与资源 → 使用反馈', cognition: '认识视角 → 分析方法 → 案例检验 → 认识修正 → 成长习惯' };
 
 export function MapExplorer({ map, links, statuses = {}, sourceTitles = {} }: { map: MapDefinition; links: MapLinks; statuses?: Record<string, string>; sourceTitles?: Record<string, string> }) {
@@ -120,7 +119,6 @@ export function MapExplorer({ map, links, statuses = {}, sourceTitles = {} }: { 
         </Link>;
       })}</section>}
       <section className={styles.sources} aria-label="内容来源"><h3>来源与依据</h3>{node.sources.map((id) => <Link key={id} href={`/docs/sources/#${id.toLowerCase()}`} onClick={remember}><span>{sourceTitles[id] ?? id}</span><small>{id}<ArrowUpRight size={12} /></small></Link>)}</section>
-      <section className={styles.documents} aria-label="完整正文"><h3><BookOpen size={15} />完整正文</h3>{node.documents.map((ref) => <Link key={keyOf(ref)} href={links[keyOf(ref)].href} onClick={remember}>{links[keyOf(ref)].title}<ArrowUpRight size={15} /></Link>)}</section>
     </>;
   }
 
@@ -150,7 +148,7 @@ export function MapExplorer({ map, links, statuses = {}, sourceTitles = {} }: { 
             <span className={styles.groupCardBottom}><span>{members.length} 个知识点{filtersActive && ` · ${groupMatches.length} 项匹配`}</span><span>展开探索<ArrowUpRight size={17} /></span></span>
           </button>)}</div> : <CatalogGraph nodes={visible} edges={localEdges} selected={selectedId} onSelect={open} />}
         </> : <section aria-label="地图层级内容"><p className={styles.notice}>展开条目阅读解释、关系和来源。</p>{outline(map.branches)}</section>}
-        <footer className={styles.footer}><div><Check size={14} /><span>理解程度与核实状态分别记录，未知的地方继续保留。</span></div><details><summary><BookOpen size={16} />完整主题与学习入口<ChevronDown size={14} /></summary><nav aria-label="辅助阅读入口">{map.auxiliary.map((ref) => <Link key={keyOf(ref)} href={links[keyOf(ref)].href} onClick={remember}>{links[keyOf(ref)].title}<ArrowUpRight size={13} /></Link>)}</nav></details><Link href="/docs/project/connections/" onClick={remember}>查看完整跨图关系<ArrowUpRight size={14} /></Link></footer>
+        <footer className={styles.footer}><div><Check size={14} /><span>理解程度与核实状态分别记录，未知的地方继续保留。</span></div></footer>
       </div>
       {selected && <>{modal && <div className={styles.scrim} onClick={close} aria-hidden="true" />}<aside ref={panel} id="map-reading-panel" className={view === 'cards' ? styles.floating : styles.panel} data-tone={tone(selected)} role="dialog" aria-modal={modal || undefined} aria-labelledby="reading-title">
         <div className={styles.panelTop}><div>{selected.parent && <button type="button" className={styles.backLevel} onClick={() => open(selected.parent!)} aria-label="返回上一层"><ArrowLeft size={16} />返回上一层</button>}<span>{map.title}{selected.path.length > 0 && ` / ${selected.path.join(' / ')}`}</span></div><button type="button" aria-label="关闭阅读面板" onClick={close}><X size={21} /></button></div>

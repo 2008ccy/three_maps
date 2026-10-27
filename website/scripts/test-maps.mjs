@@ -50,15 +50,16 @@ for (const map of maps) {
       const item = $(`details[id="node-${node.id}"]`);
       assert.equal(item.length, 1, node.id);
       assert.ok(item.children('summary').text().includes(node.title));
-      for (const ref of node.documents) {
-        const page = pageById.get(ref.id);
-        const href = `${basePath}${page.url}/${ref.anchor ? `#${ref.anchor}` : ''}`;
-        assert.ok(item.find(`a[href="${href}"]`).length, href);
-      }
+      assert.ok(item.text().includes(node.detail), node.id);
+      for (const ref of node.sources) assert.ok(item.find(`a[href="${basePath}/docs/sources/#${ref.toLowerCase()}"]`).length, ref);
     }
-    // Every pre-existing top-level map topic remains reachable.
-    const topicPages = pages.filter((page) => page.url.startsWith(`/docs/${map.id}/`) && !page.url.includes('/entries/'));
-    for (const page of topicPages) assert.ok($(`a[href="${basePath}${page.url}/"]`).length, page.url);
+    // 地图只保留首页、节点关系与来源，不再提供独立完整文章入口。
+    assert.equal($('[aria-label="完整正文"], [aria-label="辅助阅读入口"]').length, 0);
+    for (const anchor of $('[data-map] a[href]').toArray()) {
+      const href = $(anchor).attr('href');
+      const path = href.slice(basePath.length);
+      assert.ok(path === '/' || /^\/docs\/(?:domain|ecosystem|cognition)\/#node-[a-z0-9-]+$/.test(path) || /^\/docs\/sources\/#/.test(path), href);
+    }
   });
 
   test(`${map.id}: hash restores every branch and leaf without opening siblings`, () => {
