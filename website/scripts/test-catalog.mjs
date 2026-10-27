@@ -49,3 +49,29 @@ test('query state round trips Chinese filters and leaves legacy node hashes inde
   assert.equal(catalogQuery('cards', emptyFilters), '');
   assert.equal(readCatalogQuery('?view=unknown').view, 'cards');
 });
+
+test('topic overview collapses the three maps to 5, 6 and 4 groups without losing members', async () => {
+  const { groupCatalog, catalogChildren } = await import('../src/lib/maps/catalog.ts');
+  for (const [index, map] of maps.entries()) {
+    const nodes = buildCatalog(map), groups = groupCatalog(nodes, nodes);
+    assert.equal(groups.length, [5, 6, 4][index]);
+    const all = groups.flatMap(({ root, members }) => [root.id, ...members.map((node) => node.id)]);
+    assert.equal(new Set(all).size, nodes.length);
+    assert.equal(all.length, nodes.length);
+    assert.deepEqual(groups.map(({ root }) => root.id), map.branches.map((node) => node.id));
+    for (const { root } of groups) assert.deepEqual(catalogChildren(nodes, root.id).map((node) => node.id), root.children.map((node) => node.id));
+  }
+});
+test('a deep search match keeps its containing topic and direct-child navigation', async () => {
+  const { groupCatalog, catalogChildren } = await import('../src/lib/maps/catalog.ts');
+  const domain = buildCatalog(maps[0]);
+  const matches = filterCatalog(domain, { ...emptyFilters, q: 'LoRA' });
+  const groups = groupCatalog(domain, matches);
+  assert.deepEqual(groups.map(({ root }) => root.id), ['training']);
+  assert.deepEqual(groups[0].matches.map((node) => node.id), ['finetuning']);
+  assert.equal(groupCatalog(domain, []).length, 0);
+  const ecosystem = buildCatalog(maps[1]);
+  assert.ok(catalogChildren(ecosystem, 'participants').some((node) => node.id === 'research-teams'));
+  assert.ok(catalogChildren(ecosystem, 'research-teams').some((node) => node.id === 'lora-authors'));
+  assert.equal(catalogChildren(ecosystem, 'lora-authors').length, 0);
+});

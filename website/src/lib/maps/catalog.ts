@@ -60,6 +60,20 @@ export function filterCatalog(nodes: CatalogNode[], filters: CatalogFilters) {
   return nodes.filter((node) => (!filters.type || node.type === filters.type) && (!filters.understanding || node.understanding === filters.understanding) && (!filters.verification || node.verification === filters.verification) && (!query || `${node.title} ${node.summary} ${node.detail}`.toLocaleLowerCase().includes(query)));
 }
 
+// 总览只展示一级主题；搜索命中深层条目时仍保留它所属的主题。
+export function groupCatalog(nodes: CatalogNode[], matches: CatalogNode[]) {
+  const matchedGroups = new Set(matches.map((node) => node.groupId));
+  return nodes.filter((node) => node.parent === null && matchedGroups.has(node.id)).map((root) => ({
+    root,
+    members: nodes.filter((node) => node.groupId === root.id && node.id !== root.id),
+    matches: matches.filter((node) => node.groupId === root.id),
+  }));
+}
+
+export function catalogChildren(nodes: CatalogNode[], id: string) {
+  return nodes.filter((node) => node.parent === id);
+}
+
 export function readCatalogQuery(search: string) {
   const query = new URLSearchParams(search);
   return { view: query.get('view') === 'graph' ? 'graph' as const : 'cards' as const,
