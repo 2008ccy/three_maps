@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { ArrowDownRight, ArrowRight, ArrowUpRight } from 'lucide-react';
 import { HomeCore, HomeExperience, ScrollCue } from './home-experience';
 import { useHomeScene } from '@/components/home-scene-state';
+import { useMapTransition } from '@/components/map-transition';
 import { maps, explorationPaths } from './home-content';
 import styles from './home.module.css';
 
@@ -12,6 +13,7 @@ const showExploration = false;
 
 export default function HomePage() {
   const { phase } = useHomeScene();
+  const transition = useMapTransition();
   return (
     <HomeExperience>
       <section className={styles.hero} aria-labelledby="home-title" data-home-hero>
@@ -28,7 +30,7 @@ export default function HomePage() {
 
           {maps.map((map) => (
             <div key={map.id} className={`${styles.orbit} ${styles[map.id]}`} inert={phase !== 'expanded'} aria-hidden={phase !== 'expanded'}>
-            <Link href={map.href} data-map={map.id} data-home-map={map.id} className={styles.mapCard}>
+            <Link href={map.href} data-map={map.id} data-home-map={map.id} className={styles.mapCard} onPointerEnter={() => transition.prefetch(map.href)} onFocus={() => transition.prefetch(map.href)} onClick={(event) => { if (transition.begin(map.id, event.currentTarget, event)) event.preventDefault(); }}>
               <map.icon className={styles.mapIcon} size={25} aria-hidden="true" />
               <div className={styles.mapCopy}>
                 <span className={styles.mapNumber}>{map.num} / EXPLORE</span>

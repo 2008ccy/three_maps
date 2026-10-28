@@ -5,6 +5,7 @@ import { type ReactNode } from 'react';
 import { NavigationHistory } from './navigation-history';
 import type { Translations } from 'fumadocs-ui/i18n';
 import { HomeSceneProvider, useHomeScene } from './home-scene-state';
+import { MapTransitionProvider } from './map-transition';
 
 const translations: Partial<Translations> = {
   'Search(search dialog)': '搜索地图', 'Search(search trigger)': '搜索地图',
@@ -35,5 +36,5 @@ function SiteProvider({ children }: { children: ReactNode }) {
   const { isHome, phase } = useHomeScene();
   const searchEnabled = !isHome || phase === 'expanded';
   // 保持 Provider 树稳定，展开时不卸载场景，也不丢失键盘焦点。
-  return <RootProvider search={{ SearchDialog, hotKey: [{ key: (event) => searchEnabled && (event.metaKey || event.ctrlKey), display: '⌘' }, { key: 'k', display: 'K' }], options: searchEnabled ? undefined : { open: false } }} theme={{ defaultTheme: 'dark', forcedTheme: 'dark', enableSystem: false, hotKey: false }} i18n={{ translations }}><NavigationHistory />{children}</RootProvider>;
+  return <RootProvider search={{ SearchDialog, hotKey: [{ key: (event) => searchEnabled && (event.metaKey || event.ctrlKey), display: '⌘' }, { key: 'k', display: 'K' }], options: searchEnabled ? undefined : { open: false } }} theme={{ defaultTheme: 'dark', forcedTheme: 'dark', enableSystem: false, hotKey: false }} i18n={{ translations }}><NavigationHistory /><MapTransitionProvider>{children}</MapTransitionProvider></RootProvider>;
 }

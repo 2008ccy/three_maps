@@ -1,0 +1,134 @@
+[
+  {
+    "t": 0,
+    "navOpacity": "1",
+    "overflow": false,
+    "phase": "idle"
+  },
+  {
+    "t": 49,
+    "navOpacity": "1",
+    "overflow": false,
+    "phase": "departing"
+  },
+  {
+    "t": 108,
+    "navOpacity": "1",
+    "overflow": false,
+    "phase": "arriving"
+  },
+  {
+    "t": 159,
+    "navOpacity": "1",
+    "overflow": false,
+    "phase": "arriving"
+  },
+  {
+    "t": 256,
+    "navOpacity": "1",
+    "overflow": false,
+    "phase": "arriving"
+  },
+  {
+    "t": 272,
+    "navOpacity": "1",
+    "overflow": false,
+    "phase": "arriving"
+  },
+  {
+    "t": 360,
+    "navOpacity": "1",
+    "overflow": false,
+    "phase": "arriving"
+  },
+  {
+    "t": 466,
+    "navOpacity": "1",
+    "overflow": false,
+    "phase": "idle"
+  },
+  {
+    "t": 570,
+    "navOpacity": "1",
+    "overflow": false,
+    "phase": "idle"
+  },
+  {
+    "t": 614,
+    "navOpacity": "1",
+    "overflow": false,
+    "phase": "idle"
+  },
+  {
+    "t": 627,
+    "navOpacity": "1",
+    "overflow": false,
+    "phase": "idle"
+  },
+  {
+    "t": 675,
+    "navOpacity": "1",
+    "overflow": false,
+    "phase": "idle"
+  },
+  {
+    "t": 777,
+    "navOpacity": "1",
+    "overflow": false,
+    "phase": "idle"
+  },
+  {
+    "t": 791,
+    "navOpacity": "1",
+    "overflow": false,
+    "phase": "idle"
+  },
+  {
+    "t": 870,
+    "navOpacity": "1",
+    "overflow": false,
+    "phase": "idle"
+  },
+  {
+    "t": 986,
+    "navOpacity": "1",
+    "overflow": false,
+    "phase": "idle"
+  },
+  {
+    "t": 1008,
+    "navOpacity": "1",
+    "overflow": false,
+    "phase": "idle"
+  },
+  {
+    "t": 1084,
+    "navOpacity": "1",
+    "overflow": false,
+    "phase": "idle"
+  },
+  {
+    "t": 1126,
+    "navOpacity": "1",
+    "overflow": false,
+    "phase": "idle"
+  },
+  {
+    "t": 1140,
+    "navOpacity": "1",
+    "overflow": false,
+    "phase": "idle"
+  },
+  {
+    "t": 1188,
+    "navOpacity": "1",
+    "overflow": false,
+    "phase": "idle"
+  },
+  {
+    "t": 1293,
+    "navOpacity": "1",
+    "overflow": false,
+    "phase": "idle"
+  }
+]

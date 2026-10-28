@@ -1,0 +1,142 @@
+[
+  {
+    "t": 0,
+    "phase": "covering",
+    "title": "认知地图"
+  },
+  {
+    "t": 31,
+    "phase": "covering",
+    "title": "认知地图"
+  },
+  {
+    "t": 109,
+    "phase": "covering",
+    "title": "认知地图"
+  },
+  {
+    "t": 155,
+    "phase": "covering",
+    "title": "认知地图"
+  },
+  {
+    "t": 211,
+    "phase": "covering",
+    "title": "认知地图"
+  },
+  {
+    "t": 264,
+    "phase": "covering",
+    "title": "认知地图"
+  },
+  {
+    "t": 329,
+    "phase": "covering",
+    "title": "认知地图"
+  },
+  {
+    "t": 436,
+    "phase": "revealing",
+    "title": "从预训练模型，走向有依据的回答。"
+  },
+  {
+    "t": 543,
+    "phase": "revealing",
+    "title": "从预训练模型，走向有依据的回答。"
+  },
+  {
+    "t": 643,
+    "phase": "revealing",
+    "title": "从预训练模型，走向有依据的回答。"
+  },
+  {
+    "t": 736,
+    "phase": "revealing",
+    "title": "从预训练模型，走向有依据的回答。"
+  },
+  {
+    "t": 842,
+    "phase": "revealing",
+    "title": "从预训练模型，走向有依据的回答。"
+  },
+  {
+    "t": 942,
+    "phase": "revealing",
+    "title": "从预训练模型，走向有依据的回答。"
+  },
+  {
+    "t": 1033,
+    "phase": "revealing",
+    "title": "从预训练模型，走向有依据的回答。"
+  },
+  {
+    "t": 1072,
+    "phase": "revealing",
+    "title": "从预训练模型，走向有依据的回答。"
+  },
+  {
+    "t": 1105,
+    "phase": "idle",
+    "title": "从预训练模型，走向有依据的回答。"
+  },
+  {
+    "t": 1138,
+    "phase": "idle",
+    "title": "从预训练模型，走向有依据的回答。"
+  },
+  {
+    "t": 1207,
+    "phase": "idle",
+    "title": "从预训练模型，走向有依据的回答。"
+  },
+  {
+    "t": 1239,
+    "phase": "idle",
+    "title": "从预训练模型，走向有依据的回答。"
+  },
+  {
+    "t": 1278,
+    "phase": "idle",
+    "title": "从预训练模型，走向有依据的回答。"
+  },
+  {
+    "t": 1315,
+    "phase": "idle",
+    "title": "从预训练模型，走向有依据的回答。"
+  },
+  {
+    "t": 1344,
+    "phase": "idle",
+    "title": "从预训练模型，走向有依据的回答。"
+  },
+  {
+    "t": 1448,
+    "phase": "idle",
+    "title": "从预训练模型，走向有依据的回答。"
+  },
+  {
+    "t": 1537,
+    "phase": "idle",
+    "title": "从预训练模型，走向有依据的回答。"
+  },
+  {
+    "t": 1651,
+    "phase": "idle",
+    "title": "从预训练模型，走向有依据的回答。"
+  },
+  {
+    "t": 1683,
+    "phase": "idle",
+    "title": "从预训练模型，走向有依据的回答。"
+  },
+  {
+    "t": 1754,
+    "phase": "idle",
+    "title": "从预训练模型，走向有依据的回答。"
+  },
+  {
+    "t": 1791,
+    "phase": "idle",
+    "title": "从预训练模型，走向有依据的回答。"
+  }
+]

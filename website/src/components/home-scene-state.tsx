@@ -4,7 +4,7 @@ import { createContext, useCallback, useContext, useEffect, useRef, useState, ty
 import { usePathname } from 'next/navigation';
 import { HOME_REVEAL_MS, isHomeRoute, rememberHomeExpanded, restoreHomePhase, type HomePhase } from '@/lib/home-scene';
 
-type HomeSceneState = { phase: HomePhase; ready: boolean; reducedMotion: boolean; activated: boolean; isHome: boolean; activate: () => void };
+type HomeSceneState = { phase: HomePhase; ready: boolean; reducedMotion: boolean; activated: boolean; isHome: boolean; activate: () => void; showExpanded: () => void };
 const HomeSceneContext = createContext<HomeSceneState | null>(null);
 
 export function HomeSceneProvider({ children }: { children: ReactNode }) {
@@ -53,7 +53,13 @@ export function HomeSceneProvider({ children }: { children: ReactNode }) {
     timer.current = setTimeout(finish, HOME_REVEAL_MS);
   }, [ready, reducedMotion, finish]);
 
-  return <HomeSceneContext value={{ phase, ready, reducedMotion, activated, isHome, activate }}>{children}</HomeSceneContext>;
+  const showExpanded = useCallback(() => {
+    setActivated(false);
+    try { rememberHomeExpanded(window.sessionStorage); } catch { /* Return remains usable with blocked storage. */ }
+    finish();
+  }, [finish]);
+
+  return <HomeSceneContext value={{ phase, ready, reducedMotion, activated, isHome, activate, showExpanded }}>{children}</HomeSceneContext>;
 }
 
 export function useHomeScene() {

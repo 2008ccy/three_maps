@@ -1,0 +1,142 @@
+[
+  {
+    "t": 0,
+    "phase": "covering",
+    "title": "从预训练模型，走向有依据的回答。"
+  },
+  {
+    "t": 103,
+    "phase": "covering",
+    "title": "从预训练模型，走向有依据的回答。"
+  },
+  {
+    "t": 205,
+    "phase": "covering",
+    "title": "从预训练模型，走向有依据的回答。"
+  },
+  {
+    "t": 247,
+    "phase": "covering",
+    "title": "从预训练模型，走向有依据的回答。"
+  },
+  {
+    "t": 317,
+    "phase": "covering",
+    "title": "从预训练模型，走向有依据的回答。"
+  },
+  {
+    "t": 445,
+    "phase": "waiting",
+    "title": "从预训练模型，走向有依据的回答。"
+  },
+  {
+    "t": 528,
+    "phase": "revealing",
+    "title": "领域地图"
+  },
+  {
+    "t": 630,
+    "phase": "revealing",
+    "title": "领域地图"
+  },
+  {
+    "t": 735,
+    "phase": "revealing",
+    "title": "领域地图"
+  },
+  {
+    "t": 839,
+    "phase": "revealing",
+    "title": "领域地图"
+  },
+  {
+    "t": 938,
+    "phase": "revealing",
+    "title": "领域地图"
+  },
+  {
+    "t": 1012,
+    "phase": "revealing",
+    "title": "领域地图"
+  },
+  {
+    "t": 1040,
+    "phase": "revealing",
+    "title": "领域地图"
+  },
+  {
+    "t": 1070,
+    "phase": "revealing",
+    "title": "领域地图"
+  },
+  {
+    "t": 1106,
+    "phase": "revealing",
+    "title": "领域地图"
+  },
+  {
+    "t": 1138,
+    "phase": "idle",
+    "title": "领域地图"
+  },
+  {
+    "t": 1171,
+    "phase": "idle",
+    "title": "领域地图"
+  },
+  {
+    "t": 1242,
+    "phase": "idle",
+    "title": "领域地图"
+  },
+  {
+    "t": 1262,
+    "phase": "idle",
+    "title": "领域地图"
+  },
+  {
+    "t": 1302,
+    "phase": "idle",
+    "title": "领域地图"
+  },
+  {
+    "t": 1336,
+    "phase": "idle",
+    "title": "领域地图"
+  },
+  {
+    "t": 1379,
+    "phase": "idle",
+    "title": "领域地图"
+  },
+  {
+    "t": 1444,
+    "phase": "idle",
+    "title": "领域地图"
+  },
+  {
+    "t": 1517,
+    "phase": "idle",
+    "title": "领域地图"
+  },
+  {
+    "t": 1544,
+    "phase": "idle",
+    "title": "领域地图"
+  },
+  {
+    "t": 1650,
+    "phase": "idle",
+    "title": "领域地图"
+  },
+  {
+    "t": 1756,
+    "phase": "idle",
+    "title": "领域地图"
+  },
+  {
+    "t": 1855,
+    "phase": "idle",
+    "title": "领域地图"
+  }
+]

@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { HomeLayout } from 'fumadocs-ui/layouts/home';
 import { baseOptions } from '@/lib/layout.shared';
 import { useHomeScene } from '@/components/home-scene-state';
+import { useMapTransition } from '@/components/map-transition';
 import { DigitalParticleField } from './home-particles';
 import { maps } from './home-content';
 import styles from './home.module.css';
@@ -25,7 +26,9 @@ export function HomeSceneLayout({ children }: { children: ReactNode }) {
 }
 
 export function HomeExperience({ children }: { children: ReactNode }) {
-  const { phase, activated } = useHomeScene();
+  const { phase, activated, ready } = useHomeScene();
+  const { arrive } = useMapTransition();
+  useLayoutEffect(() => { if (ready && phase === 'expanded') arrive('home'); }, [ready, phase, arrive]);
   return <div className={styles.home} data-phase={phase}>
     {children}
     <p className={styles.srOnly} role="status" aria-live="polite">{phase === 'expanded' && activated ? '三张地图已展开' : ''}</p>

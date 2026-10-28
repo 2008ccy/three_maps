@@ -3,6 +3,7 @@ import type { MapKey, MapLinks } from '@/lib/maps/types';
 import { MapExplorer } from './map-explorer';
 import { DomainExplorer } from './domain-explorer';
 import { documentStatuses, sourceTitles } from '@/lib/reading-context';
+import { MapArrival } from '@/components/map-transition';
 
 export function mapMetadata(id: MapKey) {
   const map = getMap(id);
@@ -24,5 +25,5 @@ export function MapPage({ id }: { id: MapKey }) {
     }
   }
   const Explorer = id === 'domain' ? DomainExplorer : MapExplorer;
-  return <Explorer map={map} links={links} statuses={documentStatuses()} sourceTitles={sourceTitles()} />;
+  return <><MapArrival map={id} /><Explorer map={map} links={links} statuses={documentStatuses()} sourceTitles={sourceTitles()} /></>;
 }

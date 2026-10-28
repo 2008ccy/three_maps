@@ -1,0 +1,144 @@
+[
+  {
+    "t": 0,
+    "navOpacity": "1",
+    "phase": "idle"
+  },
+  {
+    "t": 100,
+    "navOpacity": "1",
+    "phase": "idle"
+  },
+  {
+    "t": 205,
+    "ghostOpacity": "font-family: -apple-system, \"system-ui\", \"Segoe UI\", \"PingFang SC\", \"Microsoft YaHei\", sans-serif; color: rgb(235, 235, 235); transform: translate3d(163.328px, 346.697px, 0px); font-size: 21px; line-height: 31.5px; letter-spacing: 0px; font-weight: 600; opacity: 0.986;",
+    "navOpacity": "1",
+    "phase": "departing"
+  },
+  {
+    "t": 257,
+    "ghostOpacity": "font-family: -apple-system, \"system-ui\", \"Segoe UI\", \"PingFang SC\", \"Microsoft YaHei\", sans-serif; color: rgb(235, 235, 235); transform: translate3d(163.328px, 344.409px, 0px); font-size: 21px; line-height: 31.5px; letter-spacing: 0px; font-weight: 600; opacity: 0.7405;",
+    "navOpacity": "1",
+    "phase": "departing"
+  },
+  {
+    "t": 284,
+    "ghostOpacity": "font-family: -apple-system, \"system-ui\", \"Segoe UI\", \"PingFang SC\", \"Microsoft YaHei\", sans-serif; color: rgb(235, 235, 235); transform: translate3d(163.328px, 343.699px, 0px); font-size: 21px; line-height: 31.5px; letter-spacing: 0px; font-weight: 600; opacity: 0.614;",
+    "navOpacity": "1",
+    "phase": "departing"
+  },
+  {
+    "t": 308,
+    "ghostOpacity": "font-family: -apple-system, \"system-ui\", \"Segoe UI\", \"PingFang SC\", \"Microsoft YaHei\", sans-serif; color: rgb(235, 235, 235); transform: translate3d(163.328px, 343.698px, 0px); font-size: 21px; line-height: 31.5px; letter-spacing: 0px; font-weight: 600; opacity: 0.6;",
+    "navOpacity": "1",
+    "phase": "waiting"
+  },
+  {
+    "t": 342,
+    "ghostOpacity": "font-family: -apple-system, \"system-ui\", \"Segoe UI\", \"PingFang SC\", \"Microsoft YaHei\", sans-serif; color: rgb(235, 235, 235); transform: translate3d(163.328px, 343.698px, 0px); font-size: 21px; line-height: 31.5px; letter-spacing: 0px; font-weight: 600; opacity: 0.6;",
+    "navOpacity": "1",
+    "phase": "waiting"
+  },
+  {
+    "t": 367,
+    "ghostOpacity": "font-family: -apple-system, \"system-ui\", \"Segoe UI\", \"PingFang SC\", \"Microsoft YaHei\", sans-serif; color: rgb(235, 235, 235); transform: translate3d(163.328px, 343.698px, 0px); font-size: 21px; line-height: 31.5px; letter-spacing: 0px; font-weight: 600; opacity: 0.6;",
+    "navOpacity": "1",
+    "phase": "waiting"
+  },
+  {
+    "t": 391,
+    "ghostOpacity": "font-family: -apple-system, \"system-ui\", \"Segoe UI\", \"PingFang SC\", \"Microsoft YaHei\", sans-serif; color: rgb(235, 235, 235); transform: translate3d(163.328px, 343.698px, 0px); font-size: 21px; line-height: 31.5px; letter-spacing: 0px; font-weight: 600; opacity: 0.6;",
+    "navOpacity": "1",
+    "phase": "waiting"
+  },
+  {
+    "t": 418,
+    "ghostOpacity": "font-family: -apple-system, \"system-ui\", \"Segoe UI\", \"PingFang SC\", \"Microsoft YaHei\", sans-serif; color: rgb(235, 235, 235); transform: translate3d(163.328px, 343.698px, 0px); font-size: 21px; line-height: 31.5px; letter-spacing: 0px; font-weight: 600; opacity: 0.6;",
+    "navOpacity": "1",
+    "phase": "waiting"
+  },
+  {
+    "t": 442,
+    "ghostOpacity": "font-family: -apple-system, \"system-ui\", \"Segoe UI\", \"PingFang SC\", \"Microsoft YaHei\", sans-serif; color: rgb(235, 235, 235); transform: translate3d(163.328px, 343.698px, 0px); font-size: 21px; line-height: 31.5px; letter-spacing: 0px; font-weight: 600; opacity: 0.6;",
+    "navOpacity": "1",
+    "phase": "waiting"
+  },
+  {
+    "t": 510,
+    "ghostOpacity": "font-family: -apple-system, \"system-ui\", \"Segoe UI\", \"PingFang SC\", \"Microsoft YaHei\", sans-serif; color: rgb(235, 235, 235); transform: translate3d(163.328px, 343.698px, 0px); font-size: 21px; line-height: 31.5px; letter-spacing: 0px; font-weight: 600; opacity: 0.6;",
+    "navOpacity": "1",
+    "phase": "waiting"
+  },
+  {
+    "t": 615,
+    "ghostOpacity": "font-family: -apple-system, \"system-ui\", \"Segoe UI\", \"PingFang SC\", \"Microsoft YaHei\", sans-serif; color: rgb(235, 235, 235); transform: translate3d(163.328px, 343.698px, 0px); font-size: 21px; line-height: 31.5px; letter-spacing: 0px; font-weight: 600; opacity: 0.6;",
+    "navOpacity": "1",
+    "phase": "waiting"
+  },
+  {
+    "t": 706,
+    "ghostOpacity": "font-family: -apple-system, \"system-ui\", \"Segoe UI\", \"PingFang SC\", \"Microsoft YaHei\", sans-serif; color: rgb(235, 235, 235); transform: translate3d(163.328px, 343.698px, 0px); font-size: 21px; line-height: 31.5px; letter-spacing: 0px; font-weight: 600; opacity: 0.6;",
+    "navOpacity": "1",
+    "phase": "waiting"
+  },
+  {
+    "t": 820,
+    "ghostOpacity": "font-family: -apple-system, \"system-ui\", \"Segoe UI\", \"PingFang SC\", \"Microsoft YaHei\", sans-serif; color: rgb(235, 235, 235); transform: translate3d(163.328px, 343.698px, 0px); font-size: 21px; line-height: 31.5px; letter-spacing: 0px; font-weight: 600; opacity: 0.6;",
+    "navOpacity": "1",
+    "phase": "waiting"
+  },
+  {
+    "t": 850,
+    "ghostOpacity": "font-family: -apple-system, \"system-ui\", \"Segoe UI\", \"PingFang SC\", \"Microsoft YaHei\", sans-serif; color: rgb(235, 235, 235); transform: translate3d(163.328px, 343.698px, 0px); font-size: 21px; line-height: 31.5px; letter-spacing: 0px; font-weight: 600; opacity: 0.6;",
+    "navOpacity": "1",
+    "phase": "waiting"
+  },
+  {
+    "t": 896,
+    "ghostOpacity": "font-family: -apple-system, \"system-ui\", \"Segoe UI\", \"PingFang SC\", \"Microsoft YaHei\", sans-serif; color: rgb(235, 235, 235); transform: translate3d(163.328px, 343.698px, 0px); font-size: 21px; line-height: 31.5px; letter-spacing: 0px; font-weight: 600; opacity: 0.6;",
+    "navOpacity": "1",
+    "phase": "waiting"
+  },
+  {
+    "t": 960,
+    "ghostOpacity": "font-family: -apple-system, \"system-ui\", \"Segoe UI\", \"PingFang SC\", \"Microsoft YaHei\", sans-serif; color: rgb(235, 235, 235); transform: translate3d(163.328px, 343.698px, 0px); font-size: 21px; line-height: 31.5px; letter-spacing: 0px; font-weight: 600; opacity: 0.6;",
+    "navOpacity": "1",
+    "phase": "waiting"
+  },
+  {
+    "t": 997,
+    "ghostOpacity": "font-family: -apple-system, \"system-ui\", \"Segoe UI\", \"PingFang SC\", \"Microsoft YaHei\", sans-serif; color: rgb(238, 234, 246); transform: translate3d(40px, 137px, 0px); font-size: 34px; line-height: 44.2px; letter-spacing: -1.19px; font-weight: 650; opacity: 0.001;",
+    "navOpacity": "1",
+    "phase": "arriving"
+  },
+  {
+    "t": 1123,
+    "ghostOpacity": "font-family: -apple-system, \"system-ui\", \"Segoe UI\", \"PingFang SC\", \"Microsoft YaHei\", sans-serif; color: rgb(238, 234, 246); transform: translate3d(40px, 136.225px, 0px); font-size: 34px; line-height: 44.2px; letter-spacing: -1.19px; font-weight: 650; opacity: 1;",
+    "navOpacity": "1",
+    "phase": "arriving"
+  },
+  {
+    "t": 1155,
+    "ghostOpacity": "font-family: -apple-system, \"system-ui\", \"Segoe UI\", \"PingFang SC\", \"Microsoft YaHei\", sans-serif; color: rgb(238, 234, 246); transform: translate3d(40px, 135.53px, 0px); font-size: 34px; line-height: 44.2px; letter-spacing: -1.19px; font-weight: 650; opacity: 1;",
+    "navOpacity": "1",
+    "phase": "arriving"
+  },
+  {
+    "t": 1213,
+    "ghostOpacity": "font-family: -apple-system, \"system-ui\", \"Segoe UI\", \"PingFang SC\", \"Microsoft YaHei\", sans-serif; color: rgb(238, 234, 246); transform: translate3d(40px, 133.975px, 0px); font-size: 34px; line-height: 44.2px; letter-spacing: -1.19px; font-weight: 650; opacity: 1;",
+    "navOpacity": "1",
+    "phase": "arriving"
+  },
+  {
+    "t": 1327,
+    "ghostOpacity": "font-family: -apple-system, \"system-ui\", \"Segoe UI\", \"PingFang SC\", \"Microsoft YaHei\", sans-serif; color: rgb(238, 234, 246); transform: translate3d(40px, 131.387px, 0px); font-size: 34px; line-height: 44.2px; letter-spacing: -1.19px; font-weight: 650; opacity: 1;",
+    "navOpacity": "1",
+    "phase": "arriving"
+  },
+  {
+    "t": 1349,
+    "ghostOpacity": "font-family: -apple-system, \"system-ui\", \"Segoe UI\", \"PingFang SC\", \"Microsoft YaHei\", sans-serif; color: rgb(238, 234, 246); transform: translate3d(40px, 131.206px, 0px); font-size: 34px; line-height: 44.2px; letter-spacing: -1.19px; font-weight: 650; opacity: 1;",
+    "navOpacity": "1",
+    "phase": "arriving"
+  }
+]
