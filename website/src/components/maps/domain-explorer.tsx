@@ -11,6 +11,12 @@ import { teachingCase } from '@/lib/maps/teaching-case';
 import styles from './maps.module.css';
 
 type Props = { map: MapDefinition; links: MapLinks; statuses: Record<string, string>; sourceTitles: Record<string, string> };
+function KnowledgeStatus({ node }: { node: CatalogNode }) {
+  return <span className={styles.knowledgeStatus}>
+    <span data-status="learning" title="来自原资料记录，不代表当前访问者的学习进度">学习状态：{node.understanding}</span>
+    <span data-status="verification" data-verified={node.verification === '已核实'}>核实状态：{node.verification}</span>
+  </span>;
+}
 export function DomainExplorer({ map, links, statuses, sourceTitles }: Props) {
   const nodes = useMemo(() => buildCatalog(map, statuses), [map, statuses]);
   const edges = useMemo(() => buildEdges(map), [map]);
@@ -116,13 +122,14 @@ export function DomainExplorer({ map, links, statuses, sourceTitles }: Props) {
       </article>;
     })}</section>;
     return <>
+      {node.parent && <KnowledgeStatus node={node} />}
       {node.topic && <section className={styles.topicTeaching}><p className={styles.readingSummary}>{node.topic.question}</p><p>{node.detail}</p><p className={styles.classification}>{node.topic.classification}</p><strong>学完这个主题：{node.topic.outcome}</strong></section>}
       {node.lesson && <DomainLesson key={node.id} lesson={node.lesson} />}
       {interactive && !!node.children?.length && <section className={styles.childrenSection} aria-label="主题下的知识点"><div className={styles.sectionHeading}><h3>从这里继续探索</h3><span>{node.children.length} 个知识点</span></div><div className={styles.childCards}>{catalogChildren(nodes, node.id).map((child) => <button type="button" className={styles.childCard} key={child.id} data-tone={tone(child)} data-outside={filtersActive && !matches.some((item) => item.id === child.id)} onClick={() => open(child.id)} aria-label={`打开知识点：${child.title}`}>
-        <span className={styles.childCardMeta}>{child.lesson?.role}</span><strong>{child.title}</strong><span className={styles.childCardSummary}>{child.summary}</span><span className={styles.childGoal}>学完能：{child.lesson?.goal}</span><span className={styles.childCardFooter}>{filtersActive && !matches.some((item) => item.id === child.id) ? '筛选范围外 · 仍可阅读' : '阅读示例与知识联系'}<ArrowRight size={16} /></span>
+        <span className={styles.childCardMeta}>{child.lesson?.role}</span><strong>{child.title}</strong><KnowledgeStatus node={child} /><span className={styles.childCardSummary}>{child.summary}</span><span className={styles.childGoal}>学完能：{child.lesson?.goal}</span><span className={styles.childCardFooter}>{filtersActive && !matches.some((item) => item.id === child.id) ? '筛选范围外 · 仍可阅读' : '阅读示例与知识联系'}<ArrowRight size={16} /></span>
       </button>)}</div></section>}
       {renderRelations(local, '本图知识联系')}{renderRelations(cross, '跨图背景')}
-      <details key={`sources-${node.id}`} className={styles.lessonSources}><summary>资料状态、使用边界与来源（{sourceIds.length}）</summary><p>原资料理解记录：{node.understanding}；核实状态：{node.verification}。这不是当前访问者的学习进度，附有来源也不代表已经核实。</p><p>节点 ID：<code>{node.id}</code>。本页包含教学编排与自编示例，不将学习建议写成已完成的实践成果。</p><nav aria-label="内容来源">{sourceIds.map((id) => <Link key={id} href={`/docs/sources/#${id.toLowerCase()}`} onClick={remember}><span>{sourceTitles[id] ?? id}</span><small>{id}<ArrowUpRight size={13} /></small></Link>)}</nav></details>
+      <details key={`sources-${node.id}`} className={styles.lessonSources}><summary>资料状态、使用边界与来源（{sourceIds.length}）</summary><p>原资料学习状态：{node.understanding}；核实状态：{node.verification}。这不是当前访问者的学习进度，附有来源也不代表已经核实。</p><p>节点 ID：<code>{node.id}</code>。本页包含教学编排与自编示例，不将学习建议写成已完成的实践成果。</p><nav aria-label="内容来源">{sourceIds.map((id) => <Link key={id} href={`/docs/sources/#${id.toLowerCase()}`} onClick={remember}><span>{sourceTitles[id] ?? id}</span><small>{id}<ArrowUpRight size={13} /></small></Link>)}</nav></details>
       {node.lesson && <DomainAdvanced key={`advanced-${node.id}`} lesson={node.lesson} />}
     </>;
   }
@@ -135,9 +142,9 @@ export function DomainExplorer({ map, links, statuses, sourceTitles }: Props) {
     {ready ? <>
       <section className={styles.domainToolbar} aria-label="筛选知识节点"><label className={styles.domainSearch}><Search size={17} /><span className={styles.srOnly}>关键词</span><input type="search" placeholder="搜索概念、解释或教学示例…" value={filters.q} onChange={(event) => changeFilter('q', event.target.value)} /></label><details open={advanced} onToggle={(event) => setAdvanced(event.currentTarget.open)} className={styles.advancedFilters}><summary>高级筛选{filters.type || filters.understanding || filters.verification ? ' · 已启用' : ''}</summary><div className={styles.filterFields}>
         <label>类型<select aria-label="类型" value={filters.type} onChange={(event) => changeFilter('type', event.target.value)}><option value="">全部类型</option>{[...new Set(nodes.map((node) => node.type))].map((type) => <option key={type}>{type}</option>)}</select></label>
-        <label>理解程度<select aria-label="理解程度" value={filters.understanding} onChange={(event) => changeFilter('understanding', event.target.value)}><option value="">全部程度</option>{understandingOptions.map((value) => <option key={value}>{value}</option>)}</select></label>
+        <label>学习状态<select aria-label="学习状态" value={filters.understanding} onChange={(event) => changeFilter('understanding', event.target.value)}><option value="">全部学习状态</option>{understandingOptions.map((value) => <option key={value}>{value}</option>)}</select></label>
         <label>核实状态<select aria-label="核实状态" value={filters.verification} onChange={(event) => changeFilter('verification', event.target.value)}><option value="">全部状态</option>{verificationOptions.map((value) => <option key={value}>{value}</option>)}</select></label>
-        <p>理解程度来自原资料记录，不代表你的个人学习进度。</p></div></details><button type="button" className={styles.resetDomain} onClick={() => navigate(view, emptyFilters, selectedId)}>重置筛选</button></section>
+        <p>学习状态来自原资料记录，不代表你的个人学习进度。可按学习状态、核实状态筛选，也可直接搜索标签文字。</p></div></details><button type="button" className={styles.resetDomain} onClick={() => navigate(view, emptyFilters, selectedId)}>重置筛选</button></section>
       <div className={styles.viewBar}><div className={styles.viewTabs} role="group" aria-label="地图视图"><button type="button" aria-pressed={view === 'cards'} onClick={() => navigate('cards', filters, selectedId)}><Grid2X2 size={16} />主题卡片</button><button type="button" aria-pressed={view === 'graph'} onClick={() => navigate('graph', filters, selectedId)}><Network size={16} />关系图</button></div><p aria-live="polite">{groups.length} 个主题 · 匹配 {matches.filter((node) => node.parent).length} / {points.length} 个知识点</p></div>
       {!visible.length ? <div className={styles.empty}><Search size={28} /><h2>没有找到匹配的知识点</h2><p>换个关键词，或清除筛选继续探索。</p><button type="button" onClick={() => navigate(view, emptyFilters, null)}>清除筛选</button></div> : view === 'cards' ? <div className={styles.groupGrid}>{groups.map(({ root, members }) => <button key={root.id} id={`node-${root.id}`} type="button" className={styles.groupCard} data-tone={tone(root)} onClick={() => open(root.id)} aria-haspopup="dialog" aria-label={`展开主题：${root.title}`}>
         <span className={styles.groupCardTop}><span>主题 {String(tone(root) + 1).padStart(2, '0')}</span><span>{members.length} 个知识点</span></span><strong className={styles.groupTitle}>{root.title}</strong><span className={styles.groupSummary}>{root.topic?.question}</span><span className={styles.topicPreview}>{root.topic?.overview[0]}</span><span className={styles.groupCardBottom}><span>{root.topic?.outcome}</span><ArrowUpRight size={18} /></span>

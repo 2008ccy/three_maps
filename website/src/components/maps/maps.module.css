@@ -252,6 +252,11 @@
 .map[data-map=domain] .childCard { min-height: 230px; }
 .map[data-map=domain] .childCardMeta,.map[data-map=domain] .childCardFooter { font-size: 13px; }
 .map[data-map=domain] .childCardSummary { font-size: 16px; }
+.knowledgeStatus { display: flex; flex-wrap: wrap; gap: 8px; margin-block: 12px 18px; }
+.knowledgeStatus > span { display: inline-flex; align-items: center; padding: 4px 9px; border-radius: 6px; border: 1px solid #b8afff35; background: #b8afff12; color: #cfc5f4; font-size: 13px; line-height: 1.6; }
+.knowledgeStatus > span[data-status=verification] { color: #d5c398; background: #d5b76e0d; border-color: #d5b76e30; }
+.knowledgeStatus > span[data-verified=true] { color: #a4d1c1; background: #a4d1c112; border-color: #a4d1c135; }
+.childCard .knowledgeStatus { margin-block: 6px 4px; }
 .childGoal { color: #d3c9e2; font-size: 14px; line-height: 1.8; margin-top: 12px; }
 .lesson { font-size: 17px; line-height: 1.8; color: #d7d1e1; }
 .lesson section,.lessonAdvanced section { margin-top: 30px; }
