@@ -6,7 +6,7 @@ export const mapTransitionColors: Record<TransitionMap, string> = { domain: '181
 export const mapTransitionNames: Record<TransitionMap, string> = { domain: '领域地图', ecosystem: '生态地图', cognition: '认知地图' };
 
 export function transitionTiming(destination: TransitionDestination) {
-  return destination === 'home' ? { departure: 40, arrival: 220, particles: 6, particleAlpha: .12 } : { departure: 80, arrival: 480, particles: 18, particleAlpha: .2 };
+  return destination === 'home' ? { departure: 40, arrival: 220, particles: 6, particleAlpha: .12 } : { departure: 80, arrival: 480, particles: 44, particleAlpha: .56 };
 }
 
 export function handoffProgress(elapsed: number) {
@@ -29,6 +29,13 @@ export function plainLinkActivation(event: { button: number; metaKey: boolean; c
 
 export function mapAtPath(pathname: string, basePath = ''): TransitionMap | null {
   return (Object.keys(mapTransitionColors) as TransitionMap[]).find((map) => pathname.replace(/\/$/, '') === `${basePath}/docs/${map}`) ?? null;
+}
+
+export function homeMapLink(href: string, origin: string, basePath = ''): TransitionMap | null {
+  try {
+    const url = new URL(href, origin);
+    return url.origin === origin ? mapAtPath(url.pathname, basePath) : null;
+  } catch { return null; }
 }
 
 export function mapTransitionTarget(map: TransitionDestination, href: string, origin: string, basePath = '') {

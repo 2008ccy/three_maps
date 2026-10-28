@@ -4,7 +4,7 @@ import { createContext, useCallback, useContext, useEffect, useLayoutEffect, use
 import { usePathname, useRouter } from 'next/navigation';
 import { isHomeRoute } from '@/lib/home-scene';
 import { useHomeScene } from './home-scene-state';
-import { TRANSITION_TIMEOUT_MS, mapTransitionColors, mapTransitionNames, transitionTiming, handoffProgress, titleFrame, mapAtPath, mapTransitionTarget, plainLinkActivation, type MapTransitionPhase, type TransitionMap, type TransitionDestination, type TitleAnchor } from '@/lib/map-transition';
+import { TRANSITION_TIMEOUT_MS, mapTransitionColors, mapTransitionNames, transitionTiming, handoffProgress, titleFrame, homeMapLink, mapAtPath, mapTransitionTarget, plainLinkActivation, type MapTransitionPhase, type TransitionMap, type TransitionDestination, type TitleAnchor } from '@/lib/map-transition';
 import styles from './map-transition.module.css';
 
 type TransitionContext = {
@@ -19,6 +19,7 @@ type Run = {
   from: TitleAnchor | null; to: TitleAnchor | null; arrivalFrom: TitleAnchor | null; current: TitleAnchor | null; hidden: Map<HTMLElement, string>;
   href: string; route: string; navigated: boolean; width: number; height: number; returnOverflow: string; navBottom: number;
   snapshot: HTMLDivElement | null; chrome: HTMLElement | null; content: HTMLElement | null; contentOpacity: string;
+  entryBounds: { x: number; y: number; width: number; height: number } | null;
 };
 const basePath = process.env.NEXT_PUBLIC_BASE_PATH ?? '';
 
@@ -119,21 +120,39 @@ export function MapTransitionProvider({ children }: { children: ReactNode }) {
       const dpr = Math.min(window.devicePixelRatio || 1, 2);
       canvas.width = Math.ceil(width * dpr); canvas.height = Math.ceil(height * dpr); ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     }
-    // Entire canvas remains transparent; only a handful of points sit OUTSIDE the moving text.
+    // Local digital fragments stay outside the letters; no page-sized paint.
     ctx.clearRect(0, 0, width, height);
     if (!current.current) return;
     const timing = transitionTiming(current.destination), progress = Math.min(1, elapsed / timing.arrival);
-    const alpha = current.phase === 'arriving' ? Math.max(0, 1 - progress / .7) : Math.min(1, elapsed / 70);
+    const forward = current.destination !== 'home';
+    const alpha = current.phase === 'arriving' ? forward ? 1 - progress ** 3 : Math.max(0, 1 - progress / .7) : Math.min(1, elapsed / 70);
     const anchor = current.current, textWidth = anchor.fontSize * mapTransitionNames[current.map].length;
     const count = width < 768 ? Math.ceil(timing.particles * .6) : timing.particles;
     ctx.save(); ctx.beginPath(); ctx.rect(0, current.navBottom + 1, width, height); ctx.clip();
     for (let i = 0; i < count; i++) {
       const seed = ((i * 37 + 17) % 97) / 97;
       const side = i % 2 ? -1 : 1;
-      const x = anchor.x - 14 + seed * (textWidth + 28);
+      const flow = forward ? ((seed + (performance.now() - current.created) / 1500) % 1) : seed;
+      const x = anchor.x - 14 + flow * (textWidth + 28);
       const y = anchor.y + (side < 0 ? -9 : anchor.lineHeight + 9) + Math.sin((performance.now() - current.created) / 750 + i) * 1.5;
-      ctx.fillStyle = `rgba(${i % 5 === 0 ? mapTransitionColors[current.map] : '176,168,255'},${alpha * timing.particleAlpha * (.5 + seed * .5)})`;
-      ctx.fillRect(x, y, seed > .8 ? 2 : 1.5, seed > .8 ? 2 : 1.5);
+      const color = forward ? i % 3 === 0 ? '176,168,255' : mapTransitionColors[current.map] : i % 5 === 0 ? mapTransitionColors[current.map] : '176,168,255';
+      const size = forward ? seed > .75 ? 3 : 2 : seed > .8 ? 2 : 1.5;
+      const opacity = alpha * timing.particleAlpha * (forward ? .65 + seed * .35 : .5 + seed * .5);
+      if (forward && i % 3 === 0) { ctx.fillStyle = `rgba(${color},${opacity * .12})`; ctx.fillRect(x - 2, y - 2, size + 4, size + 4); }
+      ctx.fillStyle = `rgba(${color},${opacity})`; ctx.fillRect(x, y, size, size);
+    }
+    if (forward && current.entryBounds) {
+      const box = current.entryBounds, perimeter = (box.width + box.height) * 2;
+      const cue = current.phase === 'arriving' ? Math.max(0, 1 - elapsed / 180) : current.phase === 'waiting' ? .35 : Math.min(1, elapsed / 60);
+      for (let i = 0; i < 24; i++) {
+        const offset = ((i / 24 + (performance.now() - current.created) / 5000) % 1) * perimeter;
+        let x = box.x, y = box.y;
+        if (offset < box.width) x += offset;
+        else if (offset < box.width + box.height) { x += box.width; y += offset - box.width; }
+        else if (offset < box.width * 2 + box.height) { x += box.width * 2 + box.height - offset; y += box.height; }
+        else y += perimeter - offset;
+        ctx.fillStyle = `rgba(${mapTransitionColors[current.map]},${cue * .5})`; ctx.fillRect(x - 1, y - 1, 2, 2);
+      }
     }
     ctx.restore();
   }, []);
@@ -185,8 +204,10 @@ export function MapTransitionProvider({ children }: { children: ReactNode }) {
     try { canvas = document.createElement('canvas'); context = canvas.getContext('2d', { alpha: true }); } catch { return false; }
     if (!context) return false;
     const now = performance.now(), navBottom = document.querySelector('#nd-nav')?.getBoundingClientRect().bottom ?? 56;
-    const source = destination === 'home' ? mapHeading() : anchor.querySelector<HTMLElement>('h2');
+    const entry = destination === 'home' ? null : anchor.matches('[data-home-map]') ? anchor : document.querySelector<HTMLElement>(`[data-home-map="${map}"]`);
+    const source = destination === 'home' ? mapHeading() : entry?.querySelector<HTMLElement>('h2') ?? null;
     const from = titleAnchor(source, navBottom);
+    const entryBounds = from && entry ? entry.getBoundingClientRect() : null;
     const snapshot = destination !== 'home' && from ? snapshotHome(navBottom) : null;
     if (snapshot) snapshot.querySelector<HTMLElement>(`[data-home-map="${map}"] h2`)?.style.setProperty('visibility', 'hidden');
     let ghost: HTMLDivElement | null = null;
@@ -195,7 +216,7 @@ export function MapTransitionProvider({ children }: { children: ReactNode }) {
       const font = getComputedStyle(source); ghost.style.fontFamily = font.fontFamily; ghost.style.color = font.color;
     }
     const chrome = snapshot ? snapshotNavigation() : null;
-    const current: Run = { map, destination, phase: 'departing', start: now, created: now, frame: 0, canvas, context, ghost, from, to: null, arrivalFrom: null, current: from, hidden: new Map(), snapshot, chrome, content: null, contentOpacity: '', ...target, navigated: false, width: 0, height: 0, returnOverflow: document.body.style.overflow, navBottom };
+    const current: Run = { map, destination, phase: 'departing', start: now, created: now, frame: 0, canvas, context, ghost, from, to: null, arrivalFrom: null, current: from, hidden: new Map(), snapshot, chrome, content: null, contentOpacity: '', entryBounds, ...target, navigated: false, width: 0, height: 0, returnOverflow: document.body.style.overflow, navBottom };
     try {
       if (snapshot) host.current.appendChild(snapshot);
       draw(current, 0); host.current.appendChild(canvas);
@@ -215,10 +236,16 @@ export function MapTransitionProvider({ children }: { children: ReactNode }) {
     } catch { run.current = current; finish(); return false; }
   }, [animate, draw, finish, router, showExpanded]);
   const begin = useCallback((map: TransitionMap, anchor: HTMLAnchorElement, event: MouseEvent<HTMLAnchorElement>) => start(map, anchor, event), [start]);
-  const captureHomeLink = (event: MouseEvent<HTMLDivElement>) => {
+  const captureNavigation = (event: MouseEvent<HTMLDivElement>) => {
     if (!(event.target instanceof Element)) return;
     const anchor = event.target.closest<HTMLAnchorElement>('a[href]');
-    if (anchor && mapTransitionTarget('home', anchor.href, window.location.origin, basePath) && start('home', anchor, event)) event.preventDefault();
+    if (!anchor) return;
+    if (mapTransitionTarget('home', anchor.href, window.location.origin, basePath) && start('home', anchor, event)) { event.preventDefault(); return; }
+    // Both homepage cards and header links enter through this capture handler.
+    if (isHomeRoute(window.location.pathname, basePath)) {
+      const map = homeMapLink(anchor.href, window.location.origin, basePath);
+      if (map && start(map, anchor, event)) event.preventDefault();
+    }
   };
 
   const arrive = useCallback((destination: TransitionDestination) => {
@@ -281,7 +308,7 @@ export function MapTransitionProvider({ children }: { children: ReactNode }) {
   }, [pathname, finish]);
 
   return <Context value={{ begin, arrive, prefetch }}>
-    <div ref={surface} className={styles.surface} inert={!!state} aria-busy={!!state} data-transition-shared={state && run.current?.snapshot ? '' : undefined} data-transition-phase={state?.phase} data-transition-map={state?.map} data-transition-destination={state?.destination} onClickCapture={captureHomeLink}>{children}</div>
+    <div ref={surface} className={styles.surface} inert={!!state} aria-busy={!!state} data-transition-shared={state && run.current?.snapshot ? '' : undefined} data-transition-phase={state?.phase} data-transition-map={state?.map} data-transition-destination={state?.destination} onClickCapture={captureNavigation}>{children}</div>
     <div ref={host} className={styles.overlay} hidden={!state} aria-hidden="true" data-map-transition={state?.phase ?? 'idle'} data-transition-destination={state?.destination} />
     <p className={styles.status} role="status" aria-live="polite">{state ? state.destination === 'home' ? '正在返回首页' : `正在进入${mapTransitionNames[state.map]}` : ''}</p>
   </Context>;

@@ -1,0 +1,165 @@
+[
+  {
+    "t": 0,
+    "navTop": 0,
+    "overflow": false,
+    "phase": "idle",
+    "url": "/"
+  },
+  {
+    "t": 113,
+    "ghost": "领域地图",
+    "navTop": 0,
+    "overflow": false,
+    "phase": "departing",
+    "url": "/"
+  },
+  {
+    "t": 204,
+    "ghost": "领域地图",
+    "navTop": 0,
+    "overflow": false,
+    "phase": "arriving",
+    "url": "/docs/domain/"
+  },
+  {
+    "t": 289,
+    "ghost": "领域地图",
+    "navTop": 0,
+    "overflow": false,
+    "phase": "arriving",
+    "url": "/docs/domain/"
+  },
+  {
+    "t": 317,
+    "ghost": "领域地图",
+    "navTop": 0,
+    "overflow": false,
+    "phase": "arriving",
+    "url": "/docs/domain/"
+  },
+  {
+    "t": 428,
+    "ghost": "领域地图",
+    "navTop": 0,
+    "overflow": false,
+    "phase": "arriving",
+    "url": "/docs/domain/"
+  },
+  {
+    "t": 537,
+    "ghost": "领域地图",
+    "navTop": 0,
+    "overflow": false,
+    "phase": "arriving",
+    "url": "/docs/domain/"
+  },
+  {
+    "t": 636,
+    "ghost": "领域地图",
+    "navTop": 0,
+    "overflow": false,
+    "phase": "arriving",
+    "url": "/docs/domain/"
+  },
+  {
+    "t": 666,
+    "ghost": "领域地图",
+    "navTop": 0,
+    "overflow": false,
+    "phase": "arriving",
+    "url": "/docs/domain/"
+  },
+  {
+    "t": 695,
+    "ghost": "领域地图",
+    "navTop": 0,
+    "overflow": false,
+    "phase": "arriving",
+    "url": "/docs/domain/"
+  },
+  {
+    "t": 747,
+    "navTop": 0,
+    "overflow": false,
+    "phase": "idle",
+    "url": "/docs/domain/"
+  },
+  {
+    "t": 794,
+    "navTop": 0,
+    "overflow": false,
+    "phase": "idle",
+    "url": "/docs/domain/"
+  },
+  {
+    "t": 855,
+    "navTop": 0,
+    "overflow": false,
+    "phase": "idle",
+    "url": "/docs/domain/"
+  },
+  {
+    "t": 961,
+    "navTop": 0,
+    "overflow": false,
+    "phase": "idle",
+    "url": "/docs/domain/"
+  },
+  {
+    "t": 1022,
+    "navTop": 0,
+    "overflow": false,
+    "phase": "idle",
+    "url": "/docs/domain/"
+  },
+  {
+    "t": 1049,
+    "navTop": 0,
+    "overflow": false,
+    "phase": "idle",
+    "url": "/docs/domain/"
+  },
+  {
+    "t": 1076,
+    "navTop": 0,
+    "overflow": false,
+    "phase": "idle",
+    "url": "/docs/domain/"
+  },
+  {
+    "t": 1168,
+    "navTop": 0,
+    "overflow": false,
+    "phase": "idle",
+    "url": "/docs/domain/"
+  },
+  {
+    "t": 1194,
+    "navTop": 0,
+    "overflow": false,
+    "phase": "idle",
+    "url": "/docs/domain/"
+  },
+  {
+    "t": 1224,
+    "navTop": 0,
+    "overflow": false,
+    "phase": "idle",
+    "url": "/docs/domain/"
+  },
+  {
+    "t": 1245,
+    "navTop": 0,
+    "overflow": false,
+    "phase": "idle",
+    "url": "/docs/domain/"
+  },
+  {
+    "t": 1273,
+    "navTop": 0,
+    "overflow": false,
+    "phase": "idle",
+    "url": "/docs/domain/"
+  }
+]

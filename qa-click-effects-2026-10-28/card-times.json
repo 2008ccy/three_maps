@@ -1,0 +1,101 @@
+[
+  {
+    "t": 0,
+    "ghost": "生态地图",
+    "phase": "departing",
+    "url": "/"
+  },
+  {
+    "t": 102,
+    "ghost": "生态地图",
+    "phase": "arriving",
+    "url": "/docs/ecosystem/"
+  },
+  {
+    "t": 195,
+    "ghost": "生态地图",
+    "phase": "arriving",
+    "url": "/docs/ecosystem/"
+  },
+  {
+    "t": 291,
+    "ghost": "生态地图",
+    "phase": "arriving",
+    "url": "/docs/ecosystem/"
+  },
+  {
+    "t": 343,
+    "ghost": "生态地图",
+    "phase": "arriving",
+    "url": "/docs/ecosystem/"
+  },
+  {
+    "t": 401,
+    "ghost": "生态地图",
+    "phase": "arriving",
+    "url": "/docs/ecosystem/"
+  },
+  {
+    "t": 505,
+    "ghost": "生态地图",
+    "phase": "arriving",
+    "url": "/docs/ecosystem/"
+  },
+  {
+    "t": 542,
+    "ghost": "生态地图",
+    "phase": "arriving",
+    "url": "/docs/ecosystem/"
+  },
+  {
+    "t": 563,
+    "ghost": "生态地图",
+    "phase": "arriving",
+    "url": "/docs/ecosystem/"
+  },
+  {
+    "t": 595,
+    "phase": "idle",
+    "url": "/docs/ecosystem/"
+  },
+  {
+    "t": 713,
+    "phase": "idle",
+    "url": "/docs/ecosystem/"
+  },
+  {
+    "t": 740,
+    "phase": "idle",
+    "url": "/docs/ecosystem/"
+  },
+  {
+    "t": 762,
+    "phase": "idle",
+    "url": "/docs/ecosystem/"
+  },
+  {
+    "t": 795,
+    "phase": "idle",
+    "url": "/docs/ecosystem/"
+  },
+  {
+    "t": 816,
+    "phase": "idle",
+    "url": "/docs/ecosystem/"
+  },
+  {
+    "t": 853,
+    "phase": "idle",
+    "url": "/docs/ecosystem/"
+  },
+  {
+    "t": 869,
+    "phase": "idle",
+    "url": "/docs/ecosystem/"
+  },
+  {
+    "t": 920,
+    "phase": "idle",
+    "url": "/docs/ecosystem/"
+  }
+]

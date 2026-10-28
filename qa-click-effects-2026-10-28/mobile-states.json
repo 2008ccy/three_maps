@@ -1,0 +1,74 @@
+[
+  {
+    "overflow": false,
+    "phase": "idle"
+  },
+  {
+    "overflow": false,
+    "phase": "departing"
+  },
+  {
+    "overflow": false,
+    "phase": "arriving"
+  },
+  {
+    "overflow": false,
+    "phase": "arriving"
+  },
+  {
+    "overflow": false,
+    "phase": "arriving"
+  },
+  {
+    "overflow": false,
+    "phase": "arriving"
+  },
+  {
+    "overflow": false,
+    "phase": "arriving"
+  },
+  {
+    "overflow": false,
+    "phase": "arriving"
+  },
+  {
+    "overflow": false,
+    "phase": "idle"
+  },
+  {
+    "overflow": false,
+    "phase": "idle"
+  },
+  {
+    "overflow": false,
+    "phase": "idle"
+  },
+  {
+    "overflow": false,
+    "phase": "idle"
+  },
+  {
+    "overflow": false,
+    "phase": "idle"
+  },
+  {
+    "overflow": false,
+    "phase": "idle"
+  },
+  {
+    "overflow": false,
+    "phase": "idle"
+  },
+  {
+    "overflow": false,
+    "phase": "idle"
+  },
+  {
+    "overflow": false,
+    "phase": "idle"
+  },
+  {
+    "overflow": false,
+    "phase": "idle"
+  }
+]

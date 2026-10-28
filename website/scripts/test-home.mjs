@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { load } from 'cheerio';
 import { HOME_SESSION_KEY, restoreHomePhase, rememberHomeExpanded, isHomeRoute } from '../src/lib/home-scene.ts';
-import { transitionTiming, handoffProgress, titleFrame, mapAtPath, plainLinkActivation, mapTransitionTarget } from '../src/lib/map-transition.ts';
+import { transitionTiming, handoffProgress, titleFrame, homeMapLink, mapAtPath, plainLinkActivation, mapTransitionTarget } from '../src/lib/map-transition.ts';
 
 const { basePath } = JSON.parse(readFileSync('out/.site-build.json', 'utf8'));
 
@@ -111,5 +111,17 @@ test('shared title stays present while complementary content blending prevents a
     assert.ok(frame.title >= previous.title && frame.content >= previous.content);
     if (frame.content >= .5) assert.ok(frame.title > .9, 'title has nearly landed before target text gains emphasis');
     previous = frame;
+  }
+});
+
+test('homepage header and card links resolve to the same map without intercepting other destinations', () => {
+  const origin = 'https://2008ccy.github.io';
+  for (const map of ['domain', 'ecosystem', 'cognition']) {
+    assert.equal(homeMapLink(`/three_maps/docs/${map}/`, origin, '/three_maps'), map);
+    assert.equal(homeMapLink(`${origin}/three_maps/docs/${map}/?view=graph#node-task`, origin, '/three_maps'), map);
+    assert.equal(homeMapLink(`/docs/${map}/`, origin), map);
+  }
+  for (const wrong of ['https://example.com/three_maps/docs/domain/', '/three_maps/docs/domain/entries/k-lora/', '/three_maps/docs/project/updates/', '/docs/domain/', '/', 'javascript:alert(1)']) {
+    assert.equal(homeMapLink(wrong, origin, '/three_maps'), null);
   }
 });
