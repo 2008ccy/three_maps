@@ -29,7 +29,7 @@ export function readingContext(id: string) {
       const outgoing = edge.from === owner.node.id;
       const targetMap = outgoing ? maps.find((map) => map.id === edge.targetMap)! : owner.map;
       const target = flattenNodes(targetMap.branches).find((node) => node.id === (outgoing ? edge.to : edge.from));
-      if (target) add(target.title, `/docs/${targetMap.id}/#node-${target.id}`, outgoing ? edge.label : `来自「${target.title}」：${edge.label}`);
+      if (target) add(target.title, `/docs/${targetMap.id}/#node-${target.id}`, edge.direction === 'undirected' ? `与「${target.title}」：${edge.label}` : outgoing ? edge.label : `来自「${target.title}」：${edge.label}`);
     }
   }
   for (const relatedId of getNode(id).data.related) {

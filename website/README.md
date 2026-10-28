@@ -51,9 +51,17 @@ PowerShell 可先执行 `$env:NEXT_PUBLIC_BASE_PATH="/three_maps"`，再执行 `
 | `public/images/domain` | 从原素材复制的网站图片，原文件保留 |
 | `scripts` | 内容检查、导出检查、搜索与关联测试、静态预览 |
 
-网站正文是今后唯一需要日常编辑的展示内容。`../map__text` 是原始素材和首次整合底稿，修改它不会自动更新网站，避免误覆盖已整理页面。
+正文 MDX 与领域地图的结构化教学数据是日常维护入口。`../map__text` 是原始素材和首次整合底稿，修改它不会自动更新网站，避免误覆盖已整理页面。
 
 ## 3. 修改或新增一篇内容
+
+### 领域地图教学内容
+
+- `src/lib/maps/domain-learning.ts` 维护5个主题、18个具体知识点、18条归属关系与22条概念联系（12条核心、10条扩展、其中3条无向比较），并单独记录18步建议学习顺序。旧节点ID保留；`finetuning`现为监督微调SFT，新增`lora`、`retrieval`、`inference`。教学分类和建议顺序不表示必然技术依赖。
+- `src/lib/maps/teaching-case.ts` 是贯穿案例的3段自编材料。每个节点的`lesson`提供目标、解释、输入—过程—输出示例、辨析、理解检查与可选进阶块；示例不冒充课程原文、模型实测或已完成的实践。理解检查只展开解析，不记录成绩或改写资料状态。
+- `DomainExplorer`及`DomainGraph`只服务领域地图；其余两图继续使用原组件。领域地图保留主题浮层、两列小卡片、单列720px/17px正文、内部滚动和固定上下导航。筛选搜索包含教学内容；高级筛选默认折叠。全部关系模式使用`relations=all`查询参数；`view`、筛选和`#node-…`继续支持分享及前进后退。
+- `MapNode.lesson/topic`、`MapDefinition.learningPath/conceptRelations`均为可选字段，旧地图保持兼容。概念关系逐条记录说明、来源、核心标记、方向及材料关系/编辑建议；依据与核实状态分开，不自动升为已核实。地图不恢复完整文章入口。
+- `domain-lesson.tsx`统一渲染教学内容，检查解析和进阶区采用原生details，静态导出无脚本仍可阅读。`allowImportingTsExtensions`配合现有Node原生TypeScript测试；没有新增运行依赖。
 
 ### 整屏像素首页
 

@@ -1,6 +1,7 @@
 import { flattenNodes, getMap } from '@/lib/maps/content';
 import type { MapKey, MapLinks } from '@/lib/maps/types';
 import { MapExplorer } from './map-explorer';
+import { DomainExplorer } from './domain-explorer';
 import { documentStatuses, sourceTitles } from '@/lib/reading-context';
 
 export function mapMetadata(id: MapKey) {
@@ -22,5 +23,6 @@ export function MapPage({ id }: { id: MapKey }) {
       };
     }
   }
-  return <MapExplorer map={map} links={links} statuses={documentStatuses()} sourceTitles={sourceTitles()} />;
+  const Explorer = id === 'domain' ? DomainExplorer : MapExplorer;
+  return <Explorer map={map} links={links} statuses={documentStatuses()} sourceTitles={sourceTitles()} />;
 }

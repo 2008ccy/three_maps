@@ -1,0 +1,1819 @@
+{
+  "topics": [
+    {
+      "id": "task",
+      "title": "任务",
+      "teaching": {
+        "question": "回答需要做到什么？",
+        "overview": [
+          "先定义谁来提问、什么算答好。再从预测、生成与对齐三个角度检查回答。",
+          "三个角度可以同时存在。先把“回答正确、有依据、易理解、资料不足时不编造”转成可检查的例子，再进入资料与模型。"
+        ],
+        "outcome": "能为一个问题写出回答目标与验收要点。",
+        "classification": "预测机制、输出任务与行为目标是观察角度，不是互斥系统。"
+      }
+    },
+    {
+      "id": "data",
+      "title": "数据与评测",
+      "teaching": {
+        "question": "依据和检验标准从哪里来？",
+        "overview": [
+          "让每段资料能追溯，让每道评测题有标准。采集、清洗与检验分别承担不同职责。",
+          "评测标准尽早确定，避免训练或改动结束后再挑选容易答对的问题。采集、清洗与检验各有职责，不能用资料量替代质量。"
+        ],
+        "outcome": "能记录一份资料的出处，并为示例问题写出独立检验标准。",
+        "classification": "资料来源、处理过程与独立检验属于工作职责，评测会贯穿多个阶段。"
+      }
+    },
+    {
+      "id": "model",
+      "title": "模型",
+      "teaching": {
+        "question": "文字怎样被处理？",
+        "overview": [
+          "先理解文字怎样进入模型，再看信息怎样聚合。分清 Token、注意力与 Transformer 的不同作用。",
+          "这些概念说明模型怎样计算，不直接证明回答可靠。把结构与训练、推理、引用核对连接起来，才能避免仅凭模型名称判断效果。"
+        ],
+        "outcome": "能串起文字单位、信息聚合和结构组织，解释它们的不同作用。",
+        "classification": "Token、注意力、Transformer 处在不同观察层次，不能当作同类替代方案。"
+      }
+    },
+    {
+      "id": "training",
+      "title": "训练与适配",
+      "teaching": {
+        "question": "能力怎样形成和调整？",
+        "overview": [
+          "已有基座怎样形成，又怎样适配？把训练阶段、优化信号、任务和更新方案分开理解。",
+          "课程助手可以先使用已有模型。只有明确了稳定问题、样本、评测与资源条件，才讨论是否适配；这里的教学示例不表示本组已训练或获得收益。"
+        ],
+        "outcome": "能解释 SFT 与 LoRA 如何配合，并用独立评测检验是否值得适配。",
+        "classification": "训练阶段、优化目标、适配任务与更新方案并列便于学习，不是同级技术分类。"
+      }
+    },
+    {
+      "id": "system",
+      "title": "系统",
+      "teaching": {
+        "question": "怎样形成可用的答疑助手？",
+        "overview": [
+          "先找到证据，再组织回答并核对引用。分清检索、推理、部署与反馈，沿失败回查各环节。",
+          "任何一环成功都不能替代整体检查。先用手动教学示例走通输入输出，再在真实实验中保存配置、证据与失败，不把本静态地图写成已上线的模型服务。"
+        ],
+        "outcome": "能沿问题、证据、回答、核对与反馈走完一条完整检查链。",
+        "classification": "检索组件、问答架构、运行过程、服务组织和反馈各有边界，彼此可以组合。"
+      }
+    }
+  ],
+  "points": [
+    {
+      "id": "prediction",
+      "title": "预测",
+      "documents": [
+        {
+          "id": "D-TASK"
+        }
+      ],
+      "sources": [
+        "L6"
+      ],
+      "lesson": {
+        "role": "预测机制",
+        "goal": "说明语言生成中的预测，以及它与事实核实的区别。",
+        "explanation": [
+          "预测是在给定输入后估计可能的输出。分类可能预测一个类别，回归可能预测一个数值；语言模型的生成过程则可以反复预测后续 token。Token 是模型处理文字的单位，先把它理解为分词器给出的单位，不固定等于一个字。",
+          "这里关注“根据当前上下文，接下来可能是什么”，并不等于“这个结论有证据吗”。课程助手还需要核对材料与引用。同一问题的预测结果会受已有上下文影响，因此记录输入也是判断回答来源的重要部分。"
+        ],
+        "example": {
+          "input": "训练损失下降，就能说明课程答疑更可靠吗？",
+          "steps": [
+            "给出问题与 DEMO-02，观察需要延续的回答开头“不能直接说明，因为……”。",
+            "列出两种示意续写：继续讲独立评测，或错误地断言效果必然更好。",
+            "不编造模型概率，而是回到片段检查续写是否得到支持。"
+          ],
+          "output": "预测是形成候选文字的机制；可靠性判断还需要证据检查。此处的候选续写是人为教学示意，不是真实模型输出。",
+          "materials": [
+            "DEMO-01",
+            "DEMO-02"
+          ]
+        },
+        "confusions": [
+          "“更可能出现”与“事实已核实”不是同一个判断。",
+          "预测与生成有关联，不是两个互不相干、只能二选一的系统。"
+        ],
+        "check": {
+          "question": "一个回答读起来非常自然，就足以证明预测出的内容真实吗？",
+          "answer": "不足以。自然程度不能替代核实。应检查结论是否忠于支持材料，以及引用是否确实支持对应说法。"
+        }
+      }
+    },
+    {
+      "id": "generation",
+      "title": "生成",
+      "documents": [
+        {
+          "id": "D-TASK"
+        }
+      ],
+      "sources": [
+        "L6",
+        "L3"
+      ],
+      "lesson": {
+        "role": "输出任务",
+        "goal": "把问题、上下文与回答联系起来，并检查回答是否忠于材料。",
+        "explanation": [
+          "生成是根据输入与上下文组织文字的过程，可以形成解释、摘要或对话。课程助手的目标不是把资料原样堆出来，而是用适合读者基础的方式组织回答，同时保留必要条件与依据。这个目标需要在任务定义时写清楚。",
+          "语言生成可以通过连续预测后续 token 实现，但对输出的评价应回到任务：关键要点是否正确、材料条件有没有丢失、表达是否容易理解。回答更长、更流畅，都不能单独证明它完成了答疑任务。"
+        ],
+        "example": {
+          "input": "训练损失下降，就能说明课程答疑更可靠吗？",
+          "steps": [
+            "把 DEMO-02 中的限制与需要检查的项目分别圈出来。",
+            "按“先给判断，再解释原因，最后指出怎样检验”的顺序组织。",
+            "核对改写有没有把“还需评测”误写成“必然更好”。"
+          ],
+          "output": "“不能仅凭损失下降判断答疑更可靠。还要用独立问题检查回答、引用和资料不足时的处理［DEMO-02］。”这是人工编写的合格表达示例。",
+          "materials": [
+            "DEMO-02"
+          ]
+        },
+        "confusions": [
+          "生成表达和事实核对需要配合，生成得顺畅不等于依据充分。",
+          "对齐是对行为的要求，可以与生成任务同时存在。"
+        ],
+        "check": {
+          "question": "把回答扩写两倍，但遗漏了“独立评测”，算更好的解释吗？",
+          "answer": "不能据篇幅判断。遗漏了材料中的关键限制，反而可能误导读者。应先核对要点，再比较可理解性。"
+        }
+      }
+    },
+    {
+      "id": "alignment",
+      "title": "对齐",
+      "documents": [
+        {
+          "id": "D-TASK"
+        },
+        {
+          "id": "D-METHODS"
+        }
+      ],
+      "sources": [
+        "L6",
+        "L3"
+      ],
+      "lesson": {
+        "role": "行为目标",
+        "goal": "写出引用、澄清与恰当拒答的要求，避免把它们当成正确性保证。",
+        "explanation": [
+          "对齐在这里指让助手的行为符合任务和使用约束。例如按问题要求解释术语，依据足够时给出可核对的引用，问题不明确时追问，资料缺失时说明不知道。这些要求需要转成可以观察的例子，而不是一句抽象口号。",
+          "提示、监督微调和偏好相关方法可以服务不同层面的行为改善，但先要判断到底希望哪一种变化。对齐不是给所有回答盖上正确印章：即使格式符合要求，内容仍可能错误，引用也可能不支持结论。"
+        ],
+        "example": {
+          "input": "本课程期末考占多少分？",
+          "steps": [
+            "检查三段教学材料是否提到本课程的考核比例。",
+            "发现没有相关依据，要求助手说明资料缺失，而不是猜一个比例。",
+            "将“有依据时引用、无依据时说明不足”写进验收标准。"
+          ],
+          "output": "“提供的材料没有课程考核比例，无法据此确定。请补充课程大纲或考核说明。”这是预期行为示例，不是实际运行记录。",
+          "materials": [
+            "DEMO-01",
+            "DEMO-02",
+            "DEMO-03"
+          ]
+        },
+        "confusions": [
+          "恰当拒答是针对依据不足，不是所有问题都拒绝回答。",
+          "对齐描述行为目标，生成描述输出任务，二者不是互斥类别。"
+        ],
+        "check": {
+          "question": "回答附有整齐的引用编号，就说明满足了有依据答疑的要求吗？",
+          "answer": "还不够。必须逐项检查引用的片段是否支持结论。格式正确与证据正确是两个检查项。"
+        }
+      }
+    },
+    {
+      "id": "collection",
+      "title": "采集",
+      "documents": [
+        {
+          "id": "D-PIPELINE"
+        },
+        {
+          "id": "K-CARD"
+        }
+      ],
+      "sources": [
+        "L3",
+        "L6"
+      ],
+      "lesson": {
+        "role": "资料来源",
+        "goal": "为一份材料记录出处、范围和版本，说明为什么能找到不等于能任意使用。",
+        "explanation": [
+          "采集不是把能下载的材料都塞进系统，而是选择与任务有关、允许使用且可以追溯的资料。至少记录来源、作者或提供方、可使用范围、章节或页码、版本与获取时间，才能在回答中回到原文核对。",
+          "资料以后可能用于检索，也可能在许可允许时参与训练，二者需要分别考虑使用条件。不要把公开访问等同于允许训练、公开展示或再分发。课程助手需要的是可靠依据，而不是一个无法解释来源的大文件夹。"
+        ],
+        "example": {
+          "input": "训练损失下降，就能说明课程答疑更可靠吗？",
+          "steps": [
+            "给自编教学段落登记 DEMO-02，注明“本网站教学示例”。",
+            "记录整理日期与版本，并保留它支持哪些检查项目。",
+            "真实课件应另行确认授权；不把本例伪装成课程原文或已获授权的课件。"
+          ],
+          "output": "得到可追溯的材料记录：DEMO-02／教学示例／当前版本／支持损失与评测关系。材料记录是后续清洗与引用的起点。",
+          "materials": [
+            "DEMO-02"
+          ]
+        },
+        "confusions": [
+          "能访问材料不等于拥有所有使用权；记录来源也不能代替获得许可。",
+          "资料量多不直接意味着知识更可靠，还要检查相关性与内容质量。"
+        ],
+        "check": {
+          "question": "只保留课件解析后的纯文本，删掉页码和出处，会影响什么？",
+          "answer": "会削弱后续检索片段回到原文核查的能力，也难以识别版本和使用范围。应把出处与内容一起保留。"
+        }
+      }
+    },
+    {
+      "id": "cleaning",
+      "title": "清洗",
+      "documents": [
+        {
+          "id": "D-PIPELINE"
+        },
+        {
+          "id": "D-EVALUATION"
+        }
+      ],
+      "sources": [
+        "L3",
+        "L6"
+      ],
+      "lesson": {
+        "role": "处理过程",
+        "goal": "发现会改变含义的清洗错误，并检查训练与测试之间的重复。",
+        "explanation": [
+          "清洗是把采集到的资料变成可靠输入，同时保留它原本的含义与出处。需要检查文字、公式、表格是否解析正确，去除无关重复，并把内容与来源标识绑定。自动处理结束后仍要抽样回看原文。",
+          "训练和测试资料的划分也是检查重点。重复或近似的问题若同时出现在两边，测试可能变成对已见内容的再现。清洗不能只追求文本整齐，还要确认关键条件没有被删掉、评测答案没有被带进训练。"
+        ],
+        "example": {
+          "input": "训练损失下降，就能说明课程答疑更可靠吗？",
+          "steps": [
+            "构造一个故意错误的清洗结果，把 DEMO-02 的“不直接证明”删成“证明”。",
+            "将结果与原段落逐字核对，发现判断被反转。",
+            "恢复关键限制，保留 DEMO-02 编号，再检查相关问答是否重复进入训练与测试。"
+          ],
+          "output": "得到忠于材料且带出处的片段。错误版本只用于演示清洗风险，不进入正式知识依据。",
+          "materials": [
+            "DEMO-02"
+          ]
+        },
+        "confusions": [
+          "清洗不是把“不”“可能”等条件词当噪声删除。",
+          "去重和防泄漏有关，但仅做一次精确去重仍不保证没有近似重复。"
+        ],
+        "check": {
+          "question": "训练题与测试题措辞不同但答案和场景相同，能仅凭文本不同认定独立吗？",
+          "answer": "不能。还需检查内容、来源和近似关系。应把可能重合的样例单独核查，避免只换说法就认为没有泄漏。"
+        }
+      }
+    },
+    {
+      "id": "evaluation-set",
+      "title": "评测集",
+      "documents": [
+        {
+          "id": "K-EVAL"
+        },
+        {
+          "id": "D-EVALUATION"
+        }
+      ],
+      "sources": [
+        "L3",
+        "L6"
+      ],
+      "lesson": {
+        "role": "独立检验",
+        "goal": "写出一条测试题及评分要点，区分训练记录和任务收益。",
+        "explanation": [
+          "评测集是一组事先确定的问题、支持材料和判分规则，用来比较不同方案。独立指题目和答案没有被拿来训练或反复调方案，不只是换一个文件名。评测前先约定什么算答对，才能减少看完答案后临时改标准的倾向。",
+          "课程答疑不能只检查说法是否流畅。还要检查关键条件有没有遗漏、引用是否真的支持结论，以及资料没有答案时是否恰当说明不知道。先固定问题和设置，再保存逐题回答与判分理由。"
+        ],
+        "example": {
+          "input": "训练损失下降，就能说明课程答疑更可靠吗？",
+          "steps": [
+            "写下要点：不能由训练损失直接推出答疑可靠；需要独立任务检验。",
+            "把“是否保留这个限制”和“引用是否支持结论”分开判断。",
+            "另加无答案题“本课程期末考占多少分”，三段教学材料均没有该信息。"
+          ],
+          "output": "合格示例答复应说明还需独立评测，并引用 DEMO-02；对考核比例应说明资料不足。这里展示评分规则，不报告任何模型得分。",
+          "materials": [
+            "DEMO-02"
+          ]
+        },
+        "confusions": [
+          "损失是训练优化信号，评测集是检查任务表现的一组独立问题。两者可以相互参照，不能互相替代。",
+          "只有文件名不同、题目却高度重复，仍可能造成数据泄漏。"
+        ],
+        "check": {
+          "question": "训练前后都换了测试题，还能把分数差直接归因于微调吗？",
+          "answer": "不能。题目难度与评分规则也变了。应固定独立问题、提示和判分规则，保留配置后再比较；这仍不自动排除其他混杂因素。"
+        },
+        "advanced": [
+          {
+            "title": "一条评测记录应包含什么",
+            "table": {
+              "headers": [
+                "字段",
+                "应记录的内容"
+              ],
+              "rows": [
+                [
+                  "问题与依据",
+                  "题目、支持片段及版本"
+                ],
+                [
+                  "判分",
+                  "内容、引用、拒答分别记录及理由"
+                ],
+                [
+                  "运行条件",
+                  "模型、提示、检索设置与时间"
+                ]
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "token",
+      "title": "Token",
+      "documents": [
+        {
+          "id": "K-TOKEN"
+        }
+      ],
+      "sources": [
+        "L6",
+        "S07"
+      ],
+      "lesson": {
+        "role": "输入单位",
+        "goal": "解释分词器的作用，避免把字符数直接当成 token 数。",
+        "explanation": [
+          "模型不能直接按人的阅读习惯处理整段文字。分词器先把文本切成 token，并映射为编号，模型再把这些编号转成可计算的表示。可以先把 token 看作所选系统处理文字的基本单位，不急着背诵实现细节。",
+          "不同分词器可能对同一句话给出不同切分。一个汉字、英文单词、标点都不固定对应一个 token。输入长度和上下文限制通常与这些单位有关，实际长度需要用对应模型的分词器检查，而不是凭肉眼估计。"
+        ],
+        "example": {
+          "input": "训练损失下降，就能说明课程答疑更可靠吗？",
+          "steps": [
+            "拿示例问题作为输入，先标出文字、标点和词组。",
+            "人为画出若干可能的切分，仅说明“同一句话可以有不同单位边界”。",
+            "不报告伪造的 token 数；真实操作需选定分词器并记录版本后观察。"
+          ],
+          "output": "理解了“文本 → token 编号 → 可计算表示”的入口。这些示意边界不是任何真实模型的实际分词结果。",
+          "materials": [
+            "DEMO-01"
+          ]
+        },
+        "confusions": [
+          "字符、单词、token 不是固定的一一对应关系。",
+          "token 编号只是入口，不能直接把编号大小解释为词义相似程度。"
+        ],
+        "check": {
+          "question": "十个汉字一定占十个 token 吗？",
+          "answer": "不一定。切分由具体分词器决定，需用匹配的分词器检查。不能把这个教学示意当成真实切分记录。"
+        }
+      }
+    },
+    {
+      "id": "attention",
+      "title": "注意力",
+      "documents": [
+        {
+          "id": "K-TRANSFORMER"
+        },
+        {
+          "id": "D-CONCEPTS"
+        }
+      ],
+      "sources": [
+        "S01",
+        "L6"
+      ],
+      "lesson": {
+        "role": "计算机制",
+        "goal": "用小例子解释相关性权重与加权聚合，并知道它不代表完整解释。",
+        "explanation": [
+          "注意力按当前计算的相关程度聚合上下文信息。查询 Q 可理解为当前需要寻找什么，键 K 参与比较匹配程度，值 V 是被聚合的信息。先理解“比较得到权重，再加权组合”，再去学习矩阵表达。",
+          "这些计算是模型内部机制，不是人工给资料标注可信度。某处权重大，并不自动说明它就是回答的完整原因，也不能证明结论真实。课程答疑中的证据是否支持结论，仍需要独立核对资料。"
+        ],
+        "example": {
+          "input": "为理解课程问题的上下文聚合，先用数值 2、4 和人为权重 0.75、0.25 做一个小算例。",
+          "steps": [
+            "人为设两个一维值为 2 和 4，权重设为 0.75 和 0.25。",
+            "计算加权聚合：0.75×2＋0.25×4＝2.5。",
+            "说明权重只是人为指定以便检查算式，不来自模型，也不是对教学片段的可信度评分。"
+          ],
+          "output": "得到 2.5，演示了加权聚合。真实注意力还涉及表示、匹配和归一化，不能用这个算例替代模型整体计算。",
+          "materials": [
+            "DEMO-01",
+            "DEMO-03"
+          ]
+        },
+        "confusions": [
+          "注意力是一种机制，Transformer 是组织多种模块的结构。",
+          "注意力权重不是引用核验分数，也不应被当作完整因果解释。"
+        ],
+        "check": {
+          "question": "把同一个值的权重提高，能直接说明事实更可靠吗？",
+          "answer": "不能。加权计算改变信息的聚合方式，事实可靠性还需要核对支持材料与任务表现。这是两类不同的检查。"
+        },
+        "advanced": [
+          {
+            "title": "进阶：缩放点积注意力",
+            "formula": "Attention(Q,K,V) = softmax(QKᵀ / √dₖ)V",
+            "paragraphs": [
+              "先比较 Q 与 K，再归一化得到权重，最后聚合 V。符号表达用于连接原始材料，不代表所有后续模型的完整实现。"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "transformer",
+      "title": "Transformer",
+      "documents": [
+        {
+          "id": "K-TRANSFORMER"
+        },
+        {
+          "id": "D-CONCEPTS"
+        }
+      ],
+      "sources": [
+        "S01"
+      ],
+      "lesson": {
+        "role": "模型结构",
+        "goal": "区分模型结构、内部机制和训练过程。",
+        "explanation": [
+          "Transformer 把注意力、前馈网络等模块组织起来处理序列。注意力说明上下文信息怎样聚合；结构说明这些模块怎样组合、逐层计算。可以把它先理解为计算的组织方式，而不是某个已经完成训练的具体产品。",
+          "同一种结构可以配合不同数据与训练任务形成不同模型。已有模型如何处理输入，还要看具体配置和实现。原始论文提供重要起点，但不能被直接套用为每个后续模型的完整描述，更不能由结构名称推出课程答疑的质量。"
+        ],
+        "example": {
+          "input": "训练损失下降，就能说明课程答疑更可靠吗？",
+          "steps": [
+            "把课程问题转换为输入表示，作为模型计算的入口。",
+            "画出“表示 → 注意力等模块 → 后续计算 → 输出”的简化顺序。",
+            "分别标明：这里描述结构；参数如何形成要到预训练与适配部分继续理解。"
+          ],
+          "output": "得到一张机制与结构的简化示意，帮助区分“怎样组织计算”和“怎样学习参数”；不是任何具体模型的完整架构图。",
+          "materials": [
+            "DEMO-01",
+            "DEMO-02"
+          ]
+        },
+        "confusions": [
+          "Transformer 与注意力不是同义词。",
+          "模型结构、训练阶段和实际系统服务属于不同观察层次。"
+        ],
+        "check": {
+          "question": "知道一个模型采用 Transformer，就能推出它一定会正确引用课程材料吗？",
+          "answer": "不能。还需要资料、训练与提示、检索和评测等条件。结构名称不足以证明某项任务表现。"
+        }
+      }
+    },
+    {
+      "id": "pretraining",
+      "title": "预训练",
+      "documents": [
+        {
+          "id": "K-PRETRAIN"
+        },
+        {
+          "id": "M-BASE"
+        }
+      ],
+      "sources": [
+        "L6",
+        "L3"
+      ],
+      "lesson": {
+        "role": "训练阶段",
+        "goal": "说明已有基座的来处，以及使用基座不等于本组做过预训练。",
+        "explanation": [
+          "预训练是在较大范围数据和训练任务上形成可复用能力的过程。基座是后续使用或适配的已有模型，不是从空白开始的每次聊天。理解这一层，可以区分模型能力形成与课程助手应用构建的不同工作规模。",
+          "课程助手可以先使用已有基座，将精力放在资料、检索、提示和独立评测。是否继续做监督微调，需要看稳定的行为问题与资源条件。参数量和预训练数据量都不能直接替代课程任务中的质量检查。"
+        ],
+        "example": {
+          "input": "训练损失下降，就能说明课程答疑更可靠吗？",
+          "steps": [
+            "列出本例已有条件：三段教学材料与一个候选已有模型。",
+            "明确没有本组从头训练基座的记录，因此不把应用演示写成预训练成果。",
+            "先设计独立问题与基线，再判断已有能力是否足够以及是否值得适配。"
+          ],
+          "output": "将“选择已有基座”“运行回答”“必要时做适配”区分开。这里给出学习与比较流程，不推荐具体型号或声称完成训练。",
+          "materials": [
+            "DEMO-02"
+          ]
+        },
+        "confusions": [
+          "使用预训练模型不等于执行了预训练。",
+          "模型大或训练数据多，也仍需在课程问题上检验回答与引用。"
+        ],
+        "check": {
+          "question": "调用已有模型回答了课程问题，能写成本组完成了预训练吗？",
+          "answer": "不能。那是对已有模型的使用或推理。应准确记录选择、配置和实际做过的工作，不把应用调用写成基座训练。"
+        }
+      }
+    },
+    {
+      "id": "loss",
+      "title": "损失",
+      "documents": [
+        {
+          "id": "K-LOSS"
+        },
+        {
+          "id": "D-CONCEPTS"
+        }
+      ],
+      "sources": [
+        "L6",
+        "L3"
+      ],
+      "lesson": {
+        "role": "优化目标",
+        "goal": "解释训练损失反映什么，以及为什么需要另看独立任务表现。",
+        "explanation": [
+          "损失是训练时用来衡量当前输出与目标差距的数值。训练过程利用由此得到的信号更新参数，使当前目标更好地被满足。读一条损失曲线，至少要同时知道训练数据、目标定义和比较设置，不能只看曲线向下。",
+          "课程答疑更可靠还涉及未见问题的正确性、引用与资料不足时的处理。训练信号和任务结果有关联，但不是同一件事。数据重复、目标不合适或对训练样例过度适应，都可能使好看的训练记录不能变成真实收益。"
+        ],
+        "example": {
+          "input": "训练损失下降，就能说明课程答疑更可靠吗？",
+          "steps": [
+            "不编造一条实际 loss 曲线，先假设某次训练记录显示数值下降。",
+            "用同一组独立题核对是否保留“还需评测”的限制以及引用是否正确。",
+            "将训练记录与逐题任务判断分栏保存，避免用一个数字替代全部结论。"
+          ],
+          "output": "合适的判断是“训练目标上的数值改善，实际答疑收益仍待独立检验”，而不是填写一个并未测得的准确率。",
+          "materials": [
+            "DEMO-02"
+          ]
+        },
+        "confusions": [
+          "训练损失与独立评测分别观察优化信号和任务表现。",
+          "不同数据与设置下的 loss 数值，不宜脱离条件直接比较。"
+        ],
+        "check": {
+          "question": "loss 下降，但无答案题开始乱编，能称为答疑更可靠吗？",
+          "answer": "不能直接这样称呼。至少无答案处理变差了，应分项记录并查明原因。训练信号改善不能抹掉任务中的失败。"
+        }
+      }
+    },
+    {
+      "id": "finetuning",
+      "title": "监督微调 SFT",
+      "documents": [
+        {
+          "id": "K-SFT"
+        },
+        {
+          "id": "T-TRL"
+        }
+      ],
+      "sources": [
+        "S06",
+        "L3"
+      ],
+      "lesson": {
+        "role": "适配任务",
+        "goal": "说明 SFT 学习什么，以及它与 LoRA 分别回答什么问题。",
+        "explanation": [
+          "监督微调 SFT 用“输入与示范回答”继续训练已有模型，让它学习特定任务中的输出行为。基座指适配前已有的模型，参数指模型中可被训练更新的数值。先有明确、稳定的行为问题，再准备经过核对的示范样本。",
+          "SFT 描述训练任务；LoRA 描述更新哪些参数的一种方案。可以使用 LoRA 做 SFT，也可以更新全部参数。示范中的格式、引用和拒答方式都可能被学习，但训练过这些样例并不保证所有新问题都正确。"
+        ],
+        "example": {
+          "input": "训练损失下降，就能说明课程答疑更可靠吗？",
+          "steps": [
+            "把问题和 DEMO-02 作为输入材料。",
+            "写出示范回答：“不能直接说明。还需独立问题检验内容、引用和无答案处理［DEMO-02］。”",
+            "核对示范是否忠于资料，再把不同问题留作独立评测，而非把所有题都送去训练。"
+          ],
+          "output": "得到一条待核查的训练样本设计，而不是已经训练好的模型；是否有收益必须另做对照评测。",
+          "materials": [
+            "DEMO-02"
+          ]
+        },
+        "confusions": [
+          "微调改变模型参数，RAG 在回答时提供外部资料。资料缺失和输出习惯不合适，需要分别排查。",
+          "LoRA 不是 SFT 的反义词；一种是更新方案，一种是训练任务。"
+        ],
+        "check": {
+          "question": "“用了 LoRA，所以没有进行 SFT”这个判断成立吗？",
+          "answer": "不成立。可以在 SFT 任务中使用 LoRA 更新适配器参数。还需检查实际训练数据、目标和配置，不能只凭工具名称判断。"
+        },
+        "advanced": [
+          {
+            "title": "SFT 与 LoRA 的区别",
+            "table": {
+              "headers": [
+                "对象",
+                "回答的问题",
+                "本例需要检查"
+              ],
+              "rows": [
+                [
+                  "SFT",
+                  "用什么示范学习什么行为",
+                  "示范回答及数据切分"
+                ],
+                [
+                  "LoRA",
+                  "哪些参数参与更新",
+                  "适配器配置和实现条件"
+                ]
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "lora",
+      "title": "LoRA",
+      "documents": [
+        {
+          "id": "K-LORA"
+        },
+        {
+          "id": "K-QLORA"
+        },
+        {
+          "id": "T-PEFT"
+        }
+      ],
+      "sources": [
+        "S03",
+        "S04",
+        "S05"
+      ],
+      "lesson": {
+        "role": "参数更新方案",
+        "goal": "解释冻结基座、训练增量，以及为什么少量参数不等于免费训练。",
+        "explanation": [
+          "LoRA 是一种参数高效适配方法。冻结基座表示在适配时保留原有权重不更新，另外训练一组低秩增量。权重可以看成参与模型计算的数值表；低秩用两个较窄的矩阵表达增量，不要求初学者先掌握完整矩阵推导。",
+          "它可以用在监督微调等训练任务中。减少可训练参数有助于改变适配的资源需求，但整套运行仍包含基座、激活、数据与优化过程。是否适合当前模型、任务和设备，需要核对实现条件，不能由“参数少”直接推出效果更好或总成本最低。"
+        ],
+        "example": {
+          "input": "沿用课程助手的 SFT 示范样本，将待适配权重示意为 4×4 的矩阵 W。",
+          "steps": [
+            "把基座权重示意为一个 4×4 矩阵 W。",
+            "另设 4×1 的 B 与 1×4 的 A，二者相乘得到同样为 4×4 的增量。",
+            "在 SFT 示例中更新 A、B，保留 W；这个小矩阵只解释形状，不模拟真实模型资源。"
+          ],
+          "output": "W 与增量共同参与适配后的计算。示例没有训练结果、准确率或显存结论，也不意味着所有实现只需保存这些数值。",
+          "materials": [
+            "DEMO-02"
+          ]
+        },
+        "confusions": [
+          "冻结不是删除基座；运行时仍需要基座和适配器配合。",
+          "低秩是增量表达的约束，不能简单理解为“把整套模型缩小”。"
+        ],
+        "check": {
+          "question": "只拿到一个 LoRA 适配器，就能不依赖匹配的基座回答问题吗？",
+          "answer": "通常不能。适配器表达对匹配基座的增量，需要核对基座版本、结构和加载方式。不要把适配器当作独立完整模型。"
+        },
+        "advanced": [
+          {
+            "title": "进阶：增量表达与 QLoRA",
+            "formula": "W′ = W + (α / r) BA",
+            "paragraphs": [
+              "r 是需要选择的秩，α 控制增量的缩放；这只是表达方式，不是本项目的推荐参数。",
+              "QLoRA 在量化冻结基座上训练低秩适配器。量化、计算精度和训练状态会共同影响资源，不能把量化权重大小等同于训练峰值显存。"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "retrieval",
+      "title": "检索与证据片段",
+      "documents": [
+        {
+          "id": "T-RETRIEVAL"
+        },
+        {
+          "id": "D-PIPELINE"
+        }
+      ],
+      "sources": [
+        "S02",
+        "L3"
+      ],
+      "lesson": {
+        "role": "检索组件",
+        "goal": "把问题对应到支持片段，并区分相关资料和有效证据。",
+        "explanation": [
+          "检索按问题从资料中寻找相关片段。先把材料整理成可定位的片段，建立查找所需的索引，再返回候选内容和出处。小规模资料可以先用关键词方法跑通流程，不必一开始就搭建复杂系统。",
+          "向量检索把文本表示为可比较的向量；索引帮助查找，重排用于进一步排序。它们分别服务检索的不同环节，不是事实核验的替代。主题相近的片段可能仍不足以回答问题，因此要检查候选片段是否真的包含支持结论的条件。"
+        ],
+        "example": {
+          "input": "训练损失下降，就能说明课程答疑更可靠吗？",
+          "steps": [
+            "查找“训练损失”和“可靠”，把 DEMO-02 作为支持片段。",
+            "将只解释 token 的 DEMO-01 作为不支持当前结论的对照。",
+            "保留片段编号与文字，交给 RAG 的回答过程，再核对是否正确使用。"
+          ],
+          "output": "当前问题应保留 DEMO-02 的关键限制，不能因为某段材料也谈模型就把它当成有效证据。这里是手动选片段，不报告检索命中率。",
+          "materials": [
+            "DEMO-01",
+            "DEMO-02"
+          ]
+        },
+        "confusions": [
+          "主题相关与足以支持结论是不同的标准。",
+          "索引、向量与重排不是三个都必须启用的独立系统，是否采用要回到任务评测。"
+        ],
+        "check": {
+          "question": "检索返回了讲 token 的片段，就能证明损失下降会提升答疑质量吗？",
+          "answer": "不能。该片段没有支持这个判断。应返回损失与独立评测的材料，找不到时说明依据不足。"
+        },
+        "advanced": [
+          {
+            "title": "分块、索引与排序各做什么",
+            "table": {
+              "headers": [
+                "环节",
+                "用途",
+                "需要检查"
+              ],
+              "rows": [
+                [
+                  "分块",
+                  "形成可定位片段",
+                  "上下文与出处是否完整"
+                ],
+                [
+                  "索引",
+                  "支持查找",
+                  "资料与索引版本是否匹配"
+                ],
+                [
+                  "重排",
+                  "调整候选顺序",
+                  "是否确有任务收益"
+                ]
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "rag",
+      "title": "RAG",
+      "documents": [
+        {
+          "id": "K-RAG"
+        },
+        {
+          "id": "T-RETRIEVAL"
+        }
+      ],
+      "sources": [
+        "S02",
+        "L3"
+      ],
+      "lesson": {
+        "role": "问答架构",
+        "goal": "手动走完检索、生成和引用核对，区分两类失败。",
+        "explanation": [
+          "RAG 是检索增强生成：先按问题从资料中寻找相关片段，再把这些片段交给模型组织回答。这里的“增强”是提供外部上下文，不意味着资料一旦给到模型，回答就自动正确。先保存问题与命中的片段，才能判断后续错误发生在哪里。",
+          "如果支持片段没有被找到，应先查资料处理和检索；如果资料已经正确返回，却被回答误用，应查提示、生成和证据核对。本网站采用这一应用思路，不声称复现原始 RAG 论文的全部训练设计。"
+        ],
+        "example": {
+          "input": "训练损失下降，就能说明课程答疑更可靠吗？",
+          "steps": [
+            "检索示例问题，找到 DEMO-02，并保留片段编号。",
+            "将问题和该片段交给回答过程，要求保留关键限制。",
+            "核对“不能直接说明”是否有片段支持，而不是只检查有没有引用符号。"
+          ],
+          "output": "教学示例回答：“不能直接说明，还需独立任务评测［DEMO-02］。”若回答“损失越低就必然更可靠”，即使附了引用也没有正确使用材料。",
+          "materials": [
+            "DEMO-02",
+            "DEMO-03"
+          ]
+        },
+        "confusions": [
+          "检索找到资料不等于生成正确；引用存在不等于引用支持结论。",
+          "RAG 提供回答时的资料，SFT 改善通过示范学习的行为，两者可以组合而非必须二选一。"
+        ],
+        "check": {
+          "question": "正确片段已返回，回答却反着理解，应该只扩大检索库吗？",
+          "answer": "不应只扩大库。先保存输入输出，检查片段使用、提示和生成过程，并用独立题复测。问题已经不只是“没找到资料”。"
+        },
+        "advanced": [
+          {
+            "title": "与 SFT 的比较",
+            "table": {
+              "headers": [
+                "问题",
+                "优先检查",
+                "不能直接推出"
+              ],
+              "rows": [
+                [
+                  "缺少可更新的知识依据",
+                  "资料、分块与检索",
+                  "换大模型一定解决"
+                ],
+                [
+                  "资料正确但行为持续不合要求",
+                  "提示、示范与适配必要性",
+                  "微调一定优于 RAG"
+                ]
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "inference",
+      "title": "推理",
+      "documents": [
+        {
+          "id": "K-DEPLOY"
+        }
+      ],
+      "sources": [
+        "L2",
+        "L6",
+        "S10"
+      ],
+      "lesson": {
+        "role": "运行过程",
+        "goal": "区分模型运行生成、参数训练和服务部署。",
+        "explanation": [
+          "推理是使用已有模型处理输入、得到输出的运行过程。课程助手把问题、提示与检索片段送入模型，再接收生成的文字。在通常的回答调用中，不是在为每条问题重新训练模型参数。是否发生训练应以实际流程为准。",
+          "推理需要模型运行条件或服务接口，也会带来时延、资源和使用成本。部署则进一步组织接口、访问、错误处理与服务运行。模型能在一次调用中回答，并不说明网站已经可靠地为不同使用者提供了服务。"
+        ],
+        "example": {
+          "input": "训练损失下降，就能说明课程答疑更可靠吗？",
+          "steps": [
+            "先准备问题、DEMO-02 和要求保留引用的提示。",
+            "把“输入送入已有模型、接收回答”标为推理环节，本例只手动演示，不实际调用模型。",
+            "将响应时延、错误与使用量列为真实试验时应记录的项目，不填写伪造测量值。"
+          ],
+          "output": "明确了输入、输出与需要观测的运行项目，也区分了推理、训练和部署。手写的示例答案不算模型实测输出。",
+          "materials": [
+            "DEMO-02"
+          ]
+        },
+        "confusions": [
+          "推理不是每次都重新训练模型，也不等于网站部署完成。",
+          "一次成功响应不能证明持续服务质量或总成本。"
+        ],
+        "check": {
+          "question": "网站能打开，就能证明模型推理服务一直可用吗？",
+          "answer": "不能。静态网页托管与模型推理是不同环节，需要分别检查。这个网站本身不调用模型。"
+        }
+      }
+    },
+    {
+      "id": "deployment",
+      "title": "部署",
+      "documents": [
+        {
+          "id": "K-DEPLOY"
+        },
+        {
+          "id": "T-VLLM"
+        },
+        {
+          "id": "T-OLLAMA"
+        }
+      ],
+      "sources": [
+        "S10",
+        "L3"
+      ],
+      "lesson": {
+        "role": "服务组织",
+        "goal": "把网页托管、推理接口和可靠运行分开检查。",
+        "explanation": [
+          "部署是把模型能力组织成可以访问的服务，包括加载或接入模型、处理请求与响应、记录异常，并考虑时延和预算。课程助手还需要展示引用，让使用者能核对材料。网页发布只是整体中的一部分。",
+          "可以根据任务和设备条件比较托管接口与本地服务，但不能脱离质量、维护和成本作绝对判断。已有开放权重也不代表运行没有成本。本静态地图用于学习与展示，不在后台调用模型，更不能被当成已部署答疑服务的证明。"
+        ],
+        "example": {
+          "input": "训练损失下降，就能说明课程答疑更可靠吗？",
+          "steps": [
+            "画出“页面 → 服务接口 → 检索与推理 → 返回回答与引用”的教学顺序。",
+            "分别列出网页打不开、接口失败、依据找错三种不同失败。",
+            "给每个环节安排需要记录的错误与版本，但不虚构本组已经上线的模型服务。"
+          ],
+          "output": "得到部署检查清单：页面可达、接口正常、引用可核对、异常可解释；这些是待验证条件，不是完成声明。",
+          "materials": [
+            "DEMO-02",
+            "DEMO-03"
+          ]
+        },
+        "confusions": [
+          "网页托管、推理运行、训练实验有不同资源需求。",
+          "开放权重与免费运行不是同一回事。"
+        ],
+        "check": {
+          "question": "开发电脑关机后页面还能访问，是否就证明整套答疑服务都不受影响？",
+          "answer": "还需确认推理、检索和接口各自运行在哪里。仅凭页面能访问，无法推出其他服务的状态。"
+        }
+      }
+    },
+    {
+      "id": "monitoring",
+      "title": "监控",
+      "documents": [
+        {
+          "id": "D-PIPELINE"
+        },
+        {
+          "id": "D-EVALUATION"
+        }
+      ],
+      "sources": [
+        "L3",
+        "L6"
+      ],
+      "lesson": {
+        "role": "反馈修订",
+        "goal": "把一条已核实的失败转成可复查、可回归的检查。",
+        "explanation": [
+          "监控关注真实使用中的失败类型、引用可用性、响应时间与资源情况。记录不应只停留在访问量，还要保存足以定位问题的版本和必要输入输出。反馈先核实，再决定是否修订资料、检索、提示或模型设置。",
+          "经核实的失败可以补入后续评测或回归检查，但用于反复调试的题不再自动代表独立最终测试。资料或配置改变后，需要在固定条件下重查，并保留修改理由。这个过程是持续修订，而不是积累一个没有处理结果的意见列表。"
+        ],
+        "example": {
+          "input": "训练损失下降，就能说明课程答疑更可靠吗？",
+          "steps": [
+            "构造故意错误的回答：“训练损失越低就必然更可靠［DEMO-02］”。",
+            "回看 DEMO-02，确认引用没有支持该断言，登记为“错误使用证据”。",
+            "把案例加入回归检查，修订后复测；另保留没有参与反复调试的独立题。"
+          ],
+          "output": "得到一条教学失败记录及待执行的修订步骤。它不是实际用户反馈，也不证明本组已经完成过修复实验。",
+          "materials": [
+            "DEMO-02",
+            "DEMO-03"
+          ]
+        },
+        "confusions": [
+          "访问量不能替代质量监控；未经核实的反馈也不能直接变成事实。",
+          "回归题用于检查修复，独立测试用于判断更一般的表现，二者要区分。"
+        ],
+        "check": {
+          "question": "某题被反复调试到答对，还能把它当作完全未见过的最终测试题吗？",
+          "answer": "不能。它已参与调试，应作为回归案例保存，另留独立问题检查收益。这能减少把针对某题的修补误当作普遍提升。"
+        }
+      }
+    }
+  ],
+  "learningPath": [
+    "prediction",
+    "generation",
+    "alignment",
+    "collection",
+    "cleaning",
+    "evaluation-set",
+    "token",
+    "attention",
+    "transformer",
+    "pretraining",
+    "loss",
+    "finetuning",
+    "lora",
+    "retrieval",
+    "rag",
+    "inference",
+    "deployment",
+    "monitoring"
+  ],
+  "relations": [
+    {
+      "from": "task",
+      "to": "prediction",
+      "targetMap": "domain",
+      "label": "包含",
+      "kind": "hierarchy",
+      "sources": [
+        "L6"
+      ],
+      "verification": "待核实",
+      "id": "domain:task:domain:prediction:包含"
+    },
+    {
+      "from": "task",
+      "to": "generation",
+      "targetMap": "domain",
+      "label": "包含",
+      "kind": "hierarchy",
+      "sources": [
+        "L6",
+        "L3"
+      ],
+      "verification": "待核实",
+      "id": "domain:task:domain:generation:包含"
+    },
+    {
+      "from": "generation",
+      "to": "ranking-task",
+      "targetMap": "cognition",
+      "label": "由任务评测检验",
+      "kind": "relation",
+      "sources": [
+        "L6",
+        "L3"
+      ],
+      "verification": "待核实",
+      "id": "domain:generation:cognition:ranking-task:由任务评测检验"
+    },
+    {
+      "from": "task",
+      "to": "alignment",
+      "targetMap": "domain",
+      "label": "包含",
+      "kind": "hierarchy",
+      "sources": [
+        "L6",
+        "L3"
+      ],
+      "verification": "待核实",
+      "id": "domain:task:domain:alignment:包含"
+    },
+    {
+      "from": "data",
+      "to": "collection",
+      "targetMap": "domain",
+      "label": "包含",
+      "kind": "hierarchy",
+      "sources": [
+        "L3",
+        "L6"
+      ],
+      "verification": "待核实",
+      "id": "domain:data:domain:collection:包含"
+    },
+    {
+      "from": "data",
+      "to": "cleaning",
+      "targetMap": "domain",
+      "label": "包含",
+      "kind": "hierarchy",
+      "sources": [
+        "L3",
+        "L6"
+      ],
+      "verification": "待核实",
+      "id": "domain:data:domain:cleaning:包含"
+    },
+    {
+      "from": "data",
+      "to": "evaluation-set",
+      "targetMap": "domain",
+      "label": "包含",
+      "kind": "hierarchy",
+      "sources": [
+        "L3",
+        "L6"
+      ],
+      "verification": "待核实",
+      "id": "domain:data:domain:evaluation-set:包含"
+    },
+    {
+      "from": "evaluation-set",
+      "to": "loss-test",
+      "targetMap": "cognition",
+      "label": "用于检验泛化",
+      "kind": "relation",
+      "sources": [
+        "L3",
+        "L6"
+      ],
+      "verification": "待核实",
+      "id": "domain:evaluation-set:cognition:loss-test:用于检验泛化"
+    },
+    {
+      "from": "evaluation-set",
+      "to": "evaluation-tools",
+      "targetMap": "ecosystem",
+      "label": "由工具支持评测",
+      "kind": "relation",
+      "sources": [
+        "L3",
+        "L6"
+      ],
+      "verification": "待核实",
+      "id": "domain:evaluation-set:ecosystem:evaluation-tools:由工具支持评测"
+    },
+    {
+      "from": "model",
+      "to": "token",
+      "targetMap": "domain",
+      "label": "包含",
+      "kind": "hierarchy",
+      "sources": [
+        "L6",
+        "S07"
+      ],
+      "verification": "待核实",
+      "id": "domain:model:domain:token:包含"
+    },
+    {
+      "from": "model",
+      "to": "attention",
+      "targetMap": "domain",
+      "label": "包含",
+      "kind": "hierarchy",
+      "sources": [
+        "S01",
+        "L6"
+      ],
+      "verification": "待核实",
+      "id": "domain:model:domain:attention:包含"
+    },
+    {
+      "from": "attention",
+      "to": "attention-authors",
+      "targetMap": "ecosystem",
+      "label": "由研究团队提出",
+      "kind": "relation",
+      "sources": [
+        "S01",
+        "L6"
+      ],
+      "verification": "待核实",
+      "id": "domain:attention:ecosystem:attention-authors:由研究团队提出"
+    },
+    {
+      "from": "model",
+      "to": "transformer",
+      "targetMap": "domain",
+      "label": "包含",
+      "kind": "hierarchy",
+      "sources": [
+        "S01"
+      ],
+      "verification": "待核实",
+      "id": "domain:model:domain:transformer:包含"
+    },
+    {
+      "from": "transformer",
+      "to": "attention-paper",
+      "targetMap": "ecosystem",
+      "label": "依据原始论文",
+      "kind": "relation",
+      "sources": [
+        "S01"
+      ],
+      "verification": "待核实",
+      "id": "domain:transformer:ecosystem:attention-paper:依据原始论文"
+    },
+    {
+      "from": "training",
+      "to": "pretraining",
+      "targetMap": "domain",
+      "label": "包含",
+      "kind": "hierarchy",
+      "sources": [
+        "L6",
+        "L3"
+      ],
+      "verification": "待核实",
+      "id": "domain:training:domain:pretraining:包含"
+    },
+    {
+      "from": "pretraining",
+      "to": "qwen",
+      "targetMap": "ecosystem",
+      "label": "由模型团队发布基座",
+      "kind": "relation",
+      "sources": [
+        "L6",
+        "L3"
+      ],
+      "verification": "待核实",
+      "id": "domain:pretraining:ecosystem:qwen:由模型团队发布基座"
+    },
+    {
+      "from": "training",
+      "to": "loss",
+      "targetMap": "domain",
+      "label": "包含",
+      "kind": "hierarchy",
+      "sources": [
+        "L6",
+        "L3"
+      ],
+      "verification": "待核实",
+      "id": "domain:training:domain:loss:包含"
+    },
+    {
+      "from": "loss",
+      "to": "loss-test",
+      "targetMap": "cognition",
+      "label": "用独立评测检验",
+      "kind": "relation",
+      "sources": [
+        "L6",
+        "L3"
+      ],
+      "verification": "待核实",
+      "id": "domain:loss:cognition:loss-test:用独立评测检验"
+    },
+    {
+      "from": "training",
+      "to": "finetuning",
+      "targetMap": "domain",
+      "label": "包含",
+      "kind": "hierarchy",
+      "sources": [
+        "S06",
+        "L3"
+      ],
+      "verification": "待核实",
+      "id": "domain:training:domain:finetuning:包含"
+    },
+    {
+      "from": "finetuning",
+      "to": "loss-test",
+      "targetMap": "cognition",
+      "label": "用任务表现检验",
+      "kind": "relation",
+      "sources": [
+        "S06",
+        "L3"
+      ],
+      "verification": "待核实",
+      "id": "domain:finetuning:cognition:loss-test:用任务表现检验"
+    },
+    {
+      "from": "training",
+      "to": "lora",
+      "targetMap": "domain",
+      "label": "包含",
+      "kind": "hierarchy",
+      "sources": [
+        "S03",
+        "S04",
+        "S05"
+      ],
+      "verification": "待核实",
+      "id": "domain:training:domain:lora:包含"
+    },
+    {
+      "from": "lora",
+      "to": "lora-authors",
+      "targetMap": "ecosystem",
+      "label": "由研究团队提出 LoRA",
+      "kind": "relation",
+      "sources": [
+        "S03",
+        "S04",
+        "S05"
+      ],
+      "verification": "待核实",
+      "id": "domain:lora:ecosystem:lora-authors:由研究团队提出 LoRA"
+    },
+    {
+      "from": "lora",
+      "to": "huggingface",
+      "targetMap": "ecosystem",
+      "label": "由 PEFT 实现",
+      "kind": "relation",
+      "sources": [
+        "S03",
+        "S04",
+        "S05"
+      ],
+      "verification": "待核实",
+      "id": "domain:lora:ecosystem:huggingface:由 PEFT 实现"
+    },
+    {
+      "from": "system",
+      "to": "retrieval",
+      "targetMap": "domain",
+      "label": "包含",
+      "kind": "hierarchy",
+      "sources": [
+        "S02",
+        "L3"
+      ],
+      "verification": "待核实",
+      "id": "domain:system:domain:retrieval:包含"
+    },
+    {
+      "from": "system",
+      "to": "rag",
+      "targetMap": "domain",
+      "label": "包含",
+      "kind": "hierarchy",
+      "sources": [
+        "S02",
+        "L3"
+      ],
+      "verification": "待核实",
+      "id": "domain:system:domain:rag:包含"
+    },
+    {
+      "from": "rag",
+      "to": "rag-authors",
+      "targetMap": "ecosystem",
+      "label": "由研究团队提出",
+      "kind": "relation",
+      "sources": [
+        "S02",
+        "L3"
+      ],
+      "verification": "待核实",
+      "id": "domain:rag:ecosystem:rag-authors:由研究团队提出"
+    },
+    {
+      "from": "rag",
+      "to": "system-view",
+      "targetMap": "cognition",
+      "label": "用系统拆解排查",
+      "kind": "relation",
+      "sources": [
+        "S02",
+        "L3"
+      ],
+      "verification": "待核实",
+      "id": "domain:rag:cognition:system-view:用系统拆解排查"
+    },
+    {
+      "from": "system",
+      "to": "inference",
+      "targetMap": "domain",
+      "label": "包含",
+      "kind": "hierarchy",
+      "sources": [
+        "L2",
+        "L6",
+        "S10"
+      ],
+      "verification": "待核实",
+      "id": "domain:system:domain:inference:包含"
+    },
+    {
+      "from": "system",
+      "to": "deployment",
+      "targetMap": "domain",
+      "label": "包含",
+      "kind": "hierarchy",
+      "sources": [
+        "S10",
+        "L3"
+      ],
+      "verification": "待核实",
+      "id": "domain:system:domain:deployment:包含"
+    },
+    {
+      "from": "deployment",
+      "to": "api-platforms",
+      "targetMap": "ecosystem",
+      "label": "由平台提供推理服务",
+      "kind": "relation",
+      "sources": [
+        "S10",
+        "L3"
+      ],
+      "verification": "待核实",
+      "id": "domain:deployment:ecosystem:api-platforms:由平台提供推理服务"
+    },
+    {
+      "from": "deployment",
+      "to": "cost-api",
+      "targetMap": "cognition",
+      "label": "用效果与成本权衡",
+      "kind": "relation",
+      "sources": [
+        "S10",
+        "L3"
+      ],
+      "verification": "待核实",
+      "id": "domain:deployment:cognition:cost-api:用效果与成本权衡"
+    },
+    {
+      "from": "system",
+      "to": "monitoring",
+      "targetMap": "domain",
+      "label": "包含",
+      "kind": "hierarchy",
+      "sources": [
+        "L3",
+        "L6"
+      ],
+      "verification": "待核实",
+      "id": "domain:system:domain:monitoring:包含"
+    },
+    {
+      "from": "monitoring",
+      "to": "independent-feedback",
+      "targetMap": "cognition",
+      "label": "由独立反馈推动修订",
+      "kind": "relation",
+      "sources": [
+        "L3",
+        "L6"
+      ],
+      "verification": "待核实",
+      "id": "domain:monitoring:cognition:independent-feedback:由独立反馈推动修订"
+    },
+    {
+      "from": "token",
+      "to": "prediction",
+      "label": "提供预测单位",
+      "description": "语言模型的后续文字预测以分词单位为入口；实际切分取决于分词器，不推出一个字固定等于一个 token。",
+      "sources": [
+        "L6",
+        "S07"
+      ],
+      "core": true,
+      "direction": "directed",
+      "basis": "material",
+      "targetMap": "domain",
+      "kind": "relation",
+      "verification": "待核实",
+      "id": "domain:token:domain:prediction:提供预测单位"
+    },
+    {
+      "from": "prediction",
+      "to": "generation",
+      "label": "逐步形成生成结果",
+      "description": "连续的后续 token 预测可组织生成；这是机制联系，不代表生成内容已被事实核验。",
+      "sources": [
+        "L6"
+      ],
+      "core": true,
+      "direction": "directed",
+      "basis": "material",
+      "targetMap": "domain",
+      "kind": "relation",
+      "verification": "待核实",
+      "id": "domain:prediction:domain:generation:逐步形成生成结果"
+    },
+    {
+      "from": "attention",
+      "to": "transformer",
+      "label": "构成核心计算机制",
+      "description": "注意力是 Transformer 中的核心机制之一；结构还包含其他模块，二者不是同义词。",
+      "sources": [
+        "S01"
+      ],
+      "core": true,
+      "direction": "directed",
+      "basis": "material",
+      "targetMap": "domain",
+      "kind": "relation",
+      "verification": "待核实",
+      "id": "domain:attention:domain:transformer:构成核心计算机制"
+    },
+    {
+      "from": "transformer",
+      "to": "pretraining",
+      "label": "可作为预训练的模型结构",
+      "description": "Transformer 可用作预训练的结构基础；不表示所有结构、任务与训练设置都相同。",
+      "sources": [
+        "S01",
+        "L6"
+      ],
+      "core": true,
+      "direction": "directed",
+      "basis": "material",
+      "targetMap": "domain",
+      "kind": "relation",
+      "verification": "待核实",
+      "id": "domain:transformer:domain:pretraining:可作为预训练的模型结构"
+    },
+    {
+      "from": "pretraining",
+      "to": "finetuning",
+      "label": "提供继续适配的基座",
+      "description": "监督微调可以在已有基座上继续训练；不意味着每个课程助手都必须自行预训练或微调。",
+      "sources": [
+        "L6",
+        "S06"
+      ],
+      "core": true,
+      "direction": "directed",
+      "basis": "material",
+      "targetMap": "domain",
+      "kind": "relation",
+      "verification": "待核实",
+      "id": "domain:pretraining:domain:finetuning:提供继续适配的基座"
+    },
+    {
+      "from": "lora",
+      "to": "finetuning",
+      "label": "可作为参数更新方案",
+      "description": "SFT 描述训练任务，LoRA 可用于其中的参数高效适配；LoRA 也不限于这一种训练任务。",
+      "sources": [
+        "S03",
+        "S05",
+        "S06"
+      ],
+      "core": true,
+      "direction": "directed",
+      "basis": "material",
+      "targetMap": "domain",
+      "kind": "relation",
+      "verification": "待核实",
+      "id": "domain:lora:domain:finetuning:可作为参数更新方案"
+    },
+    {
+      "from": "collection",
+      "to": "cleaning",
+      "label": "提供待处理资料",
+      "description": "课程资料先确认使用范围并记录出处，再检查解析与重复；这里表达推荐工作衔接，不是不可改变的技术依赖。",
+      "sources": [
+        "L3",
+        "L6"
+      ],
+      "core": true,
+      "direction": "directed",
+      "basis": "editorial",
+      "targetMap": "domain",
+      "kind": "relation",
+      "verification": "待核实",
+      "id": "domain:collection:domain:cleaning:提供待处理资料"
+    },
+    {
+      "from": "cleaning",
+      "to": "retrieval",
+      "label": "提供保留出处的资料片段",
+      "description": "清洗后保留内容与出处，便于查找和回溯；整齐的资料并不保证检索总能找到支持片段。",
+      "sources": [
+        "L3",
+        "L6"
+      ],
+      "core": true,
+      "direction": "directed",
+      "basis": "editorial",
+      "targetMap": "domain",
+      "kind": "relation",
+      "verification": "待核实",
+      "id": "domain:cleaning:domain:retrieval:提供保留出处的资料片段"
+    },
+    {
+      "from": "retrieval",
+      "to": "rag",
+      "label": "提供相关支持片段",
+      "description": "检索为 RAG 返回外部上下文；相关片段可能仍不足以支持结论，需要继续核对。",
+      "sources": [
+        "S02",
+        "L3"
+      ],
+      "core": true,
+      "direction": "directed",
+      "basis": "material",
+      "targetMap": "domain",
+      "kind": "relation",
+      "verification": "待核实",
+      "id": "domain:retrieval:domain:rag:提供相关支持片段"
+    },
+    {
+      "from": "rag",
+      "to": "generation",
+      "label": "提供外部上下文",
+      "description": "RAG 在回答时为生成提供检索资料；提供了资料不代表模型必然忠实使用它。",
+      "sources": [
+        "S02"
+      ],
+      "core": true,
+      "direction": "directed",
+      "basis": "material",
+      "targetMap": "domain",
+      "kind": "relation",
+      "verification": "待核实",
+      "id": "domain:rag:domain:generation:提供外部上下文"
+    },
+    {
+      "from": "evaluation-set",
+      "to": "rag",
+      "label": "检验检索与引用表现",
+      "description": "课程评测需分别检查命中片段、回答和引用；这是一组检查方法，不预设本组已经完成实测。",
+      "sources": [
+        "L3",
+        "L6"
+      ],
+      "core": true,
+      "direction": "directed",
+      "basis": "editorial",
+      "targetMap": "domain",
+      "kind": "relation",
+      "verification": "待核实",
+      "id": "domain:evaluation-set:domain:rag:检验检索与引用表现"
+    },
+    {
+      "from": "monitoring",
+      "to": "evaluation-set",
+      "label": "将核实后的失败补入评测",
+      "description": "核实后的失败可形成回归检查；参与调试的题不能继续被当成未见过的最终测试。",
+      "sources": [
+        "L3",
+        "L6"
+      ],
+      "core": true,
+      "direction": "directed",
+      "basis": "editorial",
+      "targetMap": "domain",
+      "kind": "relation",
+      "verification": "待核实",
+      "id": "domain:monitoring:domain:evaluation-set:将核实后的失败补入评测"
+    },
+    {
+      "from": "loss",
+      "to": "finetuning",
+      "label": "提供训练优化信号",
+      "description": "训练利用损失相关信号更新参数；目标与数据条件不同，数值不能脱离设置比较。",
+      "sources": [
+        "L6",
+        "S06"
+      ],
+      "core": false,
+      "direction": "directed",
+      "basis": "material",
+      "targetMap": "domain",
+      "kind": "relation",
+      "verification": "待核实",
+      "id": "domain:loss:domain:finetuning:提供训练优化信号"
+    },
+    {
+      "from": "evaluation-set",
+      "to": "finetuning",
+      "label": "检验适配后的任务收益",
+      "description": "固定独立问题比较适配前后表现；训练损失降低不能代替这一步，也不预设收益为正。",
+      "sources": [
+        "L3",
+        "L6"
+      ],
+      "core": false,
+      "direction": "directed",
+      "basis": "editorial",
+      "targetMap": "domain",
+      "kind": "relation",
+      "verification": "待核实",
+      "id": "domain:evaluation-set:domain:finetuning:检验适配后的任务收益"
+    },
+    {
+      "from": "pretraining",
+      "to": "inference",
+      "label": "形成可运行的已有模型",
+      "description": "使用预训练所得模型进行推理与从头训练是不同工作；是否可用还需核对实现和任务条件。",
+      "sources": [
+        "L6",
+        "S07"
+      ],
+      "core": false,
+      "direction": "directed",
+      "basis": "material",
+      "targetMap": "domain",
+      "kind": "relation",
+      "verification": "待核实",
+      "id": "domain:pretraining:domain:inference:形成可运行的已有模型"
+    },
+    {
+      "from": "inference",
+      "to": "generation",
+      "label": "执行生成过程",
+      "description": "已有语言模型可在推理中运行生成；这里不声称每一种推理任务都必须输出文字。",
+      "sources": [
+        "L6",
+        "S07"
+      ],
+      "core": false,
+      "direction": "directed",
+      "basis": "material",
+      "targetMap": "domain",
+      "kind": "relation",
+      "verification": "待核实",
+      "id": "domain:inference:domain:generation:执行生成过程"
+    },
+    {
+      "from": "inference",
+      "to": "deployment",
+      "label": "成为服务中的运行环节",
+      "description": "推理可被组织为服务中的运行环节；一次推理成功不等于完整部署可靠。",
+      "sources": [
+        "L2",
+        "S10"
+      ],
+      "core": false,
+      "direction": "directed",
+      "basis": "material",
+      "targetMap": "domain",
+      "kind": "relation",
+      "verification": "待核实",
+      "id": "domain:inference:domain:deployment:成为服务中的运行环节"
+    },
+    {
+      "from": "deployment",
+      "to": "monitoring",
+      "label": "提供运行记录与反馈入口",
+      "description": "服务运行后应观察失败、引用、时延等；这是推荐检查流程，不是已经上线的证据。",
+      "sources": [
+        "L3",
+        "L6"
+      ],
+      "core": false,
+      "direction": "directed",
+      "basis": "editorial",
+      "targetMap": "domain",
+      "kind": "relation",
+      "verification": "待核实",
+      "id": "domain:deployment:domain:monitoring:提供运行记录与反馈入口"
+    },
+    {
+      "from": "cleaning",
+      "to": "evaluation-set",
+      "label": "划分资料并排查重复泄漏",
+      "description": "处理资料时核查训练与评测之间的重复和近似关系；仅换文件名不能保证独立。",
+      "sources": [
+        "L3",
+        "L6"
+      ],
+      "core": false,
+      "direction": "directed",
+      "basis": "editorial",
+      "targetMap": "domain",
+      "kind": "relation",
+      "verification": "待核实",
+      "id": "domain:cleaning:domain:evaluation-set:划分资料并排查重复泄漏"
+    },
+    {
+      "from": "generation",
+      "to": "alignment",
+      "label": "输出任务与行为约束可以同时存在",
+      "description": "生成描述输出任务，对齐描述行为要求；它们可以共同作用，不是互斥的三选一分类。",
+      "sources": [
+        "L6",
+        "L3"
+      ],
+      "core": false,
+      "direction": "undirected",
+      "basis": "material",
+      "targetMap": "domain",
+      "kind": "relation",
+      "verification": "待核实",
+      "id": "domain:generation:domain:alignment:输出任务与行为约束可以同时存在"
+    },
+    {
+      "from": "rag",
+      "to": "finetuning",
+      "label": "解决问题不同，可以组合使用",
+      "description": "RAG 提供外部资料，SFT 用示范适配行为；按失败原因选择和比较，不声称一种普遍优于另一种。",
+      "sources": [
+        "L3",
+        "S02",
+        "S06"
+      ],
+      "core": false,
+      "direction": "undirected",
+      "basis": "editorial",
+      "targetMap": "domain",
+      "kind": "relation",
+      "verification": "待核实",
+      "id": "domain:rag:domain:finetuning:解决问题不同，可以组合使用"
+    },
+    {
+      "from": "loss",
+      "to": "evaluation-set",
+      "label": "区分训练信号与独立任务检验",
+      "description": "损失观察训练目标，独立评测观察任务表现；二者可互相参照，不能直接画等号。",
+      "sources": [
+        "L3",
+        "L6"
+      ],
+      "core": false,
+      "direction": "undirected",
+      "basis": "material",
+      "targetMap": "domain",
+      "kind": "relation",
+      "verification": "待核实",
+      "id": "domain:loss:domain:evaluation-set:区分训练信号与独立任务检验"
+    }
+  ],
+  "teachingStatus": "教学示例，非真实课程原文，非模型实测结果。",
+  "reviewedEntrances": [
+    "https://arxiv.org/abs/1706.03762",
+    "https://arxiv.org/abs/2005.11401",
+    "https://arxiv.org/abs/2106.09685",
+    "https://huggingface.co/docs/trl/sft_trainer"
+  ]
+}

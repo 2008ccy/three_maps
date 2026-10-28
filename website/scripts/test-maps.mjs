@@ -13,11 +13,11 @@ const pageById = new Map(pages.map((page) => [page.data.id, page]));
 const source = load(readFileSync('out/docs/sources/index.html', 'utf8'));
 const html = (url) => load(readFileSync(`out${url}/index.html`, 'utf8'));
 
-test('domain graph preserves the supplied five branches and fifteen leaves', () => {
+test('domain expands the five teaching groups without renaming legacy node addresses', () => {
   assert.deepEqual(maps[0].branches.map((node) => [node.title, node.children.map((child) => child.title)]), [
-    ['任务', ['预测', '生成', '对齐']], ['数据', ['采集', '清洗', '评测集']],
-    ['模型', ['Token', '注意力', 'Transformer']], ['训练', ['损失', '预训练', '微调 / LoRA']],
-    ['系统', ['RAG', '部署', '监控']],
+    ['任务', ['预测', '生成', '对齐']], ['数据与评测', ['采集', '清洗', '评测集']],
+    ['模型', ['Token', '注意力', 'Transformer']], ['训练与适配', ['预训练', '损失', '监督微调 SFT', 'LoRA']],
+    ['系统', ['检索与证据片段', 'RAG', '推理', '部署', '监控']],
   ]);
 });
 
@@ -107,6 +107,18 @@ test('cognition hierarchy and feedback directions match the supplied HTML relati
     assert.ok(node.text().includes(connection.label));
     assert.ok(node.find(`a[href="${basePath}/docs/cognition/#node-${connection.to}"]`).length);
   }
+});
+
+test('domain static export includes all lessons, native answer disclosures and source evidence without article entrances', () => {
+  const $ = html('/docs/domain');
+  assert.equal($('article[aria-label="知识点教学内容"]').length, 18);
+  assert.equal($('summary').filter((_, el) => $(el).text() === '展开答案与理由').length, 18);
+  assert.equal($('article[aria-label="知识点教学内容"]').filter((_, el) => $(el).text().includes('教学示例，非真实课程原文，非模型实测结果。')).length, 18);
+  const sources = html('/docs/sources');
+  for (const edge of maps[0].conceptRelations) for (const id of edge.sources) assert.equal(sources(`[id="${id.toLowerCase()}"]`).length, 1, id);
+  assert.ok($('#node-lora a[href$="#node-finetuning"]').length);
+  assert.ok($('#node-finetuning a[href$="#node-lora"]').length);
+  assert.ok(html('/docs/domain/entries/k-lora')('a[href$="#node-lora"]').length, 'LoRA article returns to the split LoRA node');
 });
 
 test('nested branches switch, collapse and reset without keeping stale leaf selection', () => {

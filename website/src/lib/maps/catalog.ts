@@ -1,4 +1,4 @@
-import type { MapDefinition, MapKey, MapNode } from './types';
+import type { MapDefinition, MapKey, MapNode, ConceptRelation } from './types';
 
 export const understandingOptions = ['待自评', '已初步理解', '已经尝试', '待深入学习'] as const;
 export const verificationOptions = ['待核实', '已核实'] as const;
@@ -9,6 +9,7 @@ export type CatalogNode = MapNode & {
 export type MapEdge = {
   id: string; from: string; to: string; targetMap: MapKey; label: string;
   kind: 'hierarchy' | 'relation' | 'feedback'; sources: string[]; verification: '待核实' | '已核实';
+  description?: string; core?: boolean; direction?: ConceptRelation['direction']; basis?: ConceptRelation['basis'];
 };
 export type CatalogFilters = { type: string; understanding: string; verification: string; q: string };
 export const emptyFilters: CatalogFilters = { type: '', understanding: '', verification: '', q: '' };
@@ -52,12 +53,13 @@ export function buildEdges(map: MapDefinition): MapEdge[] {
     for (const rel of node.relations ?? []) add({ from: node.id, to: rel.node, targetMap: rel.map, label: rel.label, kind: 'relation', sources: node.sources, verification: '待核实' });
   }
   for (const edge of map.connections ?? []) add({ ...edge, targetMap: map.id, kind: 'feedback', sources: nodes.find((node) => node.id === edge.from)?.sources ?? [], verification: '待核实' });
+  for (const edge of map.conceptRelations ?? []) add({ ...edge, targetMap: map.id, kind: 'relation', verification: '待核实' });
   return edges;
 }
 
 export function filterCatalog(nodes: CatalogNode[], filters: CatalogFilters) {
   const query = filters.q.trim().toLocaleLowerCase();
-  return nodes.filter((node) => (!filters.type || node.type === filters.type) && (!filters.understanding || node.understanding === filters.understanding) && (!filters.verification || node.verification === filters.verification) && (!query || `${node.title} ${node.summary} ${node.detail}`.toLocaleLowerCase().includes(query)));
+  return nodes.filter((node) => (!filters.type || node.type === filters.type) && (!filters.understanding || node.understanding === filters.understanding) && (!filters.verification || node.verification === filters.verification) && (!query || `${node.title} ${node.summary} ${node.detail} ${node.lesson ? JSON.stringify(node.lesson) : ''} ${node.topic ? JSON.stringify(node.topic) : ''}`.toLocaleLowerCase().includes(query)));
 }
 
 // 总览只展示一级主题；搜索命中深层条目时仍保留它所属的主题。
@@ -77,12 +79,14 @@ export function catalogChildren(nodes: CatalogNode[], id: string) {
 export function readCatalogQuery(search: string) {
   const query = new URLSearchParams(search);
   return { view: query.get('view') === 'graph' ? 'graph' as const : 'cards' as const,
+    relations: query.get('relations') === 'all' ? 'all' as const : 'core' as const,
     filters: { type: query.get('type') ?? '', understanding: query.get('understanding') ?? '', verification: query.get('verification') ?? '', q: query.get('q') ?? '' } };
 }
 
-export function catalogQuery(view: 'cards' | 'graph', filters: CatalogFilters) {
+export function catalogQuery(view: 'cards' | 'graph', filters: CatalogFilters, relations: 'core' | 'all' = 'core') {
   const query = new URLSearchParams();
   if (view === 'graph') query.set('view', view);
+  if (relations === 'all') query.set('relations', 'all');
   for (const [key, value] of Object.entries(filters)) if (value) query.set(key, value);
   return query.size ? `?${query}` : '';
 }

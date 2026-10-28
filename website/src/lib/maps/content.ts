@@ -1,3 +1,4 @@
+import { domainMap } from './domain-learning.ts';
 import type { DocumentRef, MapDefinition, MapNode, MapRelation } from './types';
 
 // 导图 ID 独立于正文 ID。改标题不会改变分享地址；同一正文可支持多个节点。
@@ -9,39 +10,7 @@ const branch = (id: string, title: string, summary: string, document: string, so
   ({ id, title, summary, detail: summary, documents: [doc(document)], sources, children });
 
 export const maps: MapDefinition[] = [
-  {
-    id: 'domain', title: '领域地图', indexId: 'D-INDEX', number: '01',
-    question: '模型怎样变成有依据的回答？',
-    description: '从问题到可复现的系统，沿五条主干理解模型构建。',
-    auxiliary: [doc('D-PIPELINE'), doc('D-CONCEPTS'), doc('D-METHODS'), doc('D-TOOLS'), doc('D-EVALUATION'), doc('D-LEARNING'), doc('D-UNDERSTANDING'), doc('D-FIGURES'), doc('D-ENTRIES')],
-    branches: [
-      branch('task', '任务', '解决什么问题', 'D-TASK', ['L6', 'L3'], [
-        leaf('prediction', '预测', '给定输入，估计可能的输出', '分类、回归和下一个 token 预测都在学习输入与输出之间的关系。先明确模型需要预测什么，再约定怎样判断预测是否有效。', [doc('D-TASK', 'prediction')], ['L6'], '课程助手中，预测下一个 token 是生成机制的一部分，不等于已经核实回答中的事实。'),
-        leaf('generation', '生成', '把输入转成解释、摘要或对话', '课程助手根据问题与上下文生成回答。摘要与比较要忠于指定材料，概念解释需要符合读者的基础；两者都需要明确的验收样例。', [doc('D-TASK', 'generation')], ['L6', 'L3'], '回答流畅、篇幅更长，都不能单独证明内容正确。', [relation('cognition', 'ranking-task', '由任务评测检验')]),
-        leaf('alignment', '对齐', '让行为符合任务与使用约束', '指令跟随、澄清、引用和恰当拒答共同影响助手的行为。可以通过提示、监督微调或偏好优化等方法改善，先检查任务需要哪一种变化。', [doc('D-TASK', 'alignment'), doc('D-METHODS')], ['L6', 'L3'], '对齐不是正确性的保证；资料缺失时仍应说明不知道。'),
-      ]),
-      branch('data', '数据', '用什么例子教', 'D-EVALUATION', ['L6', 'L3'], [
-        leaf('collection', '采集', '记录授权、出处与数据版本', '收集课程材料时，先确认能否使用，再记录来源、章节或页码。每段材料都应能回到原文，后续的检索与引用才有核查基础。', [doc('D-PIPELINE', 'collection'), doc('K-CARD')], ['L3', 'L6'], '可以访问一份资料，不等于拥有再分发或训练使用的许可。'),
-        leaf('cleaning', '清洗', '把可读资料变成可靠输入', '检查解析后的文字、公式和表格，去重并保留来源信息；划分训练与测试材料时，还要排查重复或近似内容，避免把测试答案带进训练。', [doc('D-PIPELINE', 'cleaning'), doc('D-EVALUATION')], ['L3', 'L6'], '自动清洗之后抽样回看原文，避免把关键条件一起删掉。'),
-        leaf('evaluation-set', '评测集', '用没见过的问题检查效果', '从真实学习困难构造有答案、无答案和模糊问题，预先写好评分要点与支持片段。固定一套独立问题，才能比较改动前后的效果。', [doc('K-EVAL'), doc('D-EVALUATION')], ['L3', 'L6'], '不要在测试集上反复调参；测试集独立不只意味着文件名不同。', [relation('cognition', 'loss-test', '用于检验泛化'), relation('ecosystem', 'evaluation-tools', '由工具支持评测')]),
-      ]),
-      branch('model', '模型', '用什么结构学', 'D-CONCEPTS', ['L6', 'S01'], [
-        leaf('token', 'Token', '模型读取的文字单元', '分词器将文字转换为 token，再映射到模型可计算的表示。同一句话在不同 tokenizer 下可能有不同切分，上下文长度也通常按 token 计算。', [doc('K-TOKEN')], ['L6', 'S07'], '一个汉字或一个英文单词不一定对应一个 token。'),
-        leaf('attention', '注意力', '按相关程度聚合上下文', '注意力用查询 Q 与键 K 的匹配结果，对值 V 做加权聚合。用一个小矩阵例子观察权重，可以把“关注上下文”变成可检查的计算。', [doc('K-TRANSFORMER', 'attention'), doc('D-CONCEPTS')], ['S01', 'L6'], '注意力权重不应直接被当作模型完整的解释。', [relation('ecosystem', 'attention-authors', '由研究团队提出')]),
-        leaf('transformer', 'Transformer', '组织注意力与逐层计算的结构', 'Transformer 将注意力、前馈网络等模块组合起来处理序列。注意力是其中的机制，Transformer 是组织这些模块的模型结构，两者不能混为一个概念。', [doc('K-TRANSFORMER', 'transformer'), doc('D-CONCEPTS')], ['S01'], '原始论文不能直接代表每个后续模型的全部实现。', [relation('ecosystem', 'attention-paper', '依据原始论文')]),
-      ]),
-      branch('training', '训练', '怎么把参数调好', 'D-METHODS', ['L6', 'L3'], [
-        leaf('loss', '损失', '训练要优化的数值目标', '损失衡量当前输出与训练目标之间的差距，梯度和优化器据此更新参数。读 loss 曲线时，需要同时知道数据、目标函数和评测条件。', [doc('K-LOSS'), doc('D-CONCEPTS')], ['L6', 'L3'], '训练 loss 下降不能直接推出课程问答更可靠。', [relation('cognition', 'loss-test', '用独立评测检验')]),
-        leaf('pretraining', '预训练', '从较大范围的数据学习模式', '预训练形成可复用的模型能力。本项目优先理解并使用已有基座，将资源放在资料、检索与评测；训练基座与构建一个课程助手是不同规模的工作。', [doc('K-PRETRAIN'), doc('M-BASE')], ['L6', 'L3'], '参数量、预训练数据量都不能单独代替任务评测。', [relation('ecosystem', 'qwen', '由模型团队发布基座')]),
-        leaf('finetuning', '微调 / LoRA', '区分训练任务与参数适配方法', 'SFT 使用示例进行监督微调；LoRA 冻结基座的大部分参数，用低秩适配器更新少量参数。可以用 LoRA 做 SFT，但二者分别回答“怎么训练”和“更新哪些参数”。', [doc('K-SFT'), doc('K-LORA'), doc('K-QLORA'), doc('T-PEFT')], ['S03', 'S04', 'S05', 'S06'], '先有稳定的行为问题和独立评测，再判断是否值得微调。', [relation('ecosystem', 'lora-authors', '由研究团队提出 LoRA'), relation('ecosystem', 'huggingface', '由 PEFT 实现'), relation('cognition', 'loss-test', '用任务表现检验')]),
-      ]),
-      branch('system', '系统', '怎么让它可用', 'D-PIPELINE', ['L6', 'L3'], [
-        leaf('rag', 'RAG', '先找依据，再组织回答', '把问题交给检索系统，取回相关资料，再让模型结合这些片段回答。保留引用和召回记录，才能区分“没找到依据”与“有依据却答错”。', [doc('K-RAG'), doc('T-RETRIEVAL')], ['S02', 'L3'], 'RAG 仍可能检索错误或错误使用证据，必须检查引用能否支持结论。', [relation('ecosystem', 'rag-authors', '由研究团队提出'), relation('cognition', 'system-view', '用系统拆解排查')]),
-        leaf('deployment', '部署', '让模型成为可访问的服务', '部署要处理模型加载、推理接口、时延、失败和预算。可以比较托管 API 与本地服务，按照实际任务和设备条件选择。', [doc('K-DEPLOY'), doc('T-VLLM'), doc('T-OLLAMA')], ['S10', 'L3'], '开放权重不意味着推理没有成本；本网站的静态导图本身不调用模型。', [relation('ecosystem', 'api-platforms', '由平台提供推理服务'), relation('cognition', 'cost-api', '用效果与成本权衡')]),
-        leaf('monitoring', '监控', '从失败和反馈继续修订', '上线后记录失败类型、引用可用性、时延与资源使用，并把真实问题送回评测集。资料和模型版本变化后，重跑对照评测，再决定是否更新。', [doc('D-PIPELINE', 'monitoring'), doc('D-EVALUATION')], ['L3', 'L6'], '只记录总访问量不足以判断回答质量；反馈需要核实后再采用。', [relation('cognition', 'independent-feedback', '由独立反馈推动修订')]),
-      ]),
-    ],
-  },
+  domainMap,
   {
     id: 'ecosystem', title: '生态地图', indexId: 'E-INDEX', number: '02',
     question: '依靠谁的成果，又与谁协作？',
@@ -52,7 +21,7 @@ export const maps: MapDefinition[] = [
         branch('research-teams', '研究团队', '从原始工作找到方法的来处', 'E-PARTICIPANTS', ['L4'], [
           leaf('attention-authors', 'Transformer 研究者', 'Vaswani 等原始论文作者', '从 Attention Is All You Need 追溯 Transformer 的结构设计与实验背景。这里标识历史论文的作者关系，不把整个研究方向归于单个人。', [doc('E-ATTN')], ['S01'], undefined, [relation('domain', 'transformer', '提出 Transformer')]),
           leaf('rag-authors', 'RAG 研究者', 'Patrick Lewis 等', '原始 RAG 工作连接检索得到的外部知识与生成模型。本项目借用检索后生成的应用思路，具体系统需要独立设计与评测。', [doc('E-RAG')], ['S02'], '采用思路不等于复现论文全部训练设计。', [relation('domain', 'rag', '提出 RAG')]),
-          leaf('lora-authors', 'LoRA 研究者', 'Edward J. Hu 等', 'LoRA 提供冻结基座、训练低秩适配器的参数高效适配方法。理解其假设与实验条件后，再判断是否适用于本组任务。', [doc('E-LORA')], ['S03'], undefined, [relation('domain', 'finetuning', '提出 LoRA')]),
+          leaf('lora-authors', 'LoRA 研究者', 'Edward J. Hu 等', 'LoRA 提供冻结基座、训练低秩适配器的参数高效适配方法。理解其假设与实验条件后，再判断是否适用于本组任务。', [doc('E-LORA')], ['S03'], undefined, [relation('domain', 'lora', '提出 LoRA')]),
           leaf('qlora-authors', 'QLoRA 研究者', 'Tim Dettmers、Artidoro Pagnoni 等', 'QLoRA 将量化冻结基座与低秩适配结合，讨论更节省显存的适配方法。资源结论要连同模型、设置和设备一起阅读。', [doc('E-QLORA')], ['S04'], '不能把论文中的显存结果直接当作本组设备保证。'),
           leaf('stanford', 'CS336 课程团队', '从数据到语言模型的学习入口', 'Stanford CS336 提供语言模型构建、训练与评测的课程资料，可用于后续系统学习；先按当前问题选取内容，再逐步补齐基础。', [doc('E-STANFORD'), doc('D-LEARNING')], ['S12'], '课程年度与基础要求应对应具体资料，不作为本次作业的先修门槛。'),
         ]),
@@ -60,7 +29,7 @@ export const maps: MapDefinition[] = [
           leaf('qwen', 'Qwen 团队', '模型发布、技术报告与模型卡', 'Qwen 的历史发布展示了企业模型如何通过权重、报告和社区工具被复用。选择基座时仍要核对具体型号、revision、许可及适配条件。', [doc('E-QWEN')], ['S11'], '此处为历史案例，不表示最新型号推荐。', [relation('domain', 'pretraining', '发布预训练基座')]),
         ]),
         branch('communities', '社区', '谁维护可复用工具', 'E-PARTICIPANTS', ['L4'], [
-          leaf('huggingface', 'Hugging Face 与贡献者', '加载、适配与文档生态', 'Transformers、PEFT 和 TRL 等工具把模型加载与训练方法转为可运行的流程。使用时记录版本和配置，并回到原论文理解方法边界。', [doc('E-HF'), doc('T-PEFT')], ['S05', 'S06', 'S07'], undefined, [relation('domain', 'finetuning', '通过 PEFT 实现 LoRA')]),
+          leaf('huggingface', 'Hugging Face 与贡献者', '加载、适配与文档生态', 'Transformers、PEFT 和 TRL 等工具把模型加载与训练方法转为可运行的流程。使用时记录版本和配置，并回到原论文理解方法边界。', [doc('E-HF'), doc('T-PEFT')], ['S05', 'S06', 'S07'], undefined, [relation('domain', 'lora', '通过 PEFT 实现 LoRA')]),
           leaf('eleuther', 'EleutherAI', '可复用的评测工具', 'lm-evaluation-harness 提供任务配置和评测运行入口，帮助保存可比较的设置。评测框架不等于题库本身，也不代替本课程任务设计。', [doc('E-ELEUTHER')], ['S09'], undefined, [relation('domain', 'evaluation-set', '提供评测实现')]),
         ]),
         branch('platform-services', '平台服务', '让成果被分发和使用', 'E-PARTICIPANTS', ['L4'], [
