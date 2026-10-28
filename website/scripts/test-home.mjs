@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { load } from 'cheerio';
 import { HOME_SESSION_KEY, restoreHomePhase, rememberHomeExpanded, isHomeRoute } from '../src/lib/home-scene.ts';
-import { transitionTiming, titleFrame, mapAtPath, plainLinkActivation, mapTransitionTarget } from '../src/lib/map-transition.ts';
+import { transitionTiming, handoffProgress, titleFrame, mapAtPath, plainLinkActivation, mapTransitionTarget } from '../src/lib/map-transition.ts';
 
 const { basePath } = JSON.parse(readFileSync('out/.site-build.json', 'utf8'));
 
@@ -99,4 +99,17 @@ test('title continuity lands exactly on the destination and gives returning home
   const enter = transitionTiming('domain'), back = transitionTiming('home');
   assert.ok(back.departure + back.arrival < (enter.departure + enter.arrival) * .6);
   assert.ok(back.particles < enter.particles && back.particleAlpha < enter.particleAlpha);
+});
+
+test('shared title stays present while complementary content blending prevents a blank route seam', () => {
+  assert.deepEqual(handoffProgress(-20), { title: 0, source: 1, content: 0 });
+  assert.deepEqual(handoffProgress(480), { title: 1, source: 0, content: 1 });
+  let previous = handoffProgress(0);
+  for (let ms = 10; ms <= 600; ms += 10) {
+    const frame = handoffProgress(ms);
+    assert.equal(frame.source + frame.content, 1);
+    assert.ok(frame.title >= previous.title && frame.content >= previous.content);
+    if (frame.content >= .5) assert.ok(frame.title > .9, 'title has nearly landed before target text gains emphasis');
+    previous = frame;
+  }
 });

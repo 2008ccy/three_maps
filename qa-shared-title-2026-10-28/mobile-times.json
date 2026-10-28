@@ -1,0 +1,220 @@
+[
+  {
+    "t": 0,
+    "overflow": false,
+    "phase": "idle",
+    "snapshot": 0
+  },
+  {
+    "t": 22,
+    "ghost": {
+      "bottom": 685.796875,
+      "height": 25.203125,
+      "left": 103,
+      "right": 175,
+      "top": 660.59375,
+      "width": 72,
+      "x": 103,
+      "y": 660.59375
+    },
+    "overflow": false,
+    "phase": "departing",
+    "snapshot": 1
+  },
+  {
+    "t": 111,
+    "ghost": {
+      "bottom": 685.796875,
+      "height": 25.203125,
+      "left": 103,
+      "right": 175,
+      "top": 660.59375,
+      "width": 72,
+      "x": 103,
+      "y": 660.59375
+    },
+    "overflow": false,
+    "phase": "departing",
+    "snapshot": 1
+  },
+  {
+    "t": 151,
+    "ghost": {
+      "bottom": 657.84130859375,
+      "height": 25.8984375,
+      "left": 98.22572326660156,
+      "right": 172.42884826660156,
+      "top": 631.94287109375,
+      "width": 74.203125,
+      "x": 98.22572326660156,
+      "y": 631.94287109375
+    },
+    "overflow": false,
+    "phase": "arriving",
+    "snapshot": 1
+  },
+  {
+    "t": 182,
+    "ghost": {
+      "bottom": 534.34521484375,
+      "height": 29.0078125,
+      "left": 77.12870025634766,
+      "right": 161.09744262695312,
+      "top": 505.33740234375,
+      "width": 83.96874237060547,
+      "x": 77.12870025634766,
+      "y": 505.33740234375
+    },
+    "overflow": false,
+    "phase": "arriving",
+    "snapshot": 1
+  },
+  {
+    "t": 221,
+    "ghost": {
+      "bottom": 282.3700866699219,
+      "height": 35.3359375,
+      "left": 34.08606719970703,
+      "right": 137.9844970703125,
+      "top": 247.03414916992188,
+      "width": 103.89842987060548,
+      "x": 34.08606719970703,
+      "y": 247.03414916992188
+    },
+    "overflow": false,
+    "phase": "arriving",
+    "snapshot": 1
+  },
+  {
+    "t": 332,
+    "ghost": {
+      "bottom": 247.3450469970703,
+      "height": 36.2109375,
+      "left": 28.10382843017578,
+      "right": 134.77569580078125,
+      "top": 211.1341094970703,
+      "width": 106.67186737060548,
+      "x": 28.10382843017578,
+      "y": 211.1341094970703
+    },
+    "overflow": false,
+    "phase": "arriving",
+    "snapshot": 1
+  },
+  {
+    "t": 370,
+    "ghost": {
+      "bottom": 228.968994140625,
+      "height": 36.6796875,
+      "left": 24.963603973388672,
+      "right": 133.08860397338867,
+      "top": 192.289306640625,
+      "width": 108.125,
+      "x": 24.963603973388672,
+      "y": 192.289306640625
+    },
+    "overflow": false,
+    "phase": "arriving",
+    "snapshot": 1
+  },
+  {
+    "t": 391,
+    "ghost": {
+      "bottom": 207.2565765380859,
+      "height": 37.21875,
+      "left": 21.255706787109375,
+      "right": 131.09945678710938,
+      "top": 170.03782653808594,
+      "width": 109.84375,
+      "x": 21.255706787109375,
+      "y": 170.03782653808594
+    },
+    "overflow": false,
+    "phase": "arriving",
+    "snapshot": 1
+  },
+  {
+    "t": 436,
+    "ghost": {
+      "bottom": 195.8156890869141,
+      "height": 37.5078125,
+      "left": 19.30107307434082,
+      "right": 130.05888557434082,
+      "top": 158.30787658691406,
+      "width": 110.7578125,
+      "x": 19.30107307434082,
+      "y": 158.30787658691406
+    },
+    "overflow": false,
+    "phase": "arriving",
+    "snapshot": 1
+  },
+  {
+    "t": 477,
+    "ghost": {
+      "bottom": 189.1115264892578,
+      "height": 37.6796875,
+      "left": 18.155277252197266,
+      "right": 129.4287147521973,
+      "top": 151.4318389892578,
+      "width": 111.2734375,
+      "x": 18.155277252197266,
+      "y": 151.4318389892578
+    },
+    "overflow": false,
+    "phase": "arriving",
+    "snapshot": 1
+  },
+  {
+    "t": 546,
+    "ghost": {
+      "bottom": 188.203125,
+      "height": 37.703125,
+      "left": 18,
+      "right": 129.3671875,
+      "top": 150.5,
+      "width": 111.3671875,
+      "x": 18,
+      "y": 150.5
+    },
+    "overflow": false,
+    "phase": "arriving",
+    "snapshot": 1
+  },
+  {
+    "t": 654,
+    "overflow": false,
+    "phase": "idle",
+    "snapshot": 0
+  },
+  {
+    "t": 690,
+    "overflow": false,
+    "phase": "idle",
+    "snapshot": 0
+  },
+  {
+    "t": 736,
+    "overflow": false,
+    "phase": "idle",
+    "snapshot": 0
+  },
+  {
+    "t": 755,
+    "overflow": false,
+    "phase": "idle",
+    "snapshot": 0
+  },
+  {
+    "t": 772,
+    "overflow": false,
+    "phase": "idle",
+    "snapshot": 0
+  },
+  {
+    "t": 867,
+    "overflow": false,
+    "phase": "idle",
+    "snapshot": 0
+  }
+]

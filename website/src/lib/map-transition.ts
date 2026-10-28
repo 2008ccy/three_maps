@@ -6,13 +6,20 @@ export const mapTransitionColors: Record<TransitionMap, string> = { domain: '181
 export const mapTransitionNames: Record<TransitionMap, string> = { domain: '领域地图', ecosystem: '生态地图', cognition: '认知地图' };
 
 export function transitionTiming(destination: TransitionDestination) {
-  return destination === 'home' ? { departure: 40, arrival: 220, particles: 6, particleAlpha: .12 } : { departure: 80, arrival: 400, particles: 18, particleAlpha: .2 };
+  return destination === 'home' ? { departure: 40, arrival: 220, particles: 6, particleAlpha: .12 } : { departure: 80, arrival: 480, particles: 18, particleAlpha: .2 };
+}
+
+export function handoffProgress(elapsed: number) {
+  const clamp = (value: number) => Math.max(0, Math.min(1, value));
+  const blend = clamp((elapsed - 80) / 280);
+  const content = blend * blend * (3 - 2 * blend);
+  return { title: 1 - Math.pow(1 - clamp(elapsed / 460), 4), source: 1 - content, content };
 }
 
 export type TitleAnchor = { x: number; y: number; fontSize: number; lineHeight: number; letterSpacing: number; weight: number };
-export function titleFrame(from: TitleAnchor, to: TitleAnchor, progress: number): TitleAnchor {
+export function titleFrame(from: TitleAnchor, to: TitleAnchor, progress: number, linear = false): TitleAnchor {
   const t = Math.max(0, Math.min(1, progress));
-  const ease = t * t * t * (t * (t * 6 - 15) + 10);
+  const ease = linear ? t : t * t * t * (t * (t * 6 - 15) + 10);
   return Object.fromEntries(Object.entries(from).map(([key, value]) => [key, value + (to[key as keyof TitleAnchor] - value) * ease])) as TitleAnchor;
 }
 
