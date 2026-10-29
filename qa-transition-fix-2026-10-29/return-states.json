@@ -1,0 +1,122 @@
+[
+  {
+    "ms": 0,
+    "focus": null,
+    "phase": "idle",
+    "url": "/three_maps/docs/domain/"
+  },
+  {
+    "ms": 89,
+    "focus": null,
+    "phase": "idle",
+    "url": "/three_maps/docs/domain/"
+  },
+  {
+    "ms": 113,
+    "focus": null,
+    "phase": "departing",
+    "url": "/three_maps/docs/domain/"
+  },
+  {
+    "ms": 135,
+    "focus": null,
+    "phase": "departing",
+    "url": "/three_maps/docs/domain/"
+  },
+  {
+    "ms": 167,
+    "focus": null,
+    "phase": "arriving",
+    "url": "/three_maps/"
+  },
+  {
+    "ms": 192,
+    "focus": null,
+    "phase": "arriving",
+    "url": "/three_maps/"
+  },
+  {
+    "ms": 239,
+    "focus": null,
+    "phase": "arriving",
+    "url": "/three_maps/"
+  },
+  {
+    "ms": 302,
+    "focus": null,
+    "phase": "arriving",
+    "url": "/three_maps/"
+  },
+  {
+    "ms": 332,
+    "focus": null,
+    "phase": "arriving",
+    "url": "/three_maps/"
+  },
+  {
+    "ms": 357,
+    "focus": null,
+    "phase": "arriving",
+    "url": "/three_maps/"
+  },
+  {
+    "ms": 402,
+    "focus": "domain",
+    "phase": "idle",
+    "url": "/three_maps/"
+  },
+  {
+    "ms": 467,
+    "focus": "domain",
+    "phase": "idle",
+    "url": "/three_maps/"
+  },
+  {
+    "ms": 496,
+    "focus": "domain",
+    "phase": "idle",
+    "url": "/three_maps/"
+  },
+  {
+    "ms": 604,
+    "focus": "domain",
+    "phase": "idle",
+    "url": "/three_maps/"
+  },
+  {
+    "ms": 714,
+    "focus": "domain",
+    "phase": "idle",
+    "url": "/three_maps/"
+  },
+  {
+    "ms": 746,
+    "focus": "domain",
+    "phase": "idle",
+    "url": "/three_maps/"
+  },
+  {
+    "ms": 823,
+    "focus": "domain",
+    "phase": "idle",
+    "url": "/three_maps/"
+  },
+  {
+    "ms": 927,
+    "focus": "domain",
+    "phase": "idle",
+    "url": "/three_maps/"
+  },
+  {
+    "ms": 946,
+    "focus": "domain",
+    "phase": "idle",
+    "url": "/three_maps/"
+  },
+  {
+    "ms": 1005,
+    "focus": "domain",
+    "phase": "idle",
+    "url": "/three_maps/"
+  }
+]

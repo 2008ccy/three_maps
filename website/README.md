@@ -165,6 +165,8 @@ GitHub Pages 只负责静态页面。后续 AI 接入需要额外服务端，密
 
 ## 8. 导图维护
 
+- 转场生命周期的 `isTransitionPage` 同时接受 Next 已去掉 basePath 的路由和浏览器完整路径，避免 GitHub Pages 下进入地图时提前取消动画；链接验证仍用严格的 `mapAtPath`。修复证据在 `qa-transition-fix-2026-10-29/`。
+
 ### 生态教学地图（2026-10-28）
 
 - `src/lib/maps/ecosystem-learning.ts` 是生态当前数据入口：7 协作环节、47 个具体条目、47 条主要归属、62 条本图联系、27 条跨图联系。`ecosystem-base.ts` 保留原 38 条目的 ID / 文档映射和旧分类归属；10 个兼容分类不进入节点、归属和关系统计。

@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { load } from 'cheerio';
 import { HOME_SESSION_KEY, restoreHomePhase, rememberHomeExpanded, isHomeRoute } from '../src/lib/home-scene.ts';
-import { transitionTiming, handoffProgress, titleFrame, homeMapLink, mapAtPath, plainLinkActivation, mapTransitionTarget } from '../src/lib/map-transition.ts';
+import { transitionTiming, handoffProgress, titleFrame, homeMapLink, mapAtPath, isTransitionPage, plainLinkActivation, mapTransitionTarget } from '../src/lib/map-transition.ts';
 
 const { basePath } = JSON.parse(readFileSync('out/.site-build.json', 'utf8'));
 
@@ -71,6 +71,21 @@ test('map destinations declare readiness without adding a visible overlay to the
     assert.equal($('[data-map-transition="idle"][hidden]').length, 1);
     assert.equal($('[data-transition-title]').length, 0);
   }
+});
+
+test('route commits keep transitions alive for Next pathnames with the deployment prefix stripped', () => {
+  const prefix = '/three_maps';
+  for (const page of ['/', '/docs/domain', '/docs/domain/', '/docs/ecosystem/', '/docs/cognition/']) {
+    assert.equal(isTransitionPage(page, prefix), true, `Next pathname: ${page}`);
+    const browserPath = page === '/' ? prefix + '/' : prefix + page;
+    assert.equal(isTransitionPage(browserPath, prefix), true, `browser pathname: ${browserPath}`);
+    assert.equal(isTransitionPage(page), true, `root deployment: ${page}`);
+  }
+  assert.equal(isTransitionPage(prefix, prefix), true);
+  for (const page of ['/docs/domain/entries/k-lora/', '/docs/sources/', '/docs/project/updates/', '/docs/unknown/', '/three_maps-copy/docs/domain/', '/other/', '/three_maps/other/']) {
+    assert.equal(isTransitionPage(page, prefix), false, `unrelated page cancels: ${page}`);
+  }
+  assert.equal(mapAtPath('/docs/domain/', prefix), null, 'browser URL validators must still reject missing deployment prefixes');
 });
 
 test('return-home targets preserve base paths and only exact map overview routes initiate the return curtain', () => {

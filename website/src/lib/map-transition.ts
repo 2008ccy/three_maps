@@ -31,6 +31,14 @@ export function mapAtPath(pathname: string, basePath = ''): TransitionMap | null
   return (Object.keys(mapTransitionColors) as TransitionMap[]).find((map) => pathname.replace(/\/$/, '') === `${basePath}/docs/${map}`) ?? null;
 }
 
+// Next's usePathname omits basePath; the browser URL includes it. This guard
+// accepts both representations, while link validation above remains strict.
+export function isTransitionPage(pathname: string, basePath = ''): boolean {
+  const route = basePath && (pathname === basePath || pathname.startsWith(`${basePath}/`))
+    ? pathname.slice(basePath.length) || '/' : pathname;
+  return route === '/' || mapAtPath(route) !== null;
+}
+
 export function homeMapLink(href: string, origin: string, basePath = ''): TransitionMap | null {
   try {
     const url = new URL(href, origin);

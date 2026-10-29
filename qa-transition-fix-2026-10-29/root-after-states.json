@@ -1,0 +1,122 @@
+[
+  {
+    "ms": 0,
+    "focus": "",
+    "phase": "idle",
+    "url": "/"
+  },
+  {
+    "ms": 50,
+    "focus": "",
+    "phase": "departing",
+    "url": "/"
+  },
+  {
+    "ms": 109,
+    "focus": "",
+    "phase": "departing",
+    "url": "/"
+  },
+  {
+    "ms": 134,
+    "focus": "",
+    "phase": "departing",
+    "url": "/"
+  },
+  {
+    "ms": 158,
+    "focus": "",
+    "phase": "arriving",
+    "url": "/docs/cognition/"
+  },
+  {
+    "ms": 219,
+    "focus": "",
+    "phase": "arriving",
+    "url": "/docs/cognition/"
+  },
+  {
+    "ms": 245,
+    "focus": "",
+    "phase": "arriving",
+    "url": "/docs/cognition/"
+  },
+  {
+    "ms": 270,
+    "focus": "",
+    "phase": "arriving",
+    "url": "/docs/cognition/"
+  },
+  {
+    "ms": 368,
+    "focus": "",
+    "phase": "arriving",
+    "url": "/docs/cognition/"
+  },
+  {
+    "ms": 382,
+    "focus": "",
+    "phase": "arriving",
+    "url": "/docs/cognition/"
+  },
+  {
+    "ms": 409,
+    "focus": "",
+    "phase": "arriving",
+    "url": "/docs/cognition/"
+  },
+  {
+    "ms": 434,
+    "focus": "",
+    "phase": "arriving",
+    "url": "/docs/cognition/"
+  },
+  {
+    "ms": 469,
+    "focus": "",
+    "phase": "arriving",
+    "url": "/docs/cognition/"
+  },
+  {
+    "ms": 579,
+    "focus": "",
+    "phase": "arriving",
+    "url": "/docs/cognition/"
+  },
+  {
+    "ms": 686,
+    "focus": "map-title",
+    "phase": "idle",
+    "url": "/docs/cognition/"
+  },
+  {
+    "ms": 729,
+    "focus": "map-title",
+    "phase": "idle",
+    "url": "/docs/cognition/"
+  },
+  {
+    "ms": 751,
+    "focus": "map-title",
+    "phase": "idle",
+    "url": "/docs/cognition/"
+  },
+  {
+    "ms": 795,
+    "focus": "map-title",
+    "phase": "idle",
+    "url": "/docs/cognition/"
+  },
+  {
+    "ms": 869,
+    "focus": "map-title",
+    "phase": "idle",
+    "url": "/docs/cognition/"
+  },
+  {
+    "ms": 902,
+    "focus": "map-title",
+    "phase": "idle",
+    "url": "/docs/cognition/"
+  }
+]

@@ -4,7 +4,7 @@ import { createContext, useCallback, useContext, useEffect, useLayoutEffect, use
 import { usePathname, useRouter } from 'next/navigation';
 import { isHomeRoute } from '@/lib/home-scene';
 import { useHomeScene } from './home-scene-state';
-import { TRANSITION_TIMEOUT_MS, mapTransitionColors, mapTransitionNames, transitionTiming, handoffProgress, titleFrame, homeMapLink, mapAtPath, mapTransitionTarget, plainLinkActivation, type MapTransitionPhase, type TransitionMap, type TransitionDestination, type TitleAnchor } from '@/lib/map-transition';
+import { TRANSITION_TIMEOUT_MS, mapTransitionColors, mapTransitionNames, transitionTiming, handoffProgress, titleFrame, homeMapLink, mapAtPath, isTransitionPage, mapTransitionTarget, plainLinkActivation, type MapTransitionPhase, type TransitionMap, type TransitionDestination, type TitleAnchor } from '@/lib/map-transition';
 import styles from './map-transition.module.css';
 
 type TransitionContext = {
@@ -304,7 +304,7 @@ export function MapTransitionProvider({ children }: { children: ReactNode }) {
   }, [finish, router]);
   useEffect(() => {
     const current = run.current; if (!current?.navigated) return;
-    if (!isHomeRoute(pathname, basePath) && !mapAtPath(pathname, basePath)) finish();
+    if (!isTransitionPage(pathname, basePath)) finish();
   }, [pathname, finish]);
 
   return <Context value={{ begin, arrive, prefetch }}>

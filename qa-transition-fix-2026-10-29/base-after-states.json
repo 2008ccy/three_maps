@@ -1,0 +1,277 @@
+[
+  {
+    "ms": 12,
+    "focus": "",
+    "phase": "idle",
+    "snapshot": false,
+    "url": "/three_maps/"
+  },
+  {
+    "ms": 84,
+    "focus": "",
+    "phase": "departing",
+    "snapshot": true,
+    "title": {
+      "bottom": 481.3193664550781,
+      "height": 31.5,
+      "left": 163.328125,
+      "right": 247.328125,
+      "top": 449.8193664550781,
+      "width": 84,
+      "x": 163.328125,
+      "y": 449.8193664550781
+    },
+    "url": "/three_maps/"
+  },
+  {
+    "ms": 112,
+    "focus": "",
+    "phase": "departing",
+    "snapshot": true,
+    "title": {
+      "bottom": 481.3193664550781,
+      "height": 31.5,
+      "left": 163.328125,
+      "right": 247.328125,
+      "top": 449.8193664550781,
+      "width": 84,
+      "x": 163.328125,
+      "y": 449.8193664550781
+    },
+    "url": "/three_maps/"
+  },
+  {
+    "ms": 135,
+    "focus": "",
+    "phase": "departing",
+    "snapshot": true,
+    "title": {
+      "bottom": 481.3193664550781,
+      "height": 31.5,
+      "left": 163.328125,
+      "right": 247.328125,
+      "top": 449.8193664550781,
+      "width": 84,
+      "x": 163.328125,
+      "y": 449.8193664550781
+    },
+    "url": "/three_maps/"
+  },
+  {
+    "ms": 164,
+    "focus": "",
+    "phase": "arriving",
+    "snapshot": true,
+    "title": {
+      "bottom": 481.3193664550781,
+      "height": 31.5,
+      "left": 163.328125,
+      "right": 247.328125,
+      "top": 449.8193664550781,
+      "width": 84,
+      "x": 163.328125,
+      "y": 449.8193664550781
+    },
+    "url": "/three_maps/docs/domain/"
+  },
+  {
+    "ms": 287,
+    "focus": "",
+    "phase": "arriving",
+    "snapshot": true,
+    "title": {
+      "bottom": 264.962890625,
+      "height": 40.47657775878906,
+      "left": 76.1630859375,
+      "right": 193.5458984375,
+      "top": 224.48631286621097,
+      "width": 117.3828125,
+      "x": 76.1630859375,
+      "y": 224.48631286621097
+    },
+    "url": "/three_maps/docs/domain/"
+  },
+  {
+    "ms": 395,
+    "focus": "",
+    "phase": "arriving",
+    "snapshot": true,
+    "title": {
+      "bottom": 194.463623046875,
+      "height": 43.3984375,
+      "left": 47.76176834106445,
+      "right": 176.02739334106445,
+      "top": 151.065185546875,
+      "width": 128.265625,
+      "x": 47.76176834106445,
+      "y": 151.065185546875
+    },
+    "url": "/three_maps/docs/domain/"
+  },
+  {
+    "ms": 429,
+    "focus": "",
+    "phase": "arriving",
+    "snapshot": true,
+    "title": {
+      "bottom": 185.5994415283203,
+      "height": 43.765625,
+      "left": 44.19082260131836,
+      "right": 173.81582260131836,
+      "top": 141.8338165283203,
+      "width": 129.625,
+      "x": 44.19082260131836,
+      "y": 141.8338165283203
+    },
+    "url": "/three_maps/docs/domain/"
+  },
+  {
+    "ms": 504,
+    "focus": "",
+    "phase": "arriving",
+    "snapshot": true,
+    "title": {
+      "bottom": 176.70774841308594,
+      "height": 44.140625,
+      "left": 40.606204986572266,
+      "right": 171.6140174865723,
+      "top": 132.56712341308594,
+      "width": 131.0078125,
+      "x": 40.606204986572266,
+      "y": 132.56712341308594
+    },
+    "url": "/three_maps/docs/domain/"
+  },
+  {
+    "ms": 529,
+    "focus": "",
+    "phase": "arriving",
+    "snapshot": true,
+    "title": {
+      "bottom": 175.8286590576172,
+      "height": 44.171875,
+      "left": 40.254058837890625,
+      "right": 171.38687133789062,
+      "top": 131.6567840576172,
+      "width": 131.1328125,
+      "x": 40.254058837890625,
+      "y": 131.6567840576172
+    },
+    "url": "/three_maps/docs/domain/"
+  },
+  {
+    "ms": 611,
+    "focus": "",
+    "phase": "arriving",
+    "snapshot": true,
+    "title": {
+      "bottom": 175.2034912109375,
+      "height": 44.203125,
+      "left": 40.000144958496094,
+      "right": 171.2267074584961,
+      "top": 131.0003662109375,
+      "width": 131.2265625,
+      "x": 40.000144958496094,
+      "y": 131.0003662109375
+    },
+    "url": "/three_maps/docs/domain/"
+  },
+  {
+    "ms": 663,
+    "focus": "map-title",
+    "phase": "idle",
+    "snapshot": false,
+    "url": "/three_maps/docs/domain/"
+  },
+  {
+    "ms": 684,
+    "focus": "map-title",
+    "phase": "idle",
+    "snapshot": false,
+    "url": "/three_maps/docs/domain/"
+  },
+  {
+    "ms": 711,
+    "focus": "map-title",
+    "phase": "idle",
+    "snapshot": false,
+    "url": "/three_maps/docs/domain/"
+  },
+  {
+    "ms": 734,
+    "focus": "map-title",
+    "phase": "idle",
+    "snapshot": false,
+    "url": "/three_maps/docs/domain/"
+  },
+  {
+    "ms": 820,
+    "focus": "map-title",
+    "phase": "idle",
+    "snapshot": false,
+    "url": "/three_maps/docs/domain/"
+  },
+  {
+    "ms": 841,
+    "focus": "map-title",
+    "phase": "idle",
+    "snapshot": false,
+    "url": "/three_maps/docs/domain/"
+  },
+  {
+    "ms": 923,
+    "focus": "map-title",
+    "phase": "idle",
+    "snapshot": false,
+    "url": "/three_maps/docs/domain/"
+  },
+  {
+    "ms": 939,
+    "focus": "map-title",
+    "phase": "idle",
+    "snapshot": false,
+    "url": "/three_maps/docs/domain/"
+  },
+  {
+    "ms": 1029,
+    "focus": "map-title",
+    "phase": "idle",
+    "snapshot": false,
+    "url": "/three_maps/docs/domain/"
+  },
+  {
+    "ms": 1063,
+    "focus": "map-title",
+    "phase": "idle",
+    "snapshot": false,
+    "url": "/three_maps/docs/domain/"
+  },
+  {
+    "ms": 1086,
+    "focus": "map-title",
+    "phase": "idle",
+    "snapshot": false,
+    "url": "/three_maps/docs/domain/"
+  },
+  {
+    "ms": 1109,
+    "focus": "map-title",
+    "phase": "idle",
+    "snapshot": false,
+    "url": "/three_maps/docs/domain/"
+  },
+  {
+    "ms": 1132,
+    "focus": "map-title",
+    "phase": "idle",
+    "snapshot": false,
+    "url": "/three_maps/docs/domain/"
+  },
+  {
+    "ms": 1181,
+    "focus": "map-title",
+    "phase": "idle",
+    "snapshot": false,
+    "url": "/three_maps/docs/domain/"
+  }
+]

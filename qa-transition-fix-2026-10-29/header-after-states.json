@@ -1,0 +1,122 @@
+[
+  {
+    "ms": 0,
+    "focus": "",
+    "phase": "idle",
+    "url": "/three_maps/"
+  },
+  {
+    "ms": 101,
+    "focus": "",
+    "phase": "departing",
+    "url": "/three_maps/"
+  },
+  {
+    "ms": 126,
+    "focus": "",
+    "phase": "departing",
+    "url": "/three_maps/"
+  },
+  {
+    "ms": 141,
+    "focus": "",
+    "phase": "departing",
+    "url": "/three_maps/"
+  },
+  {
+    "ms": 161,
+    "focus": "",
+    "phase": "waiting",
+    "url": "/three_maps/"
+  },
+  {
+    "ms": 201,
+    "focus": "",
+    "phase": "arriving",
+    "url": "/three_maps/docs/ecosystem/"
+  },
+  {
+    "ms": 228,
+    "focus": "",
+    "phase": "arriving",
+    "url": "/three_maps/docs/ecosystem/"
+  },
+  {
+    "ms": 251,
+    "focus": "",
+    "phase": "arriving",
+    "url": "/three_maps/docs/ecosystem/"
+  },
+  {
+    "ms": 277,
+    "focus": "",
+    "phase": "arriving",
+    "url": "/three_maps/docs/ecosystem/"
+  },
+  {
+    "ms": 309,
+    "focus": "",
+    "phase": "arriving",
+    "url": "/three_maps/docs/ecosystem/"
+  },
+  {
+    "ms": 360,
+    "focus": "",
+    "phase": "arriving",
+    "url": "/three_maps/docs/ecosystem/"
+  },
+  {
+    "ms": 390,
+    "focus": "",
+    "phase": "arriving",
+    "url": "/three_maps/docs/ecosystem/"
+  },
+  {
+    "ms": 418,
+    "focus": "",
+    "phase": "arriving",
+    "url": "/three_maps/docs/ecosystem/"
+  },
+  {
+    "ms": 513,
+    "focus": "",
+    "phase": "arriving",
+    "url": "/three_maps/docs/ecosystem/"
+  },
+  {
+    "ms": 561,
+    "focus": "",
+    "phase": "arriving",
+    "url": "/three_maps/docs/ecosystem/"
+  },
+  {
+    "ms": 627,
+    "focus": "",
+    "phase": "arriving",
+    "url": "/three_maps/docs/ecosystem/"
+  },
+  {
+    "ms": 736,
+    "focus": "map-title",
+    "phase": "idle",
+    "url": "/three_maps/docs/ecosystem/"
+  },
+  {
+    "ms": 821,
+    "focus": "map-title",
+    "phase": "idle",
+    "url": "/three_maps/docs/ecosystem/"
+  },
+  {
+    "ms": 839,
+    "focus": "map-title",
+    "phase": "idle",
+    "url": "/three_maps/docs/ecosystem/"
+  },
+  {
+    "ms": 950,
+    "focus": "map-title",
+    "phase": "idle",
+    "url": "/three_maps/docs/ecosystem/"
+  }
+]

@@ -1,0 +1,297 @@
+[
+  {
+    "ms": 14,
+    "phase": "idle",
+    "snapshot": false,
+    "url": "/"
+  },
+  {
+    "ms": 86,
+    "phase": "departing",
+    "snapshot": true,
+    "snapshotOpacity": "top: 56px;",
+    "title": {
+      "bottom": 481.7615356445313,
+      "height": 31.5,
+      "left": 163.328125,
+      "right": 247.328125,
+      "top": 450.2615356445313,
+      "width": 84,
+      "x": 163.328125,
+      "y": 450.2615356445313
+    },
+    "url": "/"
+  },
+  {
+    "ms": 114,
+    "phase": "departing",
+    "snapshot": true,
+    "snapshotOpacity": "top: 56px;",
+    "title": {
+      "bottom": 481.7615356445313,
+      "height": 31.5,
+      "left": 163.328125,
+      "right": 247.328125,
+      "top": 450.2615356445313,
+      "width": 84,
+      "x": 163.328125,
+      "y": 450.2615356445313
+    },
+    "url": "/"
+  },
+  {
+    "ms": 141,
+    "phase": "departing",
+    "snapshot": true,
+    "snapshotOpacity": "top: 56px;",
+    "title": {
+      "bottom": 481.7615356445313,
+      "height": 31.5,
+      "left": 163.328125,
+      "right": 247.328125,
+      "top": 450.2615356445313,
+      "width": 84,
+      "x": 163.328125,
+      "y": 450.2615356445313
+    },
+    "url": "/"
+  },
+  {
+    "ms": 171,
+    "phase": "arriving",
+    "snapshot": true,
+    "snapshotOpacity": "top: 56px; opacity: 1;",
+    "title": {
+      "bottom": 470.9757690429687,
+      "height": 31.9453125,
+      "left": 158.98963928222656,
+      "right": 244.64588928222656,
+      "top": 439.0304565429687,
+      "width": 85.65625,
+      "x": 158.98963928222656,
+      "y": 439.0304565429687
+    },
+    "url": "/docs/domain/"
+  },
+  {
+    "ms": 207,
+    "phase": "arriving",
+    "snapshot": true,
+    "snapshotOpacity": "top: 56px; opacity: 1;",
+    "title": {
+      "bottom": 393.3712768554687,
+      "height": 35.1640625,
+      "left": 127.76829528808594,
+      "right": 225.3776702880859,
+      "top": 358.20721435546875,
+      "width": 97.609375,
+      "x": 127.76829528808594,
+      "y": 358.20721435546875
+    },
+    "url": "/docs/domain/"
+  },
+  {
+    "ms": 238,
+    "phase": "arriving",
+    "snapshot": true,
+    "snapshotOpacity": "top: 56px; opacity: 1;",
+    "title": {
+      "bottom": 332.3040771484375,
+      "height": 37.6953125,
+      "left": 103.20073699951172,
+      "right": 210.22418212890625,
+      "top": 294.6087646484375,
+      "width": 107.02344512939452,
+      "x": 103.20073699951172,
+      "y": 294.6087646484375
+    },
+    "url": "/docs/domain/"
+  },
+  {
+    "ms": 273,
+    "phase": "arriving",
+    "snapshot": true,
+    "snapshotOpacity": "top: 56px; opacity: 0.97905;",
+    "title": {
+      "bottom": 285.04876708984375,
+      "height": 39.64845275878906,
+      "left": 84.19190979003906,
+      "right": 198.50440979003903,
+      "top": 245.4003143310547,
+      "width": 114.3125,
+      "x": 84.19190979003906,
+      "y": 245.4003143310547
+    },
+    "url": "/docs/domain/"
+  },
+  {
+    "ms": 345,
+    "phase": "arriving",
+    "snapshot": true,
+    "snapshotOpacity": "top: 56px; opacity: 0.716298;",
+    "title": {
+      "bottom": 218.2520294189453,
+      "height": 42.4140625,
+      "left": 57.32053756713867,
+      "right": 181.91428756713867,
+      "top": 175.8379669189453,
+      "width": 124.59375,
+      "x": 57.32053756713867,
+      "y": 175.8379669189453
+    },
+    "url": "/docs/domain/"
+  },
+  {
+    "ms": 361,
+    "phase": "arriving",
+    "snapshot": true,
+    "snapshotOpacity": "top: 56px; opacity: 0.631986;",
+    "title": {
+      "bottom": 208.91567993164065,
+      "height": 42.8046875,
+      "left": 53.56309127807617,
+      "right": 179.60996627807617,
+      "top": 166.11099243164062,
+      "width": 126.046875,
+      "x": 53.56309127807617,
+      "y": 166.11099243164062
+    },
+    "url": "/docs/domain/"
+  },
+  {
+    "ms": 386,
+    "phase": "arriving",
+    "snapshot": true,
+    "snapshotOpacity": "top: 56px; opacity: 0.495714;",
+    "title": {
+      "bottom": 197.6166076660156,
+      "height": 43.2734375,
+      "left": 49.01728057861328,
+      "right": 176.79071044921875,
+      "top": 154.34317016601562,
+      "width": 127.77342987060548,
+      "x": 49.01728057861328,
+      "y": 154.34317016601562
+    },
+    "url": "/docs/domain/"
+  },
+  {
+    "ms": 411,
+    "phase": "arriving",
+    "snapshot": true,
+    "snapshotOpacity": "top: 56px; opacity: 0.36594;",
+    "title": {
+      "bottom": 189.7448272705078,
+      "height": 43.59375,
+      "left": 45.85273742675781,
+      "right": 174.8449249267578,
+      "top": 146.1510772705078,
+      "width": 128.9921875,
+      "x": 45.85273742675781,
+      "y": 146.1510772705078
+    },
+    "url": "/docs/domain/"
+  },
+  {
+    "ms": 439,
+    "phase": "arriving",
+    "snapshot": true,
+    "snapshotOpacity": "top: 56px; opacity: 0.239801;",
+    "title": {
+      "bottom": 183.9728546142578,
+      "height": 43.8359375,
+      "left": 43.529518127441406,
+      "right": 173.4123306274414,
+      "top": 140.1369171142578,
+      "width": 129.8828125,
+      "x": 43.529518127441406,
+      "y": 140.1369171142578
+    },
+    "url": "/docs/domain/"
+  },
+  {
+    "ms": 470,
+    "phase": "arriving",
+    "snapshot": true,
+    "snapshotOpacity": "top: 56px; opacity: 0.105031;",
+    "title": {
+      "bottom": 179.28675842285156,
+      "height": 44.03125,
+      "left": 41.64386749267578,
+      "right": 172.25324249267578,
+      "top": 135.25550842285156,
+      "width": 130.609375,
+      "x": 41.64386749267578,
+      "y": 135.25550842285156
+    },
+    "url": "/docs/domain/"
+  },
+  {
+    "ms": 495,
+    "phase": "arriving",
+    "snapshot": true,
+    "snapshotOpacity": "top: 56px; opacity: 0.0338481;",
+    "title": {
+      "bottom": 177.210693359375,
+      "height": 44.1171875,
+      "left": 40.8087043762207,
+      "right": 171.7227668762207,
+      "top": 133.093505859375,
+      "width": 130.9140625,
+      "x": 40.8087043762207,
+      "y": 133.093505859375
+    },
+    "url": "/docs/domain/"
+  },
+  {
+    "ms": 522,
+    "phase": "arriving",
+    "snapshot": true,
+    "snapshotOpacity": "top: 56px; opacity: 0.00135787;",
+    "title": {
+      "bottom": 176.0642547607422,
+      "height": 44.1640625,
+      "left": 40.34774017333984,
+      "right": 171.44149017333984,
+      "top": 131.9001922607422,
+      "width": 131.09375,
+      "x": 40.34774017333984,
+      "y": 131.9001922607422
+    },
+    "url": "/docs/domain/"
+  },
+  {
+    "ms": 546,
+    "phase": "arriving",
+    "snapshot": true,
+    "snapshotOpacity": "top: 56px; opacity: 0;",
+    "title": {
+      "bottom": 175.49142456054688,
+      "height": 44.1875,
+      "left": 40.117401123046875,
+      "right": 171.30490112304688,
+      "top": 131.30392456054688,
+      "width": 131.1875,
+      "x": 40.117401123046875,
+      "y": 131.30392456054688
+    },
+    "url": "/docs/domain/"
+  },
+  {
+    "ms": 568,
+    "phase": "arriving",
+    "snapshot": true,
+    "snapshotOpacity": "top: 56px; opacity: 0;",
+    "title": {
+      "bottom": 175.26443481445312,
+      "height": 44.1953125,
+      "left": 40.026702880859375,
+      "right": 171.25326538085938,
+      "top": 131.06912231445312,
+      "width": 131.2265625,
+      "x": 40.026702880859375,
+      "y": 131.06912231445312
+    },
+    "url": "/docs/domain/"
+  }
+]
