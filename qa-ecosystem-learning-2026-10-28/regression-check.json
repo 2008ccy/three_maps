@@ -1,0 +1,15 @@
+{
+  "protectedFiles": {
+    "website/src/lib/maps/domain-learning.ts": true,
+    "website/src/lib/maps/teaching-case.ts": true,
+    "website/src/components/maps/cognition-graph.tsx": true,
+    "website/src/lib/maps/cognition-diagram.ts": true,
+    "website/src/app/(home)/page.tsx": true,
+    "website/src/app/(home)/home-particles.tsx": true,
+    "website/src/components/map-transition.tsx": true,
+    "website/src/components/map-transition.module.css": true,
+    "website/src/lib/map-transition.ts": true
+  },
+  "domainDataUnchanged": true,
+  "cognitionDataUnchanged": true
+}

@@ -1,0 +1,11 @@
+{
+  "website/src/lib/maps/domain-learning.ts": "07b5c7ecf5f2165f230e36a95fc714632b7af737806b91aa966cdae09faae27b",
+  "website/src/lib/maps/teaching-case.ts": "d7f913f4f1c06e03ecd27fd25a5207241cb5f2ab99dadc968071e57f5012efef",
+  "website/src/components/maps/cognition-graph.tsx": "d4b74a5fe4268ea4974bb6dff43181bf9fbaec33d016b9af3a0a1df240e32ed7",
+  "website/src/lib/maps/cognition-diagram.ts": "67d397fd967f15cd73ee6aeabcc73ca7d33ae65ef16a0be78286b842d41f0b6b",
+  "website/src/app/(home)/page.tsx": "586fe9a4bfbd94d7903667d2919312ad8092c8c9ec8e3b26d541e1bbc9c40be0",
+  "website/src/app/(home)/home-particles.tsx": "2c35e8d7be8780782519f32ae310c4234b3aeb69a11cc153925274cfc357792a",
+  "website/src/components/map-transition.tsx": "8cd101925ab22f47a63d58012f3039aa778a402cd1d0085d7ef62d9d79a0ad30",
+  "website/src/components/map-transition.module.css": "89217f90e5180d0cf9dee74b5d5381e8bf8849a676614d327a7fca51c62daeda",
+  "website/src/lib/map-transition.ts": "c8b6079730ed27f8adfa9150d2d4bb1a44210190c1e25cd879ccbbe5f2373b96"
+}

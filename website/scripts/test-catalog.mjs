@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { maps, flattenNodes } from '../src/lib/maps/content.ts';
-import { buildCatalog, buildEdges, filterCatalog, emptyFilters, catalogQuery, readCatalogQuery } from '../src/lib/maps/catalog.ts';
+import { buildCatalog, buildEdges, resolveCatalogNode, filterCatalog, emptyFilters, catalogQuery, readCatalogQuery } from '../src/lib/maps/catalog.ts';
 
 for (const map of maps) {
   test(`${map.id}: catalog preserves every node, path and evidence boundary`, () => {
@@ -50,11 +50,11 @@ test('query state round trips Chinese filters and leaves legacy node hashes inde
   assert.equal(readCatalogQuery('?view=unknown').view, 'cards');
 });
 
-test('topic overview collapses the three maps to 5, 6 and 4 groups without losing members', async () => {
+test('topic overview collapses the three maps to 5, 7 and 4 groups without losing members', async () => {
   const { groupCatalog, catalogChildren } = await import('../src/lib/maps/catalog.ts');
   for (const [index, map] of maps.entries()) {
     const nodes = buildCatalog(map), groups = groupCatalog(nodes, nodes);
-    assert.equal(groups.length, [5, 6, 4][index]);
+    assert.equal(groups.length, [5, 7, 4][index]);
     const all = groups.flatMap(({ root, members }) => [root.id, ...members.map((node) => node.id)]);
     assert.equal(new Set(all).size, nodes.length);
     assert.equal(all.length, nodes.length);
@@ -71,8 +71,8 @@ test('a deep search match keeps its containing topic and direct-child navigation
   assert.deepEqual(groups[0].matches.filter((node) => node.parent).map((node) => node.id), ['finetuning', 'lora']);
   assert.equal(groupCatalog(domain, []).length, 0);
   const ecosystem = buildCatalog(maps[1]);
-  assert.ok(catalogChildren(ecosystem, 'participants').some((node) => node.id === 'research-teams'));
-  assert.ok(catalogChildren(ecosystem, 'research-teams').some((node) => node.id === 'lora-authors'));
+  assert.ok(resolveCatalogNode(maps[1], ecosystem, 'participants').children.some((node) => node.id === 'lora-authors'));
+  assert.ok(catalogChildren(ecosystem, 'stage-adapt').some((node) => node.id === 'lora-authors'));
   assert.equal(catalogChildren(ecosystem, 'lora-authors').length, 0);
 });
 
@@ -92,7 +92,7 @@ test('domain lessons cover 18 points, preserve legacy IDs, and keep demonstratio
   assert.match(teachingCase.notice, /非真实课程原文.*非模型实测结果/);
   assert.deepEqual(maps[0].learningPath, ['prediction','generation','alignment','collection','cleaning','evaluation-set','token','attention','transformer','pretraining','loss','finetuning','lora','retrieval','rag','inference','deployment','monitoring']);
   assert.equal(new Set(maps[0].learningPath).size, points.length);
-  for (const map of maps.slice(1)) assert.ok(buildCatalog(map).every((node) => !node.lesson && !node.topic));
+  for (const map of maps.slice(2)) assert.ok(buildCatalog(map).every((node) => !node.lesson && !node.topic));
 });
 
 test('domain concepts distinguish 12 core, 10 extended and 3 non-causal comparisons from 18 memberships', () => {
@@ -114,4 +114,68 @@ test('lesson examples are searchable, intersection still applies, and relation s
   assert.equal(filterCatalog(nodes, { ...emptyFilters, q: '4×1', type: '任务' }).length, 0);
   assert.deepEqual(readCatalogQuery(catalogQuery('graph', emptyFilters, 'all')), { view:'graph', filters:emptyFilters, relations:'all' });
   assert.equal(readCatalogQuery('?relations=unexpected').relations, 'core');
+});
+
+test('ecosystem has 7 stages, 47 complete lessons, 47 memberships and 10 independent legacy collections', () => {
+  const map = maps[1], nodes = buildCatalog(map), points = nodes.filter((node) => node.parent), edges = buildEdges(map);
+  assert.equal(map.branches.length, 7); assert.equal(nodes.length, 54); assert.equal(points.length, 47);
+  assert.equal(edges.filter((edge) => edge.kind === 'hierarchy').length, 47);
+  assert.equal(map.legacyCollections.length, 10);
+  const old = ['participants','research-teams','model-teams','communities','platform-services','resources','publications','collaboration','costs','access'];
+  for (const id of old) {
+    const collection = resolveCatalogNode(map, nodes, id);
+    assert.ok(collection.collection && collection.children.length && !nodes.some((node) => node.id === id));
+    assert.equal(new Set(collection.children.map((node) => node.id)).size, collection.children.length);
+    assert.ok(collection.children.every((node) => points.some((point) => point.id === node.id)));
+  }
+  assert.equal(new Set(map.learningPath).size, 47);
+  assert.deepEqual(map.learningPath, map.branches.flatMap((stage) => stage.children.map((node) => node.id)));
+  for (const node of points) {
+    const lesson = node.lesson;
+    assert.ok(node.boundary && node.sources.includes('L8'));
+    assert.ok(lesson.role && lesson.goal && lesson.explanation.length >= 2 && lesson.example.steps.length >= 3, node.id);
+    assert.ok(lesson.example.input && lesson.example.output && lesson.confusions.length >= 2 && lesson.check.question && lesson.check.answer, node.id);
+    assert.ok(node.records.every((record) => record.date && record.source && record.locator && record.text));
+    assert.ok(edges.some((edge) => edge.kind === 'relation' && edge.targetMap === 'ecosystem' && (edge.from === node.id || edge.to === node.id)), node.id);
+    assert.equal(node.understanding, '待自评'); assert.equal(node.verification, '待核实');
+  }
+});
+
+test('five ecosystem teams use equal profile fields and do not infer tool support or task ranking', () => {
+  const teams = buildCatalog(maps[1]).filter((node) => node.teamProfile);
+  assert.deepEqual(teams.map((node) => node.id), ['qwen','deepseek-team','llama-team','glm-team','kimi-team']);
+  for (const node of teams) {
+    const profile = node.teamProfile;
+    for (const key of ['series','release','reusable','dependencies','limits','missingEvidence']) assert.ok(profile[key]);
+    assert.ok(profile.official.length && profile.official.every((link) => link.title && /^https:\/\//.test(link.href)));
+    assert.ok(profile.release.includes('历史'));
+    assert.equal(node.verification, '待核实');
+  }
+});
+
+test('ecosystem overview is exactly 7 stages and 8 bounded handoffs; detail adds only direct neighbors', async () => {
+  const { ecosystemGraphSlice } = await import('../src/lib/maps/ecosystem-graph.ts');
+  const map = maps[1], nodes = buildCatalog(map), edges = buildEdges(map).filter((edge) => edge.kind === 'relation' && edge.targetMap === 'ecosystem');
+  const overview = ecosystemGraphSlice(nodes, nodes, edges, '', null, 'core');
+  assert.equal(overview.nodes.length, 7); assert.equal(overview.edges.length, 8);
+  assert.equal(overview.nodes.every((node) => !node.parent), true);
+  assert.equal(Math.max(...overview.nodes.map((node) => node.x + 220)) <= overview.width, true);
+  const selected = ecosystemGraphSlice(nodes, nodes, edges, '', 'peft', 'core');
+  assert.equal(selected.stage, 'stage-adapt');
+  for (const edge of edges.filter((edge) => edge.from === 'peft' || edge.to === 'peft')) assert.ok(selected.edges.some((item) => item.id === edge.id));
+  const nonmember = selected.nodes.filter((node) => node.parent !== 'stage-adapt' && node.id !== 'stage-adapt');
+  assert.ok(nonmember.every((node) => edges.some((edge) => edge.from === 'peft' && edge.to === node.id || edge.to === 'peft' && edge.from === node.id)));
+  assert.ok(selected.edges.filter((edge) => edge.direction === 'undirected').length);
+  assert.equal(ecosystemGraphSlice(nodes.filter((node) => node.id === 'peft'), nodes, edges, '', null, 'core').nodes.length, 1);
+  const back = readCatalogQuery(catalogQuery('graph', { ...emptyFilters, q: '接口' }, 'all', 'stage-adapt'));
+  assert.equal(back.stage, 'stage-adapt'); assert.equal(back.filters.q, '接口'); assert.equal(back.relations, 'all');
+});
+
+test('ecosystem search covers historical records and relation explanations with filter intersection', () => {
+  const nodes = buildCatalog(maps[1]), edges = buildEdges(maps[1]);
+  assert.ok(filterCatalog(nodes, { ...emptyFilters, q: '7390' }, edges).some((node) => node.id === 'glm-team'));
+  assert.ok(filterCatalog(nodes, { ...emptyFilters, q: '不能扩展为 EleutherAI' }, edges).some((node) => node.id === 'eleuther'));
+  assert.equal(filterCatalog(nodes, { ...emptyFilters, q: '7390', type: '工具' }, edges).length, 0);
+  assert.equal(filterCatalog(nodes, { ...emptyFilters, q: '不存在的条目123456' }, edges).length, 0);
+  assert.equal(filterCatalog(nodes, emptyFilters, edges).length, 54);
 });

@@ -24,6 +24,6 @@ export function MapPage({ id }: { id: MapKey }) {
       };
     }
   }
-  const Explorer = id === 'domain' ? DomainExplorer : MapExplorer;
+  const Explorer = id === 'cognition' ? MapExplorer : DomainExplorer;
   return <><MapArrival map={id} /><Explorer map={map} links={links} statuses={documentStatuses()} sourceTitles={sourceTitles()} /></>;
 }

@@ -196,8 +196,8 @@
 @media (prefers-reduced-motion:reduce) { .map * { animation: none !important; transition: none !important; } }
 
 /* 领域地图教学层：样式只作用于领域地图，其他地图沿用原布局。 */
-.map[data-map=domain] { padding-top: 18px; }
-.map[data-map=domain] .breadcrumb { margin-bottom: 10px; }
+.map[data-learning] { padding-top: 18px; }
+.map[data-learning] .breadcrumb { margin-bottom: 10px; }
 .domainIntro { display: flex; align-items: center; justify-content: space-between; gap: 28px; }
 .domainIntro h1 { font-size: 34px; font-weight: 650; letter-spacing: -.035em; margin: 8px 0 10px; line-height: 1.3; }
 .domainIntro > div > p:last-child { color: #c8c4d0; font-size: 16px; line-height: 1.8; max-width: 800px; }
@@ -217,22 +217,22 @@
 .advancedFilters .filterFields { grid-template-columns: repeat(3,minmax(0,1fr)); margin-top: 16px; }
 .advancedFilters p { grid-column: 1/-1; color: var(--muted); font-size: 13px; line-height: 1.8; }
 .resetDomain { padding: 12px 8px; color: var(--muted); font-size: 14px; }
-.map[data-map=domain] .viewBar { margin-block: 12px 12px; }
-.map[data-map=domain] .viewBar > p { font-size: 13px; }
-.map[data-map=domain] .viewTabs button { font-size: 14px; }
-.map[data-map=domain] .eyebrow { font-size: 13px; }
-.map[data-map=domain] .sectionHeading > span,.map[data-map=domain] .graphControls output,.domainDialog .notice { font-size: 13px; }
-.map[data-map=domain] .groupGrid { gap: 16px; }
-.map[data-map=domain] .groupCard { min-height: 238px; padding: 19px 22px; }
-.map[data-map=domain] .groupTitle { font-size: 23px; margin-top: 12px; }
-.map[data-map=domain] .groupCardTop { font-size: 13px; }
-.map[data-map=domain] .groupSummary { color: var(--tone); font-size: 15px; margin-top: 4px; }
+.map[data-learning] .viewBar { margin-block: 12px 12px; }
+.map[data-learning] .viewBar > p { font-size: 13px; }
+.map[data-learning] .viewTabs button { font-size: 14px; }
+.map[data-learning] .eyebrow { font-size: 13px; }
+.map[data-learning] .sectionHeading > span,.map[data-learning] .graphControls output,.domainDialog .notice { font-size: 13px; }
+.map[data-learning] .groupGrid { gap: 16px; }
+.map[data-learning] .groupCard { min-height: 238px; padding: 19px 22px; }
+.map[data-learning] .groupTitle { font-size: 23px; margin-top: 12px; }
+.map[data-learning] .groupCardTop { font-size: 13px; }
+.map[data-learning] .groupSummary { color: var(--tone); font-size: 15px; margin-top: 4px; }
 .topicPreview { font-size: 14px; line-height: 1.8; color: #bcb5c6; margin: 12px 0 16px; }
-.map[data-map=domain] .groupCardBottom { gap: 18px; padding-top: 12px; }
-.map[data-map=domain] .groupCardBottom > span { font-size: 13px; line-height: 1.7; }
-.map[data-map=domain] .groupCardBottom > svg { color: var(--tone); flex-shrink: 0; }
-.map[data-map=domain] .domainDialog { width: min(920px,calc(100% - 64px)); max-height: 88dvh; top: 6dvh; padding: 0; display: flex; flex-direction: column; overflow: hidden; }
-.map[data-map=domain] .domainDialog[data-topic=true] { width: min(1040px,calc(100% - 64px)); }
+.map[data-learning] .groupCardBottom { gap: 18px; padding-top: 12px; }
+.map[data-learning] .groupCardBottom > span { font-size: 13px; line-height: 1.7; }
+.map[data-learning] .groupCardBottom > svg { color: var(--tone); flex-shrink: 0; }
+.map[data-learning] .domainDialog { width: min(920px,calc(100% - 64px)); max-height: 88dvh; top: 6dvh; padding: 0; display: flex; flex-direction: column; overflow: hidden; }
+.map[data-learning] .domainDialog[data-topic=true] { width: min(1040px,calc(100% - 64px)); }
 .domainPanelTop { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-shrink: 0; padding: 15px 24px; border-bottom: 1px solid #ffffff12; }
 .domainPanelTop > div { display: flex; align-items: center; flex-wrap: wrap; gap: 14px; color: #b4abc1; font-size: 13px; }
 .domainPanelTop button { display: flex; align-items: center; gap: 7px; min-height: 36px; color: var(--tone); }
@@ -240,7 +240,7 @@
 .domainPanelTop > button { width: 38px; justify-content: center; flex-shrink: 0; border: 1px solid #ffffff22; border-radius: 8px; color: #c8bfd7; }
 .domainPanelBody { overflow-y: auto; min-height: 0; overscroll-behavior: contain; padding: 24px 30px 36px; scrollbar-width: thin; }
 .domainReadingColumn { max-width: 720px; margin-inline: auto; }
-.map[data-map=domain] .outline :is(.lesson,.lessonRelations,.lessonSources,.lessonAdvanced) { max-width: 720px; margin-inline: auto; }
+.map[data-learning] .outline :is(.lesson,.lessonRelations,.lessonSources,.lessonAdvanced) { max-width: 720px; margin-inline: auto; }
 .domainDialog[data-topic=true] .domainReadingColumn { max-width: none; }
 .lessonRole { font-size: 13px; color: var(--tone); margin-bottom: 6px; }
 .domainDialog h2 { font-size: 30px; margin: 6px 0 24px; }
@@ -248,10 +248,10 @@
 .topicTeaching > p { margin-bottom: 16px; }
 .topicTeaching > strong { font-size: 15px; line-height: 1.8; display: block; color: #d8cfee; font-weight: 500; }
 .classification { border-left: 2px solid var(--tone); padding-left: 14px; color: #bdb3cc; font-size: 15px; }
-.map[data-map=domain] .childCards { grid-template-columns: repeat(2,minmax(0,1fr)); }
-.map[data-map=domain] .childCard { min-height: 230px; }
-.map[data-map=domain] .childCardMeta,.map[data-map=domain] .childCardFooter { font-size: 13px; }
-.map[data-map=domain] .childCardSummary { font-size: 16px; }
+.map[data-learning] .childCards { grid-template-columns: repeat(2,minmax(0,1fr)); }
+.map[data-learning] .childCard { min-height: 230px; }
+.map[data-learning] .childCardMeta,.map[data-learning] .childCardFooter { font-size: 13px; }
+.map[data-learning] .childCardSummary { font-size: 16px; }
 .knowledgeStatus { display: flex; flex-wrap: wrap; gap: 8px; margin-block: 12px 18px; }
 .knowledgeStatus > span { display: inline-flex; align-items: center; padding: 4px 9px; border-radius: 6px; border: 1px solid #b8afff35; background: #b8afff12; color: #cfc5f4; font-size: 13px; line-height: 1.6; }
 .knowledgeStatus > span[data-status=verification] { color: #d5c398; background: #d5b76e0d; border-color: #d5b76e30; }
@@ -322,9 +322,9 @@
 .graphTextList p > button { color: #d2c0f2; text-decoration: underline; text-underline-offset: 4px; }
 .graphTextList p > span { display: block; color: #ada1bd; font-size: 13px; margin-top: 7px; }
 .domainGraph .graphNote { font-size: 13px; }
-@media (prefers-reduced-motion:reduce) { .map[data-map=domain] .groupCard:hover { transform: none; } }
+@media (prefers-reduced-motion:reduce) { .map[data-learning] .groupCard:hover { transform: none; } }
 @media (max-width:767px) {
-  .map[data-map=domain] { padding: 20px 16px 32px; }
+  .map[data-learning] { padding: 20px 16px 32px; }
   .domainIntro { align-items: flex-start; flex-direction: column; gap: 16px; }
   .domainIntro h1 { font-size: 29px; }
   .domainIntro > div > p:last-child { font-size: 15px; }
@@ -334,13 +334,13 @@
   .domainSearch { flex-basis: 100%; }
   .advancedFilters .filterFields { grid-template-columns: minmax(0,1fr); }
   .advancedFilters .filterFields > label { grid-column: auto; }
-  .map[data-map=domain] .viewBar > p { flex-basis: 100%; margin-left: 0; }
-  .map[data-map=domain] .domainDialog,.map[data-map=domain] .domainDialog[data-topic=true] { width: 100%; height: 100dvh; max-height: 100dvh; top: 0; border-radius: 0; border-inline: 0; }
+  .map[data-learning] .viewBar > p { flex-basis: 100%; margin-left: 0; }
+  .map[data-learning] .domainDialog,.map[data-learning] .domainDialog[data-topic=true] { width: 100%; height: 100dvh; max-height: 100dvh; top: 0; border-radius: 0; border-inline: 0; }
   .domainPanelTop { padding: 10px 16px; }
   .domainPanelBody { padding: 20px 18px 28px; }
   .domainDialog h2 { font-size: 28px; }
-  .map[data-map=domain] .childCards { grid-template-columns: minmax(0,1fr); }
-  .map[data-map=domain] .childCard { min-height: 0; }
+  .map[data-learning] .childCards { grid-template-columns: minmax(0,1fr); }
+  .map[data-learning] .childCard { min-height: 0; }
   .teachingExample,.understandingCheck { padding: 16px; }
   .teachingExample blockquote { padding-inline: 12px; }
   .lessonNavigation { gap: 12px; padding: 10px 16px max(10px,env(safe-area-inset-bottom)); }
@@ -349,3 +349,55 @@
   .lessonNavigation button small { max-width: 116px; overflow-wrap: anywhere; }
   .relationScope > span { margin-left: 0; flex-basis: 100%; }
 }
+
+/* Shared teaching reader; the seventh stage reuses the site's muted lavender. */
+.map [data-tone="6"] { --tone: #beb0e3; --tone-rgb: 190 176 227; }
+.topicHandoff { color: var(--tone); font-size: 15px; border: 1px solid rgb(var(--tone-rgb)/.25); padding: 12px 16px; border-radius: 9px; background: rgb(var(--tone-rgb)/.06); }
+.map[data-map=ecosystem] .childCardSummary { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; overflow: hidden; line-height: 1.8; }
+.teamProfile dl { display: grid; grid-template-columns: 130px minmax(0,1fr); border: 1px solid #ffffff20; border-radius: 10px; overflow: hidden; font-size: 15px; line-height: 1.8; }
+.teamProfile dt,.teamProfile dd { padding: 13px 16px; border-bottom: 1px solid #ffffff14; }
+.teamProfile dt { color: var(--tone); background: #ffffff03; }
+.teamProfile dd { overflow-wrap: anywhere; }
+.teamProfile :is(dt,dd):nth-last-child(-n+2) { border-bottom: 0; }
+.teamProfile a { color: #c9bcec; text-decoration: underline; text-underline-offset: 4px; }
+.evidenceRecord { padding: 16px 0; border-bottom: 1px solid #ffffff15; }
+.evidenceRecord h3 { font-size: 15px; color: #d4c8e7; }
+.evidenceRecord p { margin-top: 10px; font-size: 14px; line-height: 1.8; color: #bcb1cb; }
+.evidenceRecord a { color: var(--tone); }
+.legacyOutline { margin-top: 32px; font-size: 15px; line-height: 1.8; }
+.legacyOutline h2 { margin-bottom: 16px; }
+.legacyOutline details { border: 1px solid #ffffff20; padding: 16px 20px; margin-top: 12px; border-radius: 9px; }
+.legacyOutline ul { padding-left: 24px; margin-top: 12px; }
+.legacyOutline a { color: #c5b4df; text-decoration: underline; }
+.ecosystemGraphToolbar { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; padding: 14px 20px; border-bottom: 1px solid #ffffff15; font-size: 14px; }
+.ecosystemGraphToolbar label { display: flex; gap: 12px; align-items: center; flex-shrink: 0; }
+.ecosystemGraphToolbar select { color-scheme: dark; background: #1c1924; border: 1px solid #b8afff40; padding: 8px 12px; border-radius: 7px; color: #ded3ee; font: inherit; }
+.ecosystemGraphToolbar p { color: #aea2bf; font-size: 13px; line-height: 1.8; }
+.ecosystemGraph .graphNode,.ecosystemGraph .graphNode[data-root=true] { width: 220px; height: 80px; }
+.ecosystemGraph .graphNode strong { font-size: 15px; line-height: 1.7; }
+.ecosystemGraph .graphNode small { font-size: 13px; line-height: 1.8; }
+.ecosystemGraph .graphViewport { height: 600px; }
+.ecosystemLegend { display: flex; flex-wrap: wrap; gap: 10px 20px; padding: 12px 20px; font-size: 13px; line-height: 1.8; border-bottom: 1px solid #ffffff12; color: #b4a8c4; }
+.ecosystemLegend [data-category="贡献"] { color: #bdb0ec; }
+.ecosystemLegend [data-category="交接"] { color: #9fd0c5; }
+.ecosystemLegend [data-category="资源与成本"] { color: #d7be91; }
+.ecosystemLegend [data-category="证据与修订"] { color: #9fbbdf; }
+.ecosystemLines g[data-category="贡献"] { color: #bdb0ec; }
+.ecosystemLines g[data-category="交接"] { color: #9fd0c5; }
+.ecosystemLines g[data-category="资源与成本"] { color: #d7be91; }
+.ecosystemLines g[data-category="证据与修订"] { color: #9fbbdf; }
+.ecosystemLines g[data-category] > path { stroke: currentColor; opacity: .65; }
+.ecosystemLines g:is(:hover,:focus-visible) > path { opacity: 1; stroke: currentColor; }
+.ecosystemGraph .graphHeader { flex-wrap: wrap; }
+@media (max-width:767px) {
+  .teamProfile dl { grid-template-columns: minmax(0,1fr); }
+  .teamProfile dt { border-bottom: 0; padding-bottom: 2px; }
+  .teamProfile dd { padding-top: 5px; }
+  .ecosystemGraphToolbar label { width: 100%; }
+  .ecosystemGraphToolbar select { flex: 1; min-width: 0; }
+  .ecosystemGraph .graphViewport { height: 560px; }
+}
+.map[data-map=ecosystem] .domainDialog[data-topic=true] { width: min(920px,calc(100% - 64px)); }
+.groupHandoff { display: block; color: var(--tone); font-size: 13px; margin-bottom: 6px; }
+@media (max-width:767px) { .map[data-map=ecosystem] .domainDialog[data-topic=true] { width: 100%; } }
+.ecosystemLines[data-overview=true] text { opacity: 1; font-size: 13px; }

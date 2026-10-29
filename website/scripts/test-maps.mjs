@@ -55,8 +55,10 @@ for (const map of maps) {
     }
     // 地图只保留首页、节点关系与来源，不再提供独立完整文章入口。
     assert.equal($('[aria-label="完整正文"], [aria-label="辅助阅读入口"]').length, 0);
+    const officialLinks = new Set(flattenNodes(map.branches).flatMap((node) => node.teamProfile?.official.map((item) => item.href) ?? []));
     for (const anchor of $('[data-map] a[href]').toArray()) {
       const href = $(anchor).attr('href');
+      if (officialLinks.has(href)) continue;
       const path = href.slice(basePath.length);
       assert.ok(path === '/' || /^\/docs\/(?:domain|ecosystem|cognition)\/#node-[a-z0-9-]+$/.test(path) || /^\/docs\/sources\/#/.test(path), href);
     }
@@ -122,17 +124,15 @@ test('domain static export includes all lessons, native answer disclosures and s
 });
 
 test('nested branches switch, collapse and reset without keeping stale leaf selection', () => {
-  const nodes = maps[1].branches;
-  const selected = stateForNode(nodes, 'lora-authors');
-  assert.deepEqual(selected, { expanded: ['participants', 'research-teams'], selected: 'lora-authors' });
-  assert.deepEqual(toggleBranch(nodes, selected, 'communities'), { expanded: ['participants', 'communities'], selected: null });
-  assert.deepEqual(toggleBranch(nodes, selected, 'research-teams'), { expanded: ['participants'], selected: null });
-  assert.deepEqual(toggleBranch(nodes, selected, 'participants'), { expanded: [], selected: null });
-  assert.deepEqual(toggleBranch(nodes, selected, 'costs'), { expanded: ['costs'], selected: null });
-  const closedPanel = { ...selected, selected: null };
-  assert.equal(stateHash(closedPanel), '#node-research-teams');
+  const nodes = maps[2].branches;
+  const selected = stateForNode(nodes, 'loss-test');
+  assert.deepEqual(selected, { expanded: ['analysis-methods', 'system-analysis'], selected: 'loss-test' });
+  assert.deepEqual(toggleBranch(nodes, selected, 'comparison'), { expanded: ['analysis-methods', 'comparison'], selected: null });
+  assert.deepEqual(toggleBranch(nodes, selected, 'system-analysis'), { expanded: ['analysis-methods'], selected: null });
+  assert.deepEqual(toggleBranch(nodes, selected, 'analysis-methods'), { expanded: [], selected: null });
+  assert.deepEqual(toggleBranch(nodes, selected, 'habits'), { expanded: ['habits'], selected: null });
+  assert.equal(stateHash({ ...selected, selected: null }), '#node-system-analysis');
 });
-
 test('reading panels follow the root branch side, including nested nodes and restored hashes', () => {
   for (const map of maps) {
     map.branches.forEach((root, index) => {
@@ -174,4 +174,20 @@ test('directed diagram panels follow the visible column, including cases in the 
   }
   assert.equal(cognitionNodeSide(map, 'loss-test'), 'right');
   assert.equal(cognitionNodeSide(map, 'unknown'), undefined);
+});
+
+test('ecosystem static export preserves lessons, historical disclosures and all legacy collection anchors', () => {
+  const $ = html('/docs/ecosystem'), map = maps[1];
+  assert.equal($('article[aria-label="知识点教学内容"]').length, 47);
+  assert.equal($('[aria-label="团队资料卡"]').length, 5);
+  assert.equal($('summary').filter((_, element) => $(element).text() === '展开答案与理由').length, 47);
+  assert.equal($('article[aria-label="知识点教学内容"]').filter((_, element) => $(element).text().includes('非真实课程原文、实际部署记录或模型对比结果')).length, 47);
+  for (const collection of map.legacyCollections) {
+    assert.equal($(`details[id="node-${collection.id}"]`).length, 1);
+    for (const id of collection.members) assert.ok($(`details[id="node-${collection.id}"] a[href="${basePath}/docs/ecosystem/#node-${id}"]`).length);
+  }
+  assert.ok($('[aria-label="旧分类专题"]').text().includes('不计入统计'));
+  assert.ok($.text().includes('2026-10-25（素材声称）'));
+  assert.ok(!$.html().includes('3260106237'));
+  assert.ok(!$('[data-map] a[href]').toArray().some((element) => /\.pdf(?:$|\?)/i.test($(element).attr('href'))));
 });

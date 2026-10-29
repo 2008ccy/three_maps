@@ -1,7 +1,7 @@
 import { readFileSync } from 'node:fs';
 import { getNode, source } from './source';
 import { maps, flattenNodes } from './maps/content';
-import { buildCatalog, buildEdges } from './maps/catalog';
+import { buildCatalog, buildEdges, resolveCatalogNode } from './maps/catalog';
 
 export function documentStatuses() {
   return Object.fromEntries(source.getPages().map((page) => [page.data.id, page.data.status]));
@@ -18,9 +18,9 @@ export function sourceTitles(): Record<string, string> {
 
 export function readingContext(id: string) {
   const section = getNode(id).url.split('/')[2];
-  const owner = maps.flatMap((map) => buildCatalog(map).map((node) => ({ map, node })))
+  const owner = maps.flatMap((map) => { const nodes = buildCatalog(map); return [...nodes, ...(map.legacyCollections ?? []).map((item) => resolveCatalogNode(map, nodes, item.id)!)].map((node) => ({ map, node })); })
     .filter(({ map, node }) => map.id === section && node.documents.some((ref) => ref.id === id))
-    .sort((a, b) => Number(a.node.documents[0]?.id !== id) - Number(b.node.documents[0]?.id !== id) || b.node.depth - a.node.depth)[0];
+    .sort((a, b) => Number(a.node.documents[0]?.id !== id) - Number(b.node.documents[0]?.id !== id) || Number(!!b.node.collection) - Number(!!a.node.collection) || b.node.depth - a.node.depth)[0];
   const related: { title: string; href: string; label: string }[] = [];
   const add = (title: string, href: string, label: string) => { if (!related.some((item) => item.href === href && item.label === label)) related.push({ title, href, label }); };
   if (owner) {

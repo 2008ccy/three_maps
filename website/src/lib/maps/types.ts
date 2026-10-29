@@ -11,7 +11,14 @@ export type TopicLesson = { question: string; overview: string[]; outcome: strin
 export type ConceptRelation = {
   from: string; to: string; label: string; description: string; sources: string[];
   core: boolean; direction: 'directed' | 'undirected'; basis: 'material' | 'editorial';
+  category?: '贡献' | '交接' | '资源与成本' | '证据与修订';
 };
+export type EvidenceRecord = { title: string; date: string; source: string; locator: string; text: string };
+export type TeamProfile = {
+  series: string; release: string; official: { title: string; href: string }[];
+  reusable: string; dependencies: string; limits: string; missingEvidence: string;
+};
+export type LegacyCollection = { id: string; title: string; summary: string; members: string[]; documents: DocumentRef[]; sources: string[] };
 export type MapNode = {
   id: string;
   title: string;
@@ -27,6 +34,8 @@ export type MapNode = {
   verification?: '待核实' | '已核实';
   lesson?: NodeLesson;
   topic?: TopicLesson;
+  records?: EvidenceRecord[];
+  teamProfile?: TeamProfile;
 };
 export type MapDefinition = {
   id: MapKey;
@@ -41,6 +50,7 @@ export type MapDefinition = {
   connections?: { from: string; to: string; label: string }[];
   learningPath?: string[];
   conceptRelations?: ConceptRelation[];
+  legacyCollections?: LegacyCollection[];
 };
 export type ResolvedLink = { title: string; href: string };
 export type MapLinks = Record<string, ResolvedLink>;
