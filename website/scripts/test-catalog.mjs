@@ -92,7 +92,6 @@ test('domain lessons cover 18 points, preserve legacy IDs, and keep demonstratio
   assert.match(teachingCase.notice, /非真实课程原文.*非模型实测结果/);
   assert.deepEqual(maps[0].learningPath, ['prediction','generation','alignment','collection','cleaning','evaluation-set','token','attention','transformer','pretraining','loss','finetuning','lora','retrieval','rag','inference','deployment','monitoring']);
   assert.equal(new Set(maps[0].learningPath).size, points.length);
-  for (const map of maps.slice(2)) assert.ok(buildCatalog(map).every((node) => !node.lesson && !node.topic));
 });
 
 test('domain concepts distinguish 12 core, 10 extended and 3 non-causal comparisons from 18 memberships', () => {
@@ -178,4 +177,62 @@ test('ecosystem search covers historical records and relation explanations with 
   assert.equal(filterCatalog(nodes, { ...emptyFilters, q: '7390', type: '工具' }, edges).length, 0);
   assert.equal(filterCatalog(nodes, { ...emptyFilters, q: '不存在的条目123456' }, edges).length, 0);
   assert.equal(filterCatalog(nodes, emptyFilters, edges).length, 54);
+});
+
+test('cognition fills all 19 original points and method groups without changing their addresses or hierarchy', async () => {
+  const { cognitionOriginal } = await import('../src/lib/maps/cognition-base.ts');
+  const map = maps[2], nodes = buildCatalog(map), points = nodes.filter((node) => node.parent);
+  assert.equal(map.branches.length, 4); assert.equal(nodes.length, 23); assert.equal(points.length, 19);
+  assert.deepEqual(nodes.map((node) => [node.id, node.parent]), buildCatalog(cognitionOriginal).map((node) => [node.id, node.parent]));
+  assert.equal(new Set(map.learningPath).size, 19);
+  assert.deepEqual(map.learningPath, points.map((node) => node.id));
+  for (const node of points) {
+    const lesson = node.lesson;
+    assert.ok(lesson.role && lesson.goal && lesson.explanation.length >= 2, node.id);
+    assert.ok(lesson.example.input && lesson.example.steps.length >= 3 && lesson.example.output, node.id);
+    assert.ok(lesson.confusions.length >= 2 && lesson.check.question && lesson.check.answer, node.id);
+    assert.ok(node.boundary && node.sources.includes('L7') && node.sources.includes('L5'));
+    assert.equal(node.understanding, '待自评'); assert.equal(node.verification, '待核实');
+  }
+  assert.match(nodes.find((node) => node.id === 'third-view').boundary, /正式名称.*核验/);
+  assert.ok(nodes.find((node) => node.id === 'revision-before').records[0].text.includes('日期'));
+});
+
+test('cognition separates 32 teaching and feedback relations from 19 memberships, preserving all five original directions', () => {
+  const map = maps[2], nodes = buildCatalog(map), edges = buildEdges(map);
+  const local = edges.filter((edge) => edge.targetMap === 'cognition' && edge.kind !== 'hierarchy');
+  assert.equal(local.length, 32); assert.equal(local.filter((edge) => edge.core).length, 21);
+  assert.equal(edges.filter((edge) => edge.kind === 'hierarchy').length, 19);
+  assert.equal(edges.filter((edge) => edge.targetMap !== 'cognition').length, 20);
+  assert.deepEqual(local.filter((edge) => edge.kind === 'feedback').map((edge) => [edge.from, edge.to, edge.label]), [
+    ['perspectives','analysis-methods','指导选方法'], ['loss-test','revision','跑过后修正'], ['ranking-task','revision','跑过后修正'], ['cost-api','revision','跑过后修正'], ['revision','habits','反哺习惯'],
+  ]);
+  assert.equal(local.filter((edge) => edge.direction === 'undirected').length, 2);
+  for (const edge of local) assert.ok(edge.description && edge.sources.length && edge.basis && edge.category && edge.direction, edge.id);
+  for (const node of nodes.filter((node) => node.parent)) assert.ok(local.some((edge) => edge.from === node.id || edge.to === node.id), node.id);
+});
+
+test('cognition graph retains normal-size grouped nodes, comparisons and selected neighbors outside filters', async () => {
+  const { cognitionLearningGraph } = await import('../src/lib/maps/cognition-learning-graph.ts');
+  const map = maps[2], nodes = buildCatalog(map), edges = buildEdges(map).filter((edge) => edge.targetMap === 'cognition' && edge.kind !== 'hierarchy');
+  const core = cognitionLearningGraph(nodes, nodes, edges, null, 'core'), all = cognitionLearningGraph(nodes, nodes, edges, null, 'all');
+  assert.equal(core.nodes.length, 23); assert.equal(core.edges.length, 21); assert.equal(all.edges.length, 32);
+  assert.equal(new Set(core.nodes.filter((node) => !node.parent).map((node) => node.x)).size, 4);
+  assert.ok(core.width <= 1120);
+  const filtered = cognitionLearningGraph(nodes.filter((node) => node.id === 'loss-test'), nodes, edges, 'loss-test', 'core');
+  const direct = edges.filter((edge) => edge.from === 'loss-test' || edge.to === 'loss-test');
+  for (const edge of direct) assert.ok(filtered.edges.some((item) => item.id === edge.id));
+  assert.ok(filtered.nodes.some((node) => node.id === 'ranking-task'));
+  assert.ok(filtered.edges.some((edge) => edge.direction === 'undirected'));
+  assert.ok(filtered.nodes.some((node) => node.id === 'system-analysis'), 'original method ancestor remains visible');
+  assert.equal(cognitionLearningGraph([], nodes, edges, null, 'core').nodes.length, 0);
+});
+
+test('cognition search includes manual examples, relation boundaries and historical records with intersection', () => {
+  const nodes = buildCatalog(maps[2]), edges = buildEdges(maps[2]);
+  assert.deepEqual(filterCatalog(nodes, { ...emptyFilters, q: '不把它改成已经核实的成员经历' }, edges).map((node) => node.id), ['revision-before']);
+  assert.equal(filterCatalog(nodes, { ...emptyFilters, q: '不把它改成已经核实的成员经历', type: '认识视角' }, edges).length, 0);
+  assert.ok(filterCatalog(nodes, { ...emptyFilters, q: '课堂正式名称仍待课件核验' }, edges).some((node) => node.id === 'third-view'));
+  assert.ok(filterCatalog(nodes, { ...emptyFilters, q: '经历、日期、原课件' }, edges).some((node) => node.id === 'revision-evidence'));
+  assert.ok(filterCatalog(nodes, { ...emptyFilters, q: '少量成功不能证明所有课程问题有效' }, edges).some((node) => node.id === 'loss-test'));
 });

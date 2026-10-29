@@ -66,7 +66,7 @@ export function buildEdges(map: MapDefinition): MapEdge[] {
     if (node.parent) add({ from: node.parent, to: node.id, targetMap: map.id, label: '包含', kind: 'hierarchy', sources: node.sources, verification: '待核实' });
     for (const rel of node.relations ?? []) add({ from: node.id, to: rel.node, targetMap: rel.map, label: rel.label, kind: 'relation', sources: node.sources, verification: '待核实' });
   }
-  for (const edge of map.connections ?? []) add({ ...edge, targetMap: map.id, kind: 'feedback', sources: nodes.find((node) => node.id === edge.from)?.sources ?? [], verification: '待核实' });
+  for (const edge of map.connections ?? []) add({ ...edge, targetMap: map.id, kind: 'feedback', sources: edge.sources ?? nodes.find((node) => node.id === edge.from)?.sources ?? [], verification: '待核实' });
   for (const edge of map.conceptRelations ?? []) add({ ...edge, targetMap: map.id, kind: 'relation', verification: '待核实' });
   return edges;
 }

@@ -8,6 +8,7 @@ import { buildCatalog, buildEdges, resolveCatalogNode, catalogChildren, catalogQ
 import { DomainLesson, DomainAdvanced } from './domain-lesson';
 import { DomainGraph } from './domain-graph';
 import { EcosystemGraph } from './ecosystem-graph';
+import { CognitionLearningGraph } from './cognition-learning-graph';
 import { teachingCase } from '@/lib/maps/teaching-case';
 import styles from './maps.module.css';
 
@@ -20,10 +21,11 @@ function KnowledgeStatus({ node }: { node: CatalogNode }) {
 }
 export function LearningExplorer({ map, links, statuses, sourceTitles }: Props) {
   const ecosystem = map.id === 'ecosystem';
+  const cognition = map.id === 'cognition';
   const nodes = useMemo(() => buildCatalog(map, statuses), [map, statuses]);
   const edges = useMemo(() => buildEdges(map), [map]);
   const points = nodes.filter((node) => node.parent);
-  const concepts = edges.filter((edge) => edge.targetMap === map.id && edge.kind === 'relation');
+  const concepts = edges.filter((edge) => edge.targetMap === map.id && edge.kind !== 'hierarchy');
   const [ready, setReady] = useState(false), [view, setView] = useState<'cards' | 'graph'>('cards');
   const [stage, setStage] = useState('');
   const [scope, setScope] = useState<'core' | 'all'>('core');
@@ -32,7 +34,7 @@ export function LearningExplorer({ map, links, statuses, sourceTitles }: Props) 
   const background = useRef<HTMLDivElement>(null), panel = useRef<HTMLElement>(null), body = useRef<HTMLDivElement>(null), heading = useRef<HTMLHeadingElement>(null);
   const scrolls = useRef<Record<string, number>>({});
   const selected = resolveCatalogNode(map, nodes, selectedId ?? '');
-  const matches = filterCatalog(nodes, filters, ecosystem ? edges : []), filtersActive = Object.values(filters).some(Boolean);
+  const matches = filterCatalog(nodes, filters, ecosystem || cognition ? edges : []), filtersActive = Object.values(filters).some(Boolean);
   const outside = !!selected && !selected.collection && !matches.some((node) => node.id === selected.id);
   const visible = outside ? [selected, ...matches] : matches;
   const groups = groupCatalog(nodes, matches);
@@ -53,14 +55,22 @@ export function LearningExplorer({ map, links, statuses, sourceTitles }: Props) 
       const id = window.location.hash.startsWith('#node-') ? window.location.hash.slice(6) : '';
       setSelectedId(resolveCatalogNode(map, nodes, id) ? id : null);
     };
+    const readHash = () => {
+      const mapPath = `${process.env.NEXT_PUBLIC_BASE_PATH ?? ''}/docs/${map.id}`;
+      if (window.location.pathname.replace(/\/$/, '') !== mapPath) return;
+      // Native fragment navigation does not pass through Next's link handler.
+      // Synchronize its canonical URL before a later cross-map navigation.
+      window.history.replaceState(null, '', window.location.href);
+      read();
+    };
     read(); setReady(true);
     try {
       const saved = JSON.parse(sessionStorage.getItem(storageKey) ?? 'null');
       if (saved?.panels && typeof saved.panels === 'object') scrolls.current = saved.panels;
       if (saved?.url === window.location.pathname + window.location.search + window.location.hash && Number.isFinite(saved.scroll)) requestAnimationFrame(() => window.scrollTo(0, saved.scroll));
     } catch { /* Reading remains usable without storage. */ }
-    window.addEventListener('popstate', read); window.addEventListener('hashchange', read);
-    return () => { window.removeEventListener('popstate', read); window.removeEventListener('hashchange', read); };
+    window.addEventListener('popstate', read); window.addEventListener('hashchange', readHash);
+    return () => { window.removeEventListener('popstate', read); window.removeEventListener('hashchange', readHash); };
   }, [nodes, map, ecosystem, storageKey]);
 
   const navigate = useCallback((nextView: typeof view, nextFilters: CatalogFilters, id: string | null, nextScope = scope, replace = false, nextStage = stage) => {
@@ -68,7 +78,9 @@ export function LearningExplorer({ map, links, statuses, sourceTitles }: Props) 
     const graphStage = ecosystem ? nextView === 'graph' && target?.parent ? target.groupId : nextStage : '';
     setView(nextView); setFilters(nextFilters); setSelectedId(id); setScope(nextScope); setStage(graphStage);
     const url = `${window.location.pathname}${catalogQuery(nextView, nextFilters, nextScope, graphStage)}${id ? `#node-${id}` : ''}`;
-    if (url !== window.location.pathname + window.location.search + window.location.hash) window.history[replace ? 'replaceState' : 'pushState'](window.history.state, '', url);
+    // Let Next preserve its own router metadata and synchronize the canonical
+    // URL; copying its private history state bypasses that synchronization.
+    if (url !== window.location.pathname + window.location.search + window.location.hash) window.history[replace ? 'replaceState' : 'pushState'](null, '', url);
   }, [scope, stage, ecosystem, nodes]);
   const remember = useCallback(() => {
     try { sessionStorage.setItem(storageKey, JSON.stringify({ url: window.location.pathname + window.location.search + window.location.hash, scroll: window.scrollY, panels: scrolls.current })); } catch { /* Optional browse memory. */ }
@@ -110,7 +122,7 @@ export function LearningExplorer({ map, links, statuses, sourceTitles }: Props) 
   const changeFilter = (key: keyof CatalogFilters, value: string) => navigate(view, { ...filters, [key]: value }, selectedId, scope, key === 'q');
 
   function reading(node: CatalogNode, interactive = true) {
-    const children = node.collection ? node.children as CatalogNode[] : catalogChildren(nodes, node.id);
+    const children = node.collection ? node.children as CatalogNode[] : cognition && node.topic ? nodes.filter((item) => item.parent && item.groupId === node.id) : catalogChildren(nodes, node.id);
     const related = edges.filter((edge) => (edge.from === node.id || edge.targetMap === map.id && edge.to === node.id) && edge.kind !== 'hierarchy');
     const local = related.filter((edge) => edge.targetMap === map.id), cross = related.filter((edge) => edge.targetMap !== map.id);
     const sourceIds = [...new Set([...node.sources, ...related.flatMap((edge) => edge.sources), ...(node.lesson?.example.materials.flatMap((id) => teachingCase.materials.find((item) => item.id === id)?.sources ?? []) ?? [])])];
@@ -132,11 +144,12 @@ export function LearningExplorer({ map, links, statuses, sourceTitles }: Props) 
       {node.parent && <KnowledgeStatus node={node} />}
       {node.collection && <section className={styles.topicTeaching}><p>{node.detail}</p><strong>原分类：{node.title} · {children.length} 个原有条目</strong></section>}
       {node.topic && <section className={styles.topicTeaching}><p className={styles.readingSummary}>{node.topic.question}</p><p>{node.detail}</p>{ecosystem && node.boundary && <p className={styles.topicHandoff}>{node.boundary}</p>}<p className={styles.classification}>{node.topic.classification}</p><strong>学完这个主题：{node.topic.outcome}</strong></section>}
-      {node.lesson && <DomainLesson key={node.id} lesson={node.lesson} ecosystem={ecosystem} profile={node.teamProfile} />}
-      {interactive && !!node.children?.length && <section className={styles.childrenSection} aria-label="主题下的知识点"><div className={styles.sectionHeading}><h3>从这里继续探索</h3><span>{node.children.length} 个知识点</span></div><div className={styles.childCards}>{children.map((child) => <button type="button" className={styles.childCard} key={child.id} data-tone={tone(child)} data-outside={filtersActive && !matches.some((item) => item.id === child.id)} onClick={() => open(child.id)} aria-label={`打开知识点：${child.title}`}>
+      {interactive && cognition && node.lesson && children.length > 0 && <nav className={styles.lessonCaseLinks} aria-label="配套分析案例">{children.map((child) => <button type="button" key={child.id} onClick={() => open(child.id)}>配套案例：{child.title}<ArrowRight size={16} /></button>)}</nav>}
+      {node.lesson && <DomainLesson key={node.id} lesson={node.lesson} ecosystem={ecosystem} cognition={cognition} profile={node.teamProfile} />}
+      {interactive && !!node.children?.length && (!cognition || !node.lesson) && <section className={styles.childrenSection} aria-label="主题下的知识点"><div className={styles.sectionHeading}><h3>从这里继续探索</h3><span>{children.length} 个知识点</span></div><div className={styles.childCards}>{children.map((child) => <button type="button" className={styles.childCard} key={child.id} data-tone={tone(child)} data-outside={filtersActive && !matches.some((item) => item.id === child.id)} onClick={() => open(child.id)} aria-label={`打开知识点：${child.title}`}>
         <span className={styles.childCardMeta}>{ecosystem && child.type + ' · '}{child.lesson?.role}</span><strong>{child.title}</strong><KnowledgeStatus node={child} /><span className={styles.childCardSummary}>{child.summary}</span><span className={styles.childGoal}>学完能：{child.lesson?.goal}</span><span className={styles.childCardFooter}>{filtersActive && !matches.some((item) => item.id === child.id) ? '筛选范围外 · 仍可阅读' : '阅读示例与知识联系'}<ArrowRight size={16} /></span>
       </button>)}</div></section>}
-      {ecosystem && node.lesson && node.boundary && <div className={styles.boundary}><span>理解与使用边界</span><p>{node.boundary}</p></div>}
+      {(ecosystem || cognition) && node.lesson && node.boundary && <div className={styles.boundary}><span>理解与使用边界</span><p>{node.boundary}</p></div>}
       {renderRelations(local, ecosystem ? '本图生态联系' : '本图知识联系')}{renderRelations(cross, '跨图背景')}
       <details key={`sources-${node.id}`} className={styles.lessonSources}><summary>资料状态、使用边界与来源（{sourceIds.length}）</summary><p>原资料学习状态：{node.understanding}；核实状态：{node.verification}。这不是当前访问者的学习进度，附有来源也不代表已经核实。</p><p>节点 ID：<code>{node.id}</code>。本页包含教学编排与自编示例，不将学习建议写成已完成的实践成果。</p><nav aria-label="内容来源">{sourceIds.map((id) => <Link key={id} href={`/docs/sources/#${id.toLowerCase()}`} onClick={remember}><span>{sourceTitles[id] ?? id}</span><small>{id}<ArrowUpRight size={13} /></small></Link>)}</nav></details>
       {!!node.records?.length && <details className={styles.lessonSources}><summary>历史记录与材料范围（{node.records.length}）</summary>{node.records.map((record, index) => <section className={styles.evidenceRecord} key={index}><h3>{record.title}</h3><p>{record.date} · <Link href={`/docs/sources/#${record.source.toLowerCase()}`} onClick={remember}>{record.source}</Link> · {record.locator}</p><p>{record.text}</p></section>)}</details>}
@@ -148,7 +161,7 @@ export function LearningExplorer({ map, links, statuses, sourceTitles }: Props) 
   return <div className={styles.map} data-map={map.id} data-learning=""><div ref={background}>
     <nav className={styles.breadcrumb} aria-label="面包屑"><Link href="/">首页</Link><span>/</span><span>{map.title}</span></nav>
     <header className={styles.domainIntro}><div><p className={styles.eyebrow}>THREE LIVING MAPS / {map.number}</p><h1 id="map-title">{map.title}</h1><p>{map.question} {map.description}</p></div>{ready && <button type="button" className={styles.startLearning} onClick={() => open(map.branches[0].id)}>从{map.branches[0].title}开始<ArrowRight size={17} /></button>}</header>
-    <div className={styles.compactStats} aria-label="地图统计"><span><strong>{map.branches.length}</strong> 个主题</span><span><strong>{points.length}</strong> 个知识点</span><span><strong>{concepts.length}</strong> 条{ecosystem ? '生态' : '概念'}联系</span><details><summary>分类与跨图说明</summary><p>{edges.filter((edge) => edge.kind === 'hierarchy').length} 条主题归属关系 · {edges.filter((edge) => edge.targetMap !== map.id).length} 条跨图关系。{ecosystem ? '七环节用于观察与交接，适配按需、评测贯穿；10个旧分类仅保留兼容入口，不计入统计。' : '五主题为本网站的学习组织方式，新增节点不冒充原讲解稿的原始知识树。'}建议学习顺序不等于技术依赖。</p></details></div>
+    <div className={styles.compactStats} aria-label="地图统计"><span><strong>{map.branches.length}</strong> 个主题</span><span><strong>{points.length}</strong> 个知识点</span><span><strong>{concepts.length}</strong> 条{ecosystem ? '生态' : cognition ? '知识与反馈' : '概念'}联系</span><details><summary>分类与跨图说明</summary><p>{edges.filter((edge) => edge.kind === 'hierarchy').length} 条归属关系 · {edges.filter((edge) => edge.targetMap !== map.id).length} 条跨图关系。{ecosystem ? '七环节用于观察与交接，适配按需、评测贯穿；10个旧分类仅保留兼容入口，不计入统计。' : cognition ? '保留四个原主题、三组方法与案例归属；新增教学联系与原有5条指导反馈分别标注。求真观的课堂正式名称仍待课件核验。' : '五主题为本网站的学习组织方式，新增节点不冒充原讲解稿的原始知识树。'}建议学习顺序不等于技术依赖。</p></details></div>
     {ready ? <>
       <section className={styles.domainToolbar} aria-label="筛选知识节点"><label className={styles.domainSearch}><Search size={17} /><span className={styles.srOnly}>关键词</span><input type="search" placeholder="搜索概念、解释或教学示例…" value={filters.q} onChange={(event) => changeFilter('q', event.target.value)} /></label><details open={advanced} onToggle={(event) => setAdvanced(event.currentTarget.open)} className={styles.advancedFilters}><summary>高级筛选{filters.type || filters.understanding || filters.verification ? ' · 已启用' : ''}</summary><div className={styles.filterFields}>
         <label>类型<select aria-label="类型" value={filters.type} onChange={(event) => changeFilter('type', event.target.value)}><option value="">全部类型</option>{[...new Set(nodes.map((node) => node.type))].map((type) => <option key={type}>{type}</option>)}</select></label>
@@ -158,11 +171,11 @@ export function LearningExplorer({ map, links, statuses, sourceTitles }: Props) 
       <div className={styles.viewBar}><div className={styles.viewTabs} role="group" aria-label="地图视图"><button type="button" aria-pressed={view === 'cards'} onClick={() => navigate('cards', filters, selectedId)}><Grid2X2 size={16} />主题卡片</button><button type="button" aria-pressed={view === 'graph'} onClick={() => navigate('graph', filters, selectedId)}><Network size={16} />关系图</button></div><p aria-live="polite">{groups.length} 个主题 · 匹配 {matches.filter((node) => node.parent).length} / {points.length} 个知识点</p></div>
       {!visible.length ? <div className={styles.empty}><Search size={28} /><h2>没有找到匹配的知识点</h2><p>换个关键词，或清除筛选继续探索。</p><button type="button" onClick={() => navigate(view, emptyFilters, null)}>清除筛选</button></div> : view === 'cards' ? <div className={styles.groupGrid}>{groups.map(({ root, members }) => <button key={root.id} id={`node-${root.id}`} type="button" className={styles.groupCard} data-tone={tone(root)} onClick={() => open(root.id)} aria-haspopup="dialog" aria-label={`展开主题：${root.title}`}>
         <span className={styles.groupCardTop}><span>主题 {String(tone(root) + 1).padStart(2, '0')}</span><span>{members.length} 个知识点</span></span><strong className={styles.groupTitle}>{root.title}</strong><span className={styles.groupSummary}>{root.topic?.question}</span><span className={styles.topicPreview}>{root.topic?.overview[0]}</span><span className={styles.groupCardBottom}><span>{ecosystem && root.boundary && <span className={styles.groupHandoff}>{root.boundary}</span>}{root.topic?.outcome}</span><ArrowUpRight size={18} /></span>
-      </button>)}</div> : ecosystem ? <EcosystemGraph nodes={visible} allNodes={nodes} edges={concepts} selected={selected?.collection ? null : selectedId} stage={stage} scope={scope} onStage={(value) => navigate(view, filters, null, scope, false, value)} onScope={(value) => navigate(view, filters, selectedId, value)} onSelect={open} /> : <DomainGraph nodes={visible} allNodes={nodes} edges={concepts} selected={selectedId} scope={scope} onScope={(value) => navigate(view, filters, selectedId, value)} onSelect={open} />}
+      </button>)}</div> : ecosystem ? <EcosystemGraph nodes={visible} allNodes={nodes} edges={concepts} selected={selected?.collection ? null : selectedId} stage={stage} scope={scope} onStage={(value) => navigate(view, filters, null, scope, false, value)} onScope={(value) => navigate(view, filters, selectedId, value)} onSelect={open} /> : cognition ? <CognitionLearningGraph nodes={visible} allNodes={nodes} edges={concepts} selected={selectedId} scope={scope} onScope={(value) => navigate(view, filters, selectedId, value)} onSelect={open} /> : <DomainGraph nodes={visible} allNodes={nodes} edges={concepts} selected={selectedId} scope={scope} onScope={(value) => navigate(view, filters, selectedId, value)} onSelect={open} />}
     </> : <section aria-label="地图层级内容"><p className={styles.notice}>展开主题和知识点，阅读解释、教学示例、关系与来源。</p>{outline(map.branches)}{!!map.legacyCollections?.length && <section className={styles.legacyOutline} aria-label="旧分类专题"><h2>旧分类专题</h2>{map.legacyCollections.map((collection) => <details id={`node-${collection.id}`} key={collection.id}><summary>{collection.title}</summary><p>旧分类内容现分布于七个协作环节，本入口不计入统计。</p><ul>{collection.members.map((id) => <li key={id}><Link href={`/docs/${map.id}/#node-${id}`}>{nodes.find((node) => node.id === id)?.title}</Link></li>)}</ul></details>)}</section>}</section>}
   </div>
-    {selected && <><div className={styles.scrim} onClick={close} aria-hidden="true" /><aside ref={panel} id="map-reading-panel" className={`${styles.floating} ${styles.domainDialog}`} data-tone={tone(selected)} data-topic={!!selected.children?.length} role="dialog" aria-modal="true" aria-labelledby="reading-title">
-      <header className={styles.domainPanelTop}><div>{selected.parent && <button type="button" onClick={() => open(selected.parent!)} aria-label="返回上一层"><ArrowLeft size={16} />返回{nodes.find((node) => node.id === selected.parent)?.title}</button>}<span>{map.title}{selected.path.length > 0 && ` / ${selected.path.join(' / ')}`}</span><button type="button" className={styles.lessonViewSwitch} onClick={() => navigate(view === 'cards' ? 'graph' : 'cards', filters, selected.collection ? null : selectedId, scope, false, selected.collection ? '' : stage)}>{selected.collection ? '查看新协作链' : view === 'cards' ? '在关系图定位' : '切回主题卡片'}</button></div><button type="button" aria-label="关闭阅读面板" onClick={close}><X size={22} /></button></header>
+    {selected && <><div className={styles.scrim} onClick={close} aria-hidden="true" /><aside ref={panel} id="map-reading-panel" className={`${styles.floating} ${styles.domainDialog}`} data-tone={tone(selected)} data-topic={!!selected.topic || !!selected.collection} role="dialog" aria-modal="true" aria-labelledby="reading-title">
+      <header className={styles.domainPanelTop}><div>{selected.parent && <button type="button" onClick={() => open(cognition ? selected.groupId : selected.parent!)} aria-label="返回上一层"><ArrowLeft size={16} />返回{nodes.find((node) => node.id === (cognition ? selected.groupId : selected.parent))?.title}</button>}<span>{map.title}{selected.path.length > 0 && ` / ${selected.path.join(' / ')}`}</span><button type="button" className={styles.lessonViewSwitch} onClick={() => navigate(view === 'cards' ? 'graph' : 'cards', filters, selected.collection ? null : selectedId, scope, false, selected.collection ? '' : stage)}>{selected.collection ? '查看新协作链' : view === 'cards' ? '在关系图定位' : '切回主题卡片'}</button></div><button type="button" aria-label="关闭阅读面板" onClick={close}><X size={22} /></button></header>
       <div ref={body} className={styles.domainPanelBody} onScroll={(event) => { scrolls.current[selected.id] = event.currentTarget.scrollTop; }}><div className={styles.domainReadingColumn}><p className={styles.lessonRole}>{ecosystem && selected.parent && selected.type + ' · '}{selected.lesson?.role ?? '主题导读'}{position >= 0 && ` · 学习路线 ${position + 1} / ${path.length}`}</p><h2 ref={heading} id="reading-title" tabIndex={-1}>{selected.title}</h2>
         {outside && <p className={styles.notice}>当前节点不在筛选结果内，已临时显示。<button type="button" onClick={() => navigate(view, emptyFilters, selectedId)}>清除筛选查看全部</button></p>}
         {reading(selected)}

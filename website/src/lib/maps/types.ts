@@ -11,7 +11,7 @@ export type TopicLesson = { question: string; overview: string[]; outcome: strin
 export type ConceptRelation = {
   from: string; to: string; label: string; description: string; sources: string[];
   core: boolean; direction: 'directed' | 'undirected'; basis: 'material' | 'editorial';
-  category?: '贡献' | '交接' | '资源与成本' | '证据与修订';
+  category?: '贡献' | '交接' | '资源与成本' | '证据与修订' | '认识视角' | '检验方法' | '反馈修订';
 };
 export type EvidenceRecord = { title: string; date: string; source: string; locator: string; text: string };
 export type TeamProfile = {
@@ -47,7 +47,7 @@ export type MapDefinition = {
   description: string;
   branches: MapNode[];
   auxiliary: DocumentRef[];
-  connections?: { from: string; to: string; label: string }[];
+  connections?: (Pick<ConceptRelation, 'from' | 'to' | 'label'> & Partial<ConceptRelation>)[];
   learningPath?: string[];
   conceptRelations?: ConceptRelation[];
   legacyCollections?: LegacyCollection[];

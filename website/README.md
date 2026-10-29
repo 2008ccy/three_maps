@@ -165,12 +165,20 @@ GitHub Pages 只负责静态页面。后续 AI 接入需要额外服务端，密
 
 ## 8. 导图维护
 
+### 认知教学地图（2026-10-29）
+
+- `src/lib/maps/cognition-learning.ts` 维护4主题、19教学条目、32本图联系（含原5条指导/反馈）及20跨图联系；`cognition-base.ts` 保留原23节点ID、层级、来源与反馈方向。3组方法和案例归属不变，主题浮层同时列出方法与案例卡，避免多次钻取。
+- 三图共用 `LearningExplorer` 和教学正文。认知使用独立 `cognition-learning-graph.tsx` / `lib/maps/cognition-learning-graph.ts`，四列稳定布局；旧14节点投影仅用于历史图兼容与方向回归。关系与学习路线独立维护，不把教学建议画成技术依赖。
+- 教学推演不等于真实实验，理解解析不改变状态；课堂正式名称及个人经历继续保留待核实边界。原生hashchange与公开History API保持Next规范地址同步，片段/筛选/跨图返回不复制框架私有历史对象。
+- 认知内容、关系清单和截图见根目录 `qa-cognition-learning-2026-10-29/README.md`。68项测试、类型/内容、默认及GitHub Pages子路径构建与链接检查通过。本轮未提交或发布。
+
+
 - 转场生命周期的 `isTransitionPage` 同时接受 Next 已去掉 basePath 的路由和浏览器完整路径，避免 GitHub Pages 下进入地图时提前取消动画；链接验证仍用严格的 `mapAtPath`。修复证据在 `qa-transition-fix-2026-10-29/`。
 
 ### 生态教学地图（2026-10-28）
 
 - `src/lib/maps/ecosystem-learning.ts` 是生态当前数据入口：7 协作环节、47 个具体条目、47 条主要归属、62 条本图联系、27 条跨图联系。`ecosystem-base.ts` 保留原 38 条目的 ID / 文档映射和旧分类归属；10 个兼容分类不进入节点、归属和关系统计。
-- 领域和生态共用 `domain-explorer.tsx` 中的 `LearningExplorer`（原 `DomainExplorer` 导出兼容）；地图名称、筛选、浏览存储键和来源按地图传入。生态独立使用 `ecosystem-graph.tsx` 和纯布局函数 `lib/maps/ecosystem-graph.ts`，不改领域图或认知反馈布局。以下旧层级说明主要适用于认知图。
+- 领域和生态共用 `domain-explorer.tsx` 中的 `LearningExplorer`（原 `DomainExplorer` 导出兼容）；地图名称、筛选、浏览存储键和来源按地图传入。生态独立使用 `ecosystem-graph.tsx` 和纯布局函数 `lib/maps/ecosystem-graph.ts`，不改领域图或认知反馈布局。以下旧层级说明保留作原界面参考；当前三图均使用教学卡片阅读。
 - 生态图查询参数 `stage` 保存展开环节，`relations=all` 控制当前层关系范围；`view` / 筛选 / `#node-…` 保留。学习路线独立于关系。旧分类如 `#node-participants` 打开聚合浮层，原文章 URL 保留，地图中不显示完整文章入口。
 - 教学内容和关系边界按具体对象维护。`teamProfile` 五团队采用同等字段；`records` 保存 L8 页码、材料日期与历史自述。所有未独立核实项仍待核实，“运行过”自述不自动变更学习状态。原 PDF 不进入公开目录。
 - 详细验收与截图见根目录 `qa-ecosystem-learning-2026-10-28/README.md`；内容与关系清单有 Markdown 和 JSON 两版。62 项测试、内容/类型、静态构建与根路径 / GitHub Pages 子路径链接检查通过。

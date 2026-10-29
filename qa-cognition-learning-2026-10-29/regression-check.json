@@ -1,0 +1,14 @@
+{
+  "protectedFiles": {
+    "website/src/lib/maps/domain-learning.ts": true,
+    "website/src/lib/maps/ecosystem-learning.ts": true,
+    "website/src/lib/maps/ecosystem-graph.ts": true,
+    "website/src/components/maps/ecosystem-graph.tsx": true,
+    "website/src/app/(home)/page.tsx": true,
+    "website/src/app/(home)/home-particles.tsx": true,
+    "website/src/components/map-transition.tsx": true,
+    "website/src/lib/map-transition.ts": true
+  },
+  "domainDataUnchanged": true,
+  "ecosystemDataUnchanged": true
+}

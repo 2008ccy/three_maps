@@ -24,7 +24,7 @@ export function buildCognitionDiagram(map: MapDefinition) {
       });
     });
   });
-  edges.push(...(map.connections ?? []).map((edge) => ({ ...edge, kind: 'feedback' as const })));
+  edges.push(...(map.connections ?? []).map(({ from, to, label }) => ({ from, to, label, kind: 'feedback' as const })));
   return { nodes, edges };
 }
 

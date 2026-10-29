@@ -1,7 +1,6 @@
 import { flattenNodes, getMap } from '@/lib/maps/content';
 import type { MapKey, MapLinks } from '@/lib/maps/types';
-import { MapExplorer } from './map-explorer';
-import { DomainExplorer } from './domain-explorer';
+import { LearningExplorer } from './domain-explorer';
 import { documentStatuses, sourceTitles } from '@/lib/reading-context';
 import { MapArrival } from '@/components/map-transition';
 
@@ -24,6 +23,5 @@ export function MapPage({ id }: { id: MapKey }) {
       };
     }
   }
-  const Explorer = id === 'cognition' ? MapExplorer : DomainExplorer;
-  return <><MapArrival map={id} /><Explorer map={map} links={links} statuses={documentStatuses()} sourceTitles={sourceTitles()} /></>;
+  return <><MapArrival map={id} /><LearningExplorer map={map} links={links} statuses={documentStatuses()} sourceTitles={sourceTitles()} /></>;
 }

@@ -398,6 +398,23 @@
   .ecosystemGraph .graphViewport { height: 560px; }
 }
 .map[data-map=ecosystem] .domainDialog[data-topic=true] { width: min(920px,calc(100% - 64px)); }
+.map[data-map=cognition] .groupGrid { grid-template-columns: repeat(2,minmax(0,1fr)); }
+.map[data-map=cognition] .domainDialog[data-topic=true] { width: min(920px,calc(100% - 64px)); }
+.map[data-map=cognition] .childCardSummary { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; overflow: hidden; }
+.lessonCaseLinks { margin: -6px 0 22px; }
+.lessonCaseLinks button { display: flex; gap: 12px; align-items: center; width: 100%; padding: 13px 16px; border: 1px solid #b8afff45; border-radius: 10px; background: #b8afff0c; color: #d8cfff; font-size: 14px; line-height: 1.7; text-align: left; }
+.lessonCaseLinks button svg { margin-left: auto; flex-shrink: 0; }
+.cognitionLearningGraph .graphViewport { height: 720px; }
+.cognitionLearningGraph .graphHeader { flex-wrap: wrap; }
+.cognitionLearningGraph .graphNode,.cognitionLearningGraph .graphNode[data-root=true] { width: 228px; height: 78px; }
+.cognitionLearningGraph .graphNode strong { line-height: 1.5; }
+.cognitionLearningGraph .graphNode small { line-height: 1.5; margin-top: 3px; }
+.cognitionLearningLines g[data-feedback=true] > path { stroke: #9bc6edaa; stroke-dasharray: 7 4; }
+.cognitionLearningLines g[data-comparison=true] > path { stroke: #9bcabb; stroke-dasharray: 2 5; }
+.cognitionLegend { display: flex; flex-wrap: wrap; gap: 8px 20px; padding: 13px 20px; font-size: 13px; line-height: 1.8; color: #b8adc7; border-bottom: 1px solid #ffffff15; }
+.cognitionLegend span:nth-child(2) { color: #9bc6ed; }
+.cognitionLegend span:nth-child(3) { color: #9bcabb; }
+@media (max-width:767px) { .map[data-map=cognition] .groupGrid { grid-template-columns: minmax(0,1fr); } .map[data-map=cognition] .domainDialog[data-topic=true] { width: 100%; } .cognitionLearningGraph .graphViewport { height: 560px; } }
 .groupHandoff { display: block; color: var(--tone); font-size: 13px; margin-bottom: 6px; }
 @media (max-width:767px) { .map[data-map=ecosystem] .domainDialog[data-topic=true] { width: 100%; } }
 .ecosystemLines[data-overview=true] text { opacity: 1; font-size: 13px; }

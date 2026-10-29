@@ -90,7 +90,7 @@ test('cognition hierarchy and feedback directions match the supplied HTML relati
   assert.equal(map.branches[3].children.length, 4);
   const ids = { root: 'root', g1: 'system-view', g2: 'development-view', g3: 'third-view', f1: 'system-analysis', f2: 'comparison', f3: 'tradeoff-method', guan: 'perspectives', fangfa: 'analysis-methods', xiguan: 'habits', xiuzheng: 'revision', c1: 'loss-test', c2: 'ranking-task', c3: 'cost-api' };
   const feedback = [...original.matchAll(/(\w+) -\.->\|([^|]+)\| (\w+)/g)].map((match) => ({ from: ids[match[1]], to: ids[match[3]], label: match[2] }));
-  assert.deepEqual(new Set(map.connections.map((edge) => JSON.stringify(edge))), new Set(feedback.map((edge) => JSON.stringify(edge))));
+  assert.deepEqual(new Set(map.connections.map(({ from, to, label }) => JSON.stringify({ from, to, label }))), new Set(feedback.map((edge) => JSON.stringify(edge))));
   const diagram = buildCognitionDiagram(map);
   assert.equal(map.layout, 'directed');
   assert.equal(diagram.nodes.length, 14);
@@ -190,4 +190,19 @@ test('ecosystem static export preserves lessons, historical disclosures and all 
   assert.ok($.text().includes('2026-10-25（素材声称）'));
   assert.ok(!$.html().includes('3260106237'));
   assert.ok(!$('[data-map] a[href]').toArray().some((element) => /\.pdf(?:$|\?)/i.test($(element).attr('href'))));
+});
+
+test('cognition static export exposes all lessons, checks, feedback meanings and evidence boundaries without scripts', () => {
+  const $ = html('/docs/cognition'), map = maps[2];
+  assert.equal($('article[aria-label="知识点教学内容"]').length, 19);
+  assert.equal($('summary').filter((_, element) => $(element).text() === '展开答案与理由').length, 19);
+  assert.equal($('article[aria-label="知识点教学内容"]').filter((_, element) => $(element).text().includes('自编教学推演，非真实课程原文、模型运行结果或成员已完成的经历')).length, 19);
+  assert.ok($('#node-system-analysis').text().includes('逐环核对'));
+  assert.ok($('#node-third-view').text().includes('课堂正式名称仍待课件核验'));
+  assert.ok($('#node-revision-before').text().includes('素材经历与日期待确认'));
+  for (const edge of [...map.conceptRelations, ...map.connections]) {
+    assert.ok($(`#node-${edge.from}`).text().includes(edge.description), `${edge.from} / ${edge.to}`);
+    assert.ok($(`#node-${edge.from} a[href="${basePath}/docs/cognition/#node-${edge.to}"]`).length);
+  }
+  assert.equal($('[aria-label="完整正文"]').length, 0);
 });
