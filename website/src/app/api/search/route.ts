@@ -5,4 +5,8 @@ import { searchOptions } from '@/lib/static-search.mjs';
 export const revalidate = false;
 export const dynamic = 'force-static';
 
-export const { staticGET: GET } = flexsearchFromSource(source, { document: searchOptions });
+// Migration routes stay addressable, but should not compete with core learning content.
+export const { staticGET: GET } = flexsearchFromSource({
+  ...source,
+  getPages: () => source.getPages().filter((page) => page.data.searchable),
+}, { document: searchOptions });

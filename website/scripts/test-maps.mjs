@@ -176,18 +176,20 @@ test('directed diagram panels follow the visible column, including cases in the 
   assert.equal(cognitionNodeSide(map, 'unknown'), undefined);
 });
 
-test('ecosystem static export preserves lessons, historical disclosures and all legacy collection anchors', () => {
+test('ecosystem static export preserves 15 core lessons and all historical address migrations', () => {
   const $ = html('/docs/ecosystem'), map = maps[1];
-  assert.equal($('article[aria-label="知识点教学内容"]').length, 47);
-  assert.equal($('[aria-label="团队资料卡"]').length, 5);
-  assert.equal($('summary').filter((_, element) => $(element).text() === '展开答案与理由').length, 47);
-  assert.equal($('article[aria-label="知识点教学内容"]').filter((_, element) => $(element).text().includes('非真实课程原文、实际部署记录或模型对比结果')).length, 47);
+  assert.equal($('article[aria-label="知识点教学内容"]').length, 15);
+  assert.equal($('[aria-label="团队资料卡"]').length, 0);
+  assert.equal($('summary').filter((_, element) => $(element).text() === '展开答案与理由').length, 15);
+  assert.equal($('article[aria-label="知识点教学内容"]').filter((_, element) => $(element).text().includes('非真实课程原文、实际部署记录或模型对比结果')).length, 15);
   for (const collection of map.legacyCollections) {
     assert.equal($(`details[id="node-${collection.id}"]`).length, 1);
     for (const id of collection.members) assert.ok($(`details[id="node-${collection.id}"] a[href="${basePath}/docs/ecosystem/#node-${id}"]`).length);
   }
   assert.ok($('[aria-label="旧分类专题"]').text().includes('不计入统计'));
-  assert.ok($.text().includes('2026-10-25（素材声称）'));
+  assert.ok(!$.text().includes('2026-10-25（素材声称）'));
+  for (const [oldId, target] of Object.entries(map.nodeAliases)) assert.ok($(`[id="node-${oldId}"] a[href="${basePath}/docs/ecosystem/#node-${target}"]`).length);
+  assert.ok(!$.text().includes('7390'));
   assert.ok(!$.html().includes('3260106237'));
   assert.ok(!$('[data-map] a[href]').toArray().some((element) => /\.pdf(?:$|\?)/i.test($(element).attr('href'))));
 });

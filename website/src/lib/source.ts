@@ -15,6 +15,7 @@ const docs = defineDocs({
       updated: z.string(),
       status: z.string(),
       related: z.array(z.string()).default([]),
+      searchable: z.boolean().default(true),
     }),
     mdxOptions: applyMdxPreset({
       remarkPlugins: [remarkMath],

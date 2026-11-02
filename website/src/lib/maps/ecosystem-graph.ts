@@ -16,7 +16,7 @@ export function ecosystemGraphSlice(nodes: CatalogNode[], allNodes: CatalogNode[
   const shown = allNodes.filter((node) => ids.has(node.id));
   const eligible = edges.filter((edge) => edge.targetMap === 'ecosystem' && edge.kind === 'relation' && ids.has(edge.from) && ids.has(edge.to));
   const displayed = eligible.filter((edge) => scope === 'all' || edge.core || edge.from === selected || edge.to === selected);
-  const coordinates = [[24, 64], [292, 64], [560, 64], [828, 64], [828, 310], [560, 310], [292, 310]];
+  const coordinates = [[24, 64], [316, 64], [608, 64], [608, 310], [316, 310]];
   let positioned: (CatalogNode & { x: number; y: number })[];
   if (!activeStage) positioned = shown.map((node) => { const index = stages.findIndex((root) => root.id === node.id), [x, y] = coordinates[index]; return { ...node, x, y }; });
   else {
@@ -25,5 +25,5 @@ export function ecosystemGraphSlice(nodes: CatalogNode[], allNodes: CatalogNode[
     const neighbors = shown.filter((node) => node.id !== activeStage && node.parent !== activeStage);
     positioned = [{ ...root, x: 24, y: 24 }, ...members.map((node, index) => ({ ...node, x: 24 + index % 2 * 256, y: 136 + Math.floor(index / 2) * 108 })), ...neighbors.map((node, index) => ({ ...node, x: 616, y: 136 + index * 100 }))];
   }
-  return { stage: activeStage, nodes: positioned, eligible, edges: displayed, width: activeStage ? 896 : 1100, height: Math.max(activeStage ? 560 : 460, ...positioned.map((node) => node.y + 120)) };
+  return { stage: activeStage, nodes: positioned, eligible, edges: displayed, width: activeStage ? 896 : 900, height: Math.max(activeStage ? 560 : 460, ...positioned.map((node) => node.y + 120)) };
 }

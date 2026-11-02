@@ -34,8 +34,8 @@ test('unknown search returns no fabricated result', async () => {
 });
 function html(route) { return load(readFileSync(`out${route}/index.html`, 'utf8')); }
 for (const chain of [
-  ['/docs/domain/#node-rag', '/docs/ecosystem/#node-rag-authors', '/docs/domain/#node-rag', '/docs/cognition/#node-system-view'],
-  ['/docs/domain/#node-lora', '/docs/ecosystem/#node-lora-authors', '/docs/domain/#node-lora', '/docs/domain/#node-finetuning', '/docs/cognition/#node-loss-test'],
+  ['/docs/domain/#node-rag', '/docs/ecosystem/#node-research-origins', '/docs/domain/#node-rag', '/docs/cognition/#node-system-view'],
+  ['/docs/domain/#node-lora', '/docs/ecosystem/#node-research-origins', '/docs/domain/#node-lora', '/docs/domain/#node-finetuning', '/docs/cognition/#node-loss-test'],
   ['/docs/domain/#node-deployment', '/docs/ecosystem/#node-api-platforms', '/docs/cognition/#node-cost-api', '/docs/ecosystem/#node-inference-cost'],
 ]) test(`cross-map path: ${chain[0]}`, () => {
   for (let i=0; i<chain.length-1; i++) {
@@ -109,4 +109,11 @@ test('deep pages use top navigation without a site-wide left sidebar', () => {
   assert.equal($('#nd-sidebar').length, 0);
   assert.ok($('nav[aria-label="正文所属路径"]').text().includes('领域地图'));
   assert.ok($('nav[aria-label="相关知识"]').text().includes('关联阅读'));
+});
+
+test('retired ecosystem articles remain accessible but do not re-enter the search index', async () => {
+  const results = await client.search('Qwen');
+  assert.ok(!results.some((item) => item.url.includes('/docs/ecosystem/entries/')));
+  const $ = html('/docs/ecosystem/entries/e-qwen');
+  assert.ok($(`.article-content a[href="${basePath}/docs/ecosystem/#node-qwen"]`).length);
 });

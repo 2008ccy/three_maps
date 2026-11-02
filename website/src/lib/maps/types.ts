@@ -51,6 +51,7 @@ export type MapDefinition = {
   learningPath?: string[];
   conceptRelations?: ConceptRelation[];
   legacyCollections?: LegacyCollection[];
+  nodeAliases?: Record<string, string>;
 };
 export type ResolvedLink = { title: string; href: string };
 export type MapLinks = Record<string, ResolvedLink>;

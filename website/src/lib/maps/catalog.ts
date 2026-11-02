@@ -43,10 +43,10 @@ export function buildCatalog(map: MapDefinition, statuses: Record<string, string
 // Compatibility collections are addressable, but never enter the active catalog
 // or its membership/statistics/graph edges.
 export function resolveCatalogNode(map: MapDefinition, nodes: CatalogNode[], id: string): CatalogNode | undefined {
-  const active = nodes.find((node) => node.id === id); if (active) return active;
+  const active = nodes.find((node) => node.id === (map.nodeAliases?.[id] ?? id)); if (active) return active;
   const legacy = map.legacyCollections?.find((item) => item.id === id); if (!legacy) return;
   const members = legacy.members.map((member) => nodes.find((node) => node.id === member)).filter((node): node is CatalogNode => !!node);
-  return { id: legacy.id, title: legacy.title, summary: legacy.summary, detail: '旧分类专题：条目已按七个协作环节重新组织。此入口保留原分类与分享地址，不计入主题、知识点或关系统计。',
+  return { id: legacy.id, title: legacy.title, summary: legacy.summary, detail: '旧分类专题：条目已并入核心主题。此入口保留原分类与分享地址，不计入主题、知识点或关系统计。',
     sources: legacy.sources, documents: legacy.documents, children: members, type: '旧分类专题', understanding: '待自评', verification: '待核实',
     mapId: map.id, collection: true, group: members[0]?.group ?? '', groupId: members[0]?.groupId ?? '', path: [], parent: null, depth: 0,
   };

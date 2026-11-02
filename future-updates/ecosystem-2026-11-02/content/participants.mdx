@@ -1,0 +1,29 @@
+---
+id: "E-PARTICIPANTS"
+title: "团队、社区与平台"
+description: "谁推动这个领域，为什么选择这些对象"
+updated: "2026-10-26"
+status: "资料整理 · 理解程度待自评"
+related: ["D-CONCEPTS", "D-TOOLS"]
+---
+
+生态按“模型→分发→适配→评测→推理→应用”组织。以下是代表性对象及入选理由，不作综合排名。
+
+| 对象 ID/类型 | 代表对象 | 主要贡献与入选理由 | 关联领域节点/任务 | 依据与范围 |
+| --- | --- | --- | --- | --- |
+| [E-ATTN](node:E-ATTN)，历史研究团队 | Vaswani 等 Transformer 论文作者 | 提出影响后续语言模型的注意力架构，帮助解释基座原理 | [K-TRANSFORMER](node:K-TRANSFORMER) | [S01](ref:S01)；讨论论文贡献，不推断作者当前任职 |
+| [E-LORA](node:E-LORA)，研究团队与学者 | Edward J. Hu 等 LoRA 作者 | 提出低秩适配，是理解低成本微调的重要入口 | [K-LORA](node:K-LORA)、[T-PEFT](node:T-PEFT) | [S03](ref:S03) |
+| [E-QLORA](node:E-QLORA)，研究团队与学者 | Tim Dettmers、Artidoro Pagnoni 等 QLoRA 作者 | 将量化与适配结合，说明系统方法如何改变可行资源范围 | [K-QLORA](node:K-QLORA) | [S04](ref:S04)；论文结果不自动等于本组结果 |
+| [E-RAG](node:E-RAG)，研究团队与学者 | Patrick Lewis 等 RAG 作者 | 将检索记忆与生成结合，为有来源问答提供研究入口 | [K-RAG](node:K-RAG) | [S02](ref:S02) |
+| [E-STANFORD](node:E-STANFORD)，研究与教学团队 | Stanford CS336 课程团队；Hashimoto、Liang | 公开组织从数据到模型的学习路径，适合连接研究能力与课程 | [K-PRETRAIN](node:K-PRETRAIN)、[K-EVAL](node:K-EVAL) | [S12](ref:S12)；以课程团队身份列入，不虚构实验室归属 |
+| [E-QWEN](node:E-QWEN)，企业模型团队 | 阿里 Qwen 团队 | 发布模型与技术资料，为中文语言模型适配提供候选基座 | [M-BASE](node:M-BASE)、[K-SFT](node:K-SFT) | [S11](ref:S11)；用有明确官方发布的历史模型说明，当前选型另查模型卡 |
+| [E-HF](node:E-HF)，社区与平台 | Hugging Face 与相关贡献者 | 模型/数据分发以及 Transformers、PEFT、TRL 等接口 | [T-TRANSFORMERS](node:T-TRANSFORMERS)、[T-PEFT](node:T-PEFT)、[T-TRL](node:T-TRL) | [S05](ref:S05)—[S07](ref:S07)；平台、库、具体数据集是不同对象 |
+| [E-ELEUTHER](node:E-ELEUTHER)，开源社区 | EleutherAI | 维护 lm-evaluation-harness，提供可配置的语言模型评测工具 | [T-EVAL](node:T-EVAL)、[K-EVAL](node:K-EVAL) | [S09](ref:S09) |
+| [E-DEPLOY](node:E-DEPLOY)，推理工具社区 | vLLM、Ollama；llama.cpp 作为延伸候选 | 将权重转为可使用的推理过程，代表不同资源和部署选择 | [K-DEPLOY](node:K-DEPLOY) | [S10](ref:S10)、[L4](ref:L4)；具体模型/量化格式支持需逐项确认 |
+| [E-DISTRIBUTION](node:E-DISTRIBUTION)，分发平台 | ModelScope、Hugging Face | 提供模型或数据的分发入口 | [M-BASE](node:M-BASE)、数据版本 | [L4](ref:L4)、[S11](ref:S11)；托管页面不保证本地网络表现或许可相同 |
+| [E-API](node:E-API)，服务提供方 | 百炼、硅基流动等候选 | 提供远程推理，使本组可用 CPU 网站调用模型 | [K-DEPLOY](node:K-DEPLOY)、成本取舍 | [L2](ref:L2)、[L4](ref:L4)、[S21](ref:S21)；最终服务及型号未选定 |
+| [E-APP](node:E-APP)，应用生态 | Dify、Open WebUI 等候选 | 展示模型接口如何进入可用应用 | 课程助手、接口与体验 | [L4](ref:L4)；不推断本组必须使用，也不虚构采购关系 |
+
+DeepSeek、Meta/Llama、智谱、月之暗面可保留为候选团队，待选定比较任务后补各自的正式模型卡、贡献和关系依据。[L4](ref:L4) 中出现的最新版本、星数、推送时间只作为原素材的时间截面，不在这里当作选型结论。
+
+代表实验室入口可后续补 [Stanford NLP Group](https://nlp.stanford.edu/)；本次页面抓取超时，暂不把它与具体本组节点建立已核实的贡献关系。已有课程团队、论文作者和社区节点可先承担研究组织线索。

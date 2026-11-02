@@ -192,18 +192,18 @@ export const domainMap: MapDefinition = {
     ]),
     topic('model', '模型', 'D-CONCEPTS', { question: '文字怎样被处理？', overview: ['先理解文字怎样进入模型，再看信息怎样聚合。分清 Token、注意力与 Transformer 的不同作用。', '这些概念说明模型怎样计算，不直接证明回答可靠。把结构与训练、推理、引用核对连接起来，才能避免仅凭模型名称判断效果。'], outcome: '能串起文字单位、信息聚合和结构组织，解释它们的不同作用。', classification: 'Token、注意力、Transformer 处在不同观察层次，不能当作同类替代方案。' }, [
       point('token', 'Token', '文字经分词器变成处理单位；实际切分取决于具体分词器。', ['K-TOKEN'], ['L6', 'S07']),
-      point('attention', '注意力', '先按相关程度得到权重，再聚合信息；权重不等于事实可信度。', ['K-TRANSFORMER', 'D-CONCEPTS'], ['S01', 'L6'], [cross('ecosystem', 'attention-authors', '由研究团队提出')]),
-      point('transformer', 'Transformer', '把注意力与其他模块组织为逐层处理序列的结构。', ['K-TRANSFORMER', 'D-CONCEPTS'], ['S01'], [cross('ecosystem', 'attention-paper', '依据原始论文')]),
+      point('attention', '注意力', '先按相关程度得到权重，再聚合信息；权重不等于事实可信度。', ['K-TRANSFORMER', 'D-CONCEPTS'], ['S01', 'L6'], [cross('ecosystem', 'research-origins', '由研究团队提出')]),
+      point('transformer', 'Transformer', '把注意力与其他模块组织为逐层处理序列的结构。', ['K-TRANSFORMER', 'D-CONCEPTS'], ['S01'], [cross('ecosystem', 'research-origins', '依据原始论文')]),
     ]),
     topic('training', '训练与适配', 'D-METHODS', { question: '能力怎样形成和调整？', overview: ['已有基座怎样形成，又怎样适配？把训练阶段、优化信号、任务和更新方案分开理解。', '课程助手可以先使用已有模型。只有明确了稳定问题、样本、评测与资源条件，才讨论是否适配；这里的教学示例不表示本组已训练或获得收益。'], outcome: '能解释 SFT 与 LoRA 如何配合，并用独立评测检验是否值得适配。', classification: '训练阶段、优化目标、适配任务与更新方案并列便于学习，不是同级技术分类。' }, [
       point('pretraining', '预训练', '理解可复用基座怎样形成，区分使用已有模型与从头训练。', ['K-PRETRAIN', 'M-BASE'], ['L6', 'L3'], [cross('ecosystem', 'qwen', '由模型团队发布基座')]),
       point('loss', '损失', '读懂训练优化信号，并与独立问题上的任务表现分开判断。', ['K-LOSS', 'D-CONCEPTS'], ['L6', 'L3'], [cross('cognition', 'loss-test', '用独立评测检验')]),
       point('finetuning', '监督微调 SFT', '用核对过的示范学习任务行为；与 LoRA 分别讨论训练任务和更新方案。', ['K-SFT', 'T-TRL'], ['S06', 'L3'], [cross('cognition', 'loss-test', '用任务表现检验')]),
-      point('lora', 'LoRA', '冻结基座、训练低秩增量；参数减少不等于整套训练免费。', ['K-LORA', 'K-QLORA', 'T-PEFT'], ['S03', 'S04', 'S05'], [cross('ecosystem', 'lora-authors', '由研究团队提出 LoRA'), cross('ecosystem', 'huggingface', '由 PEFT 实现')]),
+      point('lora', 'LoRA', '冻结基座、训练低秩增量；参数减少不等于整套训练免费。', ['K-LORA', 'K-QLORA', 'T-PEFT'], ['S03', 'S04', 'S05'], [cross('ecosystem', 'research-origins', '由研究团队提出 LoRA'), cross('ecosystem', 'huggingface', '由 PEFT 实现')]),
     ]),
     topic('system', '系统', 'D-PIPELINE', { question: '怎样形成可用的答疑助手？', overview: ['先找到证据，再组织回答并核对引用。分清检索、推理、部署与反馈，沿失败回查各环节。', '任何一环成功都不能替代整体检查。先用手动教学示例走通输入输出，再在真实实验中保存配置、证据与失败，不把本静态地图写成已上线的模型服务。'], outcome: '能沿问题、证据、回答、核对与反馈走完一条完整检查链。', classification: '检索组件、问答架构、运行过程、服务组织和反馈各有边界，彼此可以组合。' }, [
       point('retrieval', '检索与证据片段', '按问题寻找可回溯的支持片段，区分主题相关和足以支撑结论。', ['T-RETRIEVAL', 'D-PIPELINE'], ['S02', 'L3']),
-      point('rag', 'RAG', '先找到依据，再生成并核对回答；分别检查检索错和资料误用。', ['K-RAG', 'T-RETRIEVAL'], ['S02', 'L3'], [cross('ecosystem', 'rag-authors', '由研究团队提出'), cross('cognition', 'system-view', '用系统拆解排查')]),
+      point('rag', 'RAG', '先找到依据，再生成并核对回答；分别检查检索错和资料误用。', ['K-RAG', 'T-RETRIEVAL'], ['S02', 'L3'], [cross('ecosystem', 'research-origins', '由研究团队提出'), cross('cognition', 'system-view', '用系统拆解排查')]),
       point('inference', '推理', '用已有模型处理输入得到输出，区分运行、训练与部署。', ['K-DEPLOY'], ['L2', 'L6', 'S10']),
       point('deployment', '部署', '组织可访问的接口、引用与异常处理，分别检查网页和模型服务。', ['K-DEPLOY', 'T-VLLM', 'T-OLLAMA'], ['S10', 'L3'], [cross('ecosystem', 'api-platforms', '由平台提供推理服务'), cross('cognition', 'cost-api', '用效果与成本权衡')]),
       point('monitoring', '监控', '核实失败、定位环节并转成回归检查，持续保留修订理由。', ['D-PIPELINE', 'D-EVALUATION'], ['L3', 'L6'], [cross('cognition', 'independent-feedback', '由独立反馈推动修订')]),
