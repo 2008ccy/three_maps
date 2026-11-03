@@ -10,8 +10,8 @@
     "preview": "node scripts/preview.mjs",
     "check:content": "node scripts/check-content.mjs",
     "check:export": "node scripts/check-export.mjs",
-    "check": "npm run check:content && npm run types:check",
-    "test": "node --test scripts/test-static.mjs scripts/test-maps.mjs scripts/test-catalog.mjs scripts/test-home.mjs"
+    "check": "npm run check:content && node scripts/check-feedback.mjs && npm run types:check && npm --prefix ../feedback-cloud run check",
+    "test": "node --test scripts/test-static.mjs scripts/test-maps.mjs scripts/test-catalog.mjs scripts/test-home.mjs scripts/test-feedback.mjs && npm --prefix ../feedback-cloud test"
   },
   "dependencies": {
     "cn": "0.5.0",

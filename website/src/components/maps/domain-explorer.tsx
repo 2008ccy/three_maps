@@ -10,6 +10,7 @@ import { DomainGraph } from './domain-graph';
 import { EcosystemGraph } from './ecosystem-graph';
 import { CognitionLearningGraph } from './cognition-learning-graph';
 import { teachingCase } from '@/lib/maps/teaching-case';
+import { feedbackComposeHref } from '@/lib/feedback-contract';
 import styles from './maps.module.css';
 
 type Props = { map: MapDefinition; links: MapLinks; statuses: Record<string, string>; sourceTitles: Record<string, string> };
@@ -165,6 +166,7 @@ export function LearningExplorer({ map, links, statuses, sourceTitles }: Props) 
       <details key={`sources-${node.id}`} className={styles.lessonSources}><summary>资料状态、使用边界与来源（{sourceIds.length}）</summary><p>原资料学习状态：{node.understanding}；核实状态：{node.verification}。这不是当前访问者的学习进度，附有来源也不代表已经核实。</p><p>节点 ID：<code>{node.id}</code>。本页包含教学编排与自编示例，不将学习建议写成已完成的实践成果。</p>{cognition && node.boundary && <p>{node.boundary}</p>}<nav aria-label="内容来源">{sourceIds.map((id) => <Link key={id} href={`/docs/sources/#${id.toLowerCase()}`} onClick={remember}><span>{sourceTitles[id] ?? id}</span><small>{id}<ArrowUpRight size={13} /></small></Link>)}</nav></details>
       {!!node.records?.length && <details className={styles.lessonSources}><summary>历史记录与材料范围（{node.records.length}）</summary>{node.records.map((record, index) => <section className={styles.evidenceRecord} key={index}><h3>{record.title}</h3><p>{record.date} · <Link href={`/docs/sources/#${record.source.toLowerCase()}`} onClick={remember}>{record.source}</Link> · {record.locator}</p><p>{record.text}</p></section>)}</details>}
       {node.lesson && <DomainAdvanced key={`advanced-${node.id}`} lesson={node.lesson} />}
+      {node.parent && <nav className={styles.feedbackAction} aria-label="知识点反馈"><Link href={feedbackComposeHref({ mapId: map.id, nodeId: node.id })} onClick={remember}>反馈这个知识点<ArrowUpRight size={15} aria-hidden="true" /></Link></nav>}
     </>;
   }
   function outline(items: MapDefinition['branches']) { return <div className={styles.outline}>{items.map((item) => <details id={`node-${item.id}`} key={item.id}><summary>{item.title}<span>{item.summary}</span></summary>{reading(nodes.find((node) => node.id === item.id)!, false)}{item.children && outline(item.children)}</details>)}</div>; }

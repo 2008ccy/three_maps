@@ -14,6 +14,7 @@ export function baseOptions(): BaseLayoutProps {
       { text: '生态', url: '/docs/ecosystem', active: 'nested-url' },
       { text: '认知', url: '/docs/cognition', active: 'nested-url' },
       { text: '更新记录', url: '/docs/project/updates' },
+      { text: '反馈', url: '/feedback' },
     ],
     githubUrl: `https://github.com/${gitConfig.user}/${gitConfig.repo}`,
   };

@@ -1,0 +1,5 @@
+{
+  "feedback": { "read": false, "write": false, "create": false, "update": false, "delete": false },
+  "feedback_requests": { "read": false, "write": false, "create": false, "update": false, "delete": false },
+  "feedback_rate_limits": { "read": false, "write": false, "create": false, "update": false, "delete": false }
+}

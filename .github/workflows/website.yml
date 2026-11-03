@@ -3,9 +3,9 @@ name: Website checks and GitHub Pages
 on:
   push:
     branches: [main]
-    paths: ['website/**', '.github/workflows/website.yml']
+    paths: ['website/**', 'feedback-cloud/**', '.github/workflows/website.yml']
   pull_request:
-    paths: ['website/**', '.github/workflows/website.yml']
+    paths: ['website/**', 'feedback-cloud/**', '.github/workflows/website.yml']
   workflow_dispatch:
 
 permissions:
@@ -29,8 +29,11 @@ jobs:
         with:
           node-version: '24'
           cache: npm
-          cache-dependency-path: website/package-lock.json
+          cache-dependency-path: |
+            website/package-lock.json
+            feedback-cloud/package-lock.json
       - run: npm ci
+      - run: npm --prefix ../feedback-cloud ci --ignore-scripts
       - run: npm run check
       - run: npm run build
       - run: npm run check:export

@@ -1,0 +1,13 @@
+{
+  "name": "three-maps-feedback-cloud",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Unconnected CloudBase document-database feedback deployment package",
+  "main": "index.js",
+  "engines": { "node": ">=20" },
+  "scripts": { "test": "node --test test/*.test.mjs", "check": "node --check index.js && node --check src/service.mjs && node --check src/cloudbase-store.mjs && node --check src/runtime.mjs" },
+  "dependencies": { "@cloudbase/node-sdk": "3.18.7" },
+  "overrides": {
+    "@cloudbase/node-sdk": { "@cloudbase/database": "1.5.1", "axios": "0.34.0" }
+  }
+}

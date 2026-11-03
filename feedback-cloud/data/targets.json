@@ -1,0 +1,258 @@
+{
+  "maps": [
+    {
+      "id": "domain",
+      "title": "领域地图",
+      "nodes": [
+        {
+          "id": "task",
+          "title": "任务"
+        },
+        {
+          "id": "prediction",
+          "title": "预测"
+        },
+        {
+          "id": "generation",
+          "title": "生成"
+        },
+        {
+          "id": "alignment",
+          "title": "对齐"
+        },
+        {
+          "id": "data",
+          "title": "数据与评测"
+        },
+        {
+          "id": "collection",
+          "title": "采集"
+        },
+        {
+          "id": "cleaning",
+          "title": "清洗"
+        },
+        {
+          "id": "evaluation-set",
+          "title": "评测集"
+        },
+        {
+          "id": "model",
+          "title": "模型"
+        },
+        {
+          "id": "token",
+          "title": "Token"
+        },
+        {
+          "id": "attention",
+          "title": "注意力"
+        },
+        {
+          "id": "transformer",
+          "title": "Transformer"
+        },
+        {
+          "id": "training",
+          "title": "训练与适配"
+        },
+        {
+          "id": "pretraining",
+          "title": "预训练"
+        },
+        {
+          "id": "loss",
+          "title": "损失"
+        },
+        {
+          "id": "finetuning",
+          "title": "监督微调 SFT"
+        },
+        {
+          "id": "lora",
+          "title": "LoRA"
+        },
+        {
+          "id": "system",
+          "title": "系统"
+        },
+        {
+          "id": "retrieval",
+          "title": "检索与证据片段"
+        },
+        {
+          "id": "rag",
+          "title": "RAG"
+        },
+        {
+          "id": "inference",
+          "title": "推理"
+        },
+        {
+          "id": "deployment",
+          "title": "部署"
+        },
+        {
+          "id": "monitoring",
+          "title": "监控"
+        }
+      ]
+    },
+    {
+      "id": "ecosystem",
+      "title": "生态地图",
+      "nodes": [
+        {
+          "id": "stage-publish",
+          "title": "模型与研究来源"
+        },
+        {
+          "id": "qwen",
+          "title": "模型发布方：Qwen 案例"
+        },
+        {
+          "id": "research-origins",
+          "title": "研究贡献：结构、RAG 与 LoRA"
+        },
+        {
+          "id": "model-releases",
+          "title": "模型卡、版本与获取"
+        },
+        {
+          "id": "stage-adapt",
+          "title": "运行与工具"
+        },
+        {
+          "id": "huggingface",
+          "title": "工具协作：Transformers、PEFT、TRL"
+        },
+        {
+          "id": "inference-tools",
+          "title": "自托管推理"
+        },
+        {
+          "id": "api-platforms",
+          "title": "托管模型 API"
+        },
+        {
+          "id": "stage-apply",
+          "title": "应用与资料"
+        },
+        {
+          "id": "course-data",
+          "title": "课程资料与授权"
+        },
+        {
+          "id": "build-application",
+          "title": "应用集成与交付"
+        },
+        {
+          "id": "content-cost",
+          "title": "内容核实与维护责任"
+        },
+        {
+          "id": "stage-evaluate",
+          "title": "评测与验收"
+        },
+        {
+          "id": "benchmarks",
+          "title": "通用基准与课程问题"
+        },
+        {
+          "id": "evaluation-tools",
+          "title": "评测框架与维护者"
+        },
+        {
+          "id": "evaluate-model",
+          "title": "课程任务验收"
+        },
+        {
+          "id": "stage-feedback",
+          "title": "反馈与维护"
+        },
+        {
+          "id": "user-feedback",
+          "title": "反馈与修订"
+        },
+        {
+          "id": "official-information",
+          "title": "来源与版本维护"
+        },
+        {
+          "id": "inference-cost",
+          "title": "资源与费用由谁承担"
+        }
+      ]
+    },
+    {
+      "id": "cognition",
+      "title": "认知地图",
+      "nodes": [
+        {
+          "id": "perspectives",
+          "title": "三个观"
+        },
+        {
+          "id": "system-view",
+          "title": "系统观"
+        },
+        {
+          "id": "development-view",
+          "title": "发展观"
+        },
+        {
+          "id": "third-view",
+          "title": "求真观"
+        },
+        {
+          "id": "analysis-methods",
+          "title": "分析方法"
+        },
+        {
+          "id": "loss-test",
+          "title": "损失下降与答疑质量"
+        },
+        {
+          "id": "ranking-task",
+          "title": "榜单与课程适配"
+        },
+        {
+          "id": "cost-api",
+          "title": "效果与成本取舍"
+        },
+        {
+          "id": "habits",
+          "title": "成长习惯"
+        },
+        {
+          "id": "define-problem",
+          "title": "定义问题与记录证据"
+        },
+        {
+          "id": "small-trial",
+          "title": "小规模试验与复验"
+        },
+        {
+          "id": "weekly-review",
+          "title": "独立反馈与每周复盘"
+        },
+        {
+          "id": "revision",
+          "title": "认识修正"
+        },
+        {
+          "id": "revision-before",
+          "title": "保留原判断"
+        },
+        {
+          "id": "revision-evidence",
+          "title": "指认变化证据"
+        },
+        {
+          "id": "revision-after",
+          "title": "修正结论与下一步"
+        }
+      ]
+    }
+  ]
+}

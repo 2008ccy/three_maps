@@ -4,6 +4,8 @@ node_modules/
 .env.*
 !.env.example
 data/
+!feedback-cloud/data/
+!feedback-cloud/data/targets.json
 backups/
 playwright-report/
 test-results/

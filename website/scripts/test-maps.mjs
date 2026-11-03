@@ -61,6 +61,12 @@ for (const map of maps) {
       const href = $(anchor).attr('href');
       if (officialLinks.has(href)) continue;
       const path = href.slice(basePath.length);
+      if (path.startsWith('/feedback/?')) {
+        const query = new URL(href, 'https://example.test').searchParams;
+        assert.equal(query.get('map'), map.id);
+        assert.ok(flattenNodes(map.branches).some((node) => node.id === query.get('node')), href);
+        continue;
+      }
       assert.ok(path === '/' || /^\/docs\/(?:domain|ecosystem|cognition)\/#node-[a-z0-9-]+$/.test(path) || /^\/docs\/sources\/#/.test(path), href);
     }
   });
