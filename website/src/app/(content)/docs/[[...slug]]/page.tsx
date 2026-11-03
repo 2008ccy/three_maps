@@ -16,25 +16,27 @@ export default async function Page(props: PageProps<'/docs/[[...slug]]'>) {
   if (!page) notFound();
   const MDX = page.data.body;
   const { owner, related } = readingContext(page.data.id);
+  const relatedReadings = related.filter((item) => item.label === '关联阅读');
   const fallback = documentReturnTarget(page.url);
   const returnHref = owner ? `/docs/${owner.map.id}/#node-${owner.node.id}` : fallback.href;
   const returnTitle = owner ? `返回${owner.map.title} · ${owner.node.title}` : fallback.title;
   const compact = page.url.includes('/entries/') && page.data.toc.length <= 5;
-  return <div className="reading-shell">
+  const updates = page.data.id === 'P-UPDATES';
+  return <div className="reading-shell" data-page={updates ? 'updates' : undefined}>
     <nav className="reading-breadcrumb" aria-label="正文所属路径"><Link href="/">首页</Link><span>/</span>{owner ? <><Link href={`/docs/${owner.map.id}/`}>{owner.map.title}</Link>{owner.node.path.map((title, index) => <span key={`${title}:${index}`}>/ {title}</span>)}<span>/ {page.data.title}</span></> : <span>{page.data.title}</span>}</nav>
     <div className="reading-grid">
       <article className={`reading-article ${compact ? 'reading-compact' : ''}`}>
         <header className="reading-header"><p className="reading-eyebrow"><BookOpen size={14} />{owner?.map.title ?? '资料与项目'}<span> / {compact ? '知识条目' : '主题阅读'}</span></p><h1>{page.data.title}</h1><p className="reading-description">{page.data.description}</p><div className="content-meta"><span>{page.data.status}</span><span>更新于 {page.data.updated}</span><a target="_blank" rel="noreferrer" href={`https://github.com/${gitConfig.user}/${gitConfig.repo}/edit/${gitConfig.branch}/website/content/docs/${page.path}`}>编辑本页 <ArrowUpRight size={12} /></a></div></header>
         {owner && <p className="reading-context"><Network size={15} /><span>在地图中的位置：{[...owner.node.path, owner.node.title].join(' → ')}</span></p>}
         <div className="article-content prose"><MDX components={getMDXComponents({ a: ContentLink, NodeGrid })} /></div>
-        {!!page.data.related.length && <section className="reading-next" aria-label="关联阅读"><h2>继续阅读</h2><div>{related.filter((item) => item.label === '关联阅读').map((item) => <Link key={item.href} href={item.href}><span>{item.title}</span><ArrowRight size={15} /></Link>)}</div></section>}
+        {!updates && !!relatedReadings.length && <section className="reading-next" aria-label="关联阅读"><h2>继续阅读</h2><div>{relatedReadings.map((item) => <Link key={item.href} href={item.href}><span>{item.title}</span><ArrowRight size={15} /></Link>)}</div></section>}
         <nav className="document-return" aria-label="正文返回导航"><DocumentReturnLink map={owner?.map.id} href={returnHref} title={returnTitle} /></nav>
       </article>
-      <aside className="reading-aside" aria-label="阅读辅助导航">
+      {!updates && <aside className="reading-aside" aria-label="阅读辅助导航">
         {!compact && !!page.data.toc.length && <nav className="reading-toc" aria-label="本页目录"><h2>本页目录</h2>{page.data.toc.map((item) => <a key={item.url} href={item.url} data-depth={item.depth}>{item.title}</a>)}</nav>}
         {!!related.length && <nav className="reading-relations" aria-label="相关知识"><h2>知识之间的联系</h2>{related.map((item, index) => <Link key={`${item.href}:${index}`} href={item.href}><span>{item.label}</span><strong>{item.title}<ArrowUpRight size={12} /></strong></Link>)}</nav>}
         <div className="reading-aside-foot"><DocumentReturnLink map={owner?.map.id} href={returnHref} title={returnTitle} /></div>
-      </aside>
+      </aside>}
     </div>
   </div>;
 }

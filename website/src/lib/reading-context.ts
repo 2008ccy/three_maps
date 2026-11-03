@@ -2,6 +2,7 @@ import { readFileSync } from 'node:fs';
 import { getNode, source } from './source';
 import { maps, flattenNodes } from './maps/content';
 import { buildCatalog, buildEdges, resolveCatalogNode } from './maps/catalog';
+import { isLegacyMapArticle } from './document-navigation';
 
 export function documentStatuses() {
   return Object.fromEntries(source.getPages().map((page) => [page.data.id, page.data.status]));
@@ -34,6 +35,7 @@ export function readingContext(id: string) {
   }
   for (const relatedId of getNode(id).data.related) {
     const page = getNode(relatedId);
+    if (isLegacyMapArticle(page.url)) continue;
     add(page.data.title, `${page.url}/`, '关联阅读');
   }
   return { owner, related };

@@ -86,18 +86,18 @@ test('formulas render and sources remain navigable', () => {
   assert.equal($('.katex-error').length, 0);
   assert.ok($(`a[href="${basePath}/docs/sources/#s01"]`).length);
 });
-test('edited RAG title and description reach body and linked concept cards', () => {
+test('edited RAG title and description reach body and static concept cards', () => {
   const $=html('/docs/domain/entries/k-rag');
   assert.equal($('h1').text(), 'RAG · 检索增强生成');
   assert.ok($.text().includes('先检索，再生成：让回答有可以核对的资料依据。'));
   const concepts = html('/docs/domain/concepts');
-  assert.ok(concepts('article a.node-card').toArray().some((card) => concepts(card).text().includes('RAG · 检索增强生成')));
-  assert.ok(concepts(`.article-content a[href="${basePath}/docs/domain/entries/k-rag"]`).length || concepts(`.article-content a[href="${basePath}/docs/domain/entries/k-rag/"]`).length);
+  assert.ok(concepts('article .node-card-static').toArray().some((card) => concepts(card).text().includes('RAG · 检索增强生成')));
+  assert.equal(concepts('article a.node-card').length, 0);
 });
 
-test('article bodies expose knowledge links and preserve citations and old anchors', () => {
+test('article bodies keep knowledge labels, citations and old anchors without old article links', () => {
   const $ = html('/docs/domain/entries/k-rag');
-  assert.ok($(`.article-content a[href="${basePath}/docs/domain/concepts"]`).length || $(`.article-content a[href="${basePath}/docs/domain/concepts/"]`).length);
+  assert.ok($('.article-content').text().includes('核心概念与公式'));
   assert.ok($(`.article-content a[href="${basePath}/docs/sources/#s02"]`).length);
   const lora = html('/docs/domain/entries/k-lora');
   assert.equal(lora('#它是什么').length, 1);
@@ -108,7 +108,34 @@ test('deep pages use top navigation without a site-wide left sidebar', () => {
   const $ = html('/docs/domain/entries/k-rag');
   assert.equal($('#nd-sidebar').length, 0);
   assert.ok($('nav[aria-label="正文所属路径"]').text().includes('领域地图'));
-  assert.ok($('nav[aria-label="相关知识"]').text().includes('关联阅读'));
+  assert.ok($('nav[aria-label="相关知识"] a').length);
+});
+
+test('updates are collapsed native version cards with no templates or old reading entrances', () => {
+  const $ = html('/docs/project/updates');
+  const cards = $('.update-entry');
+  assert.deepEqual(cards.find('.update-version').map((_, item) => $(item).text()).get(), ['v1.4','v1.3','v1.2','v1.1','v1.0']);
+  assert.equal(cards.filter('[open]').length, 0);
+  assert.equal(cards.filter('details').length, 5);
+  assert.equal(cards.children('summary').length, 5);
+  assert.equal(cards.find('time[datetime]').length, 5);
+  assert.ok($('#v1-0').text().includes('三张地图初始版本'));
+  assert.ok($('#v1-1').text().includes('生态地图'));
+  assert.equal($('nav[aria-label="相关知识"], section[aria-label="关联阅读"], aside[aria-label="阅读辅助导航"]').length, 0);
+  assert.equal($('.article-content table, .article-content pre, .article-content code').length, 0);
+  assert.ok(!$('.article-content').text().includes('可复制的记录模板'));
+  assert.equal($('.article-content a[href]').length, 0);
+});
+
+test('all knowledge cards and reading relations omit old map article destinations', () => {
+  for (const { url } of readPages()) {
+    const $ = html(url);
+    for (const anchor of $('.article-content a[href], .reading-next a[href], .reading-relations a[href], [data-map] a[href]').toArray()) {
+      const href = $(anchor).attr('href');
+      const pathname = href.startsWith(basePath + '/') ? href.slice(basePath.length) : href;
+      assert.ok(!/^\/docs\/(?:domain|ecosystem|cognition)\/[^/?#]+/.test(pathname), `${url}: ${href}`);
+    }
+  }
 });
 
 test('retired ecosystem articles remain accessible but do not re-enter the search index', async () => {
