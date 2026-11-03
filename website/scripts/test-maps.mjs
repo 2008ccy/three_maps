@@ -8,6 +8,7 @@ import { buildCognitionDiagram, cognitionNodeSide } from '../src/lib/maps/cognit
 import { readPages } from './content-utils.mjs';
 
 const pages = readPages();
+const cognitionArchive = JSON.parse(readFileSync('../future-updates/cognition-2026-11-02/map-before.json', 'utf8'));
 const { basePath } = JSON.parse(readFileSync('out/.site-build.json', 'utf8'));
 const pageById = new Map(pages.map((page) => [page.data.id, page]));
 const source = load(readFileSync('out/docs/sources/index.html', 'utf8'));
@@ -80,7 +81,7 @@ for (const map of maps) {
 test('cognition hierarchy and feedback directions match the supplied HTML relationship graph', () => {
   const original = readFileSync('../map__text/认知地图关系图.html', 'utf8');
   const definitions = new Map([...original.matchAll(/(\w+)\["([^"\]]+)"\]/g)].map((match) => [match[1], match[2].split('<br/>')[0]]));
-  const map = maps.find((item) => item.id === 'cognition');
+  const map = cognitionArchive;
   const roots = [...original.matchAll(/root --> (\w+)/g)].map((match) => definitions.get(match[1]));
   assert.deepEqual(map.branches.map((node) => node.title), roots);
   assert.deepEqual(map.branches[0].children.map((node) => node.title), ['g1', 'g2', 'g3'].map((id) => definitions.get(id)));
@@ -124,7 +125,7 @@ test('domain static export includes all lessons, native answer disclosures and s
 });
 
 test('nested branches switch, collapse and reset without keeping stale leaf selection', () => {
-  const nodes = maps[2].branches;
+  const nodes = cognitionArchive.branches;
   const selected = stateForNode(nodes, 'loss-test');
   assert.deepEqual(selected, { expanded: ['analysis-methods', 'system-analysis'], selected: 'loss-test' });
   assert.deepEqual(toggleBranch(nodes, selected, 'comparison'), { expanded: ['analysis-methods', 'comparison'], selected: null });
@@ -168,7 +169,7 @@ test('directed graph selection and hash recovery open both branch explanations a
 });
 
 test('directed diagram panels follow the visible column, including cases in the right column', () => {
-  const map = maps.find((item) => item.id === 'cognition');
+  const map = cognitionArchive;
   for (const node of buildCognitionDiagram(map).nodes.filter((node) => node.id !== 'root')) {
     assert.equal(cognitionNodeSide(map, node.id), node.column <= 2 ? 'left' : 'right');
   }
@@ -196,12 +197,14 @@ test('ecosystem static export preserves 15 core lessons and all historical addre
 
 test('cognition static export exposes all lessons, checks, feedback meanings and evidence boundaries without scripts', () => {
   const $ = html('/docs/cognition'), map = maps[2];
-  assert.equal($('article[aria-label="知识点教学内容"]').length, 19);
-  assert.equal($('summary').filter((_, element) => $(element).text() === '展开答案与理由').length, 19);
-  assert.equal($('article[aria-label="知识点教学内容"]').filter((_, element) => $(element).text().includes('自编教学推演，非真实课程原文、模型运行结果或成员已完成的经历')).length, 19);
-  assert.ok($('#node-system-analysis').text().includes('逐环核对'));
-  assert.ok($('#node-third-view').text().includes('课堂正式名称仍待课件核验'));
-  assert.ok($('#node-revision-before').text().includes('素材经历与日期待确认'));
+  assert.equal($('article[aria-label="知识点教学内容"]').length, 12);
+  assert.equal($('summary').filter((_, element) => $(element).text() === '展开答案与理由').length, 12);
+  assert.equal($('article[aria-label="知识点教学内容"]').filter((_, element) => $(element).text().includes('自编教学推演，非真实课程原文、模型运行结果或成员已完成的经历')).length, 12);
+  assert.ok($('#node-loss-test').text().includes('系统拆解＋反例检查'));
+  assert.equal($('[aria-label="配套分析案例"]').length, 0);
+  for (const [oldId, targetId] of Object.entries(map.nodeAliases)) assert.ok($(`[id="node-${oldId}"] a[href="${basePath}/docs/cognition/#node-${targetId}"]`).length);
+  assert.ok($('#node-third-view').text().includes('课堂正式名称与原文页码仍待课件核验'));
+  assert.ok($('#node-revision').text().includes('素材经历与日期待确认'));
   for (const edge of [...map.conceptRelations, ...map.connections]) {
     assert.ok($(`#node-${edge.from}`).text().includes(edge.description), `${edge.from} / ${edge.to}`);
     assert.ok($(`#node-${edge.from} a[href="${basePath}/docs/cognition/#node-${edge.to}"]`).length);

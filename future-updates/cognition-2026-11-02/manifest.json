@@ -1,0 +1,141 @@
+{
+  "date": "2026-11-02",
+  "before": {
+    "themes": 4,
+    "points": 19,
+    "lessonCharacters": 13382,
+    "relations": 32
+  },
+  "after": {
+    "themes": 4,
+    "points": 12,
+    "lessonCharacters": 5424,
+    "relations": 26
+  },
+  "textReduction": 0.5946794201165745,
+  "nodes": [
+    {
+      "id": "system-view",
+      "title": "系统观",
+      "action": "保留并重写",
+      "currentTarget": "system-view"
+    },
+    {
+      "id": "development-view",
+      "title": "发展观",
+      "action": "保留并重写",
+      "currentTarget": "development-view"
+    },
+    {
+      "id": "third-view",
+      "title": "求真观",
+      "action": "保留并重写",
+      "currentTarget": "third-view"
+    },
+    {
+      "id": "system-analysis",
+      "title": "系统拆解 ＋ 反例检查",
+      "action": "合并",
+      "currentTarget": "loss-test"
+    },
+    {
+      "id": "loss-test",
+      "title": "案例① 损失下降 ≠ 回答更好",
+      "action": "保留并重写",
+      "currentTarget": "loss-test"
+    },
+    {
+      "id": "comparison",
+      "title": "对照比较 ＋ 问题定义",
+      "action": "合并",
+      "currentTarget": "ranking-task"
+    },
+    {
+      "id": "ranking-task",
+      "title": "案例② 榜单排名 ≠ 适合答疑",
+      "action": "保留并重写",
+      "currentTarget": "ranking-task"
+    },
+    {
+      "id": "tradeoff-method",
+      "title": "多目标取舍 ＋ 演进分析",
+      "action": "合并",
+      "currentTarget": "cost-api"
+    },
+    {
+      "id": "cost-api",
+      "title": "案例③ 效果与成本的取舍",
+      "action": "保留并重写",
+      "currentTarget": "cost-api"
+    },
+    {
+      "id": "define-problem",
+      "title": "先定义问题",
+      "action": "保留并重写",
+      "currentTarget": "define-problem"
+    },
+    {
+      "id": "check-evidence",
+      "title": "找依据和反例",
+      "action": "合并",
+      "currentTarget": "define-problem"
+    },
+    {
+      "id": "small-trial",
+      "title": "小规模试跑",
+      "action": "保留并重写",
+      "currentTarget": "small-trial"
+    },
+    {
+      "id": "learn-from-gaps",
+      "title": "从困难反查知识",
+      "action": "合并",
+      "currentTarget": "small-trial"
+    },
+    {
+      "id": "weekly-review",
+      "title": "每周分工与检查",
+      "action": "保留并重写",
+      "currentTarget": "weekly-review"
+    },
+    {
+      "id": "independent-feedback",
+      "title": "独立反馈再修订",
+      "action": "合并",
+      "currentTarget": "weekly-review"
+    },
+    {
+      "id": "revision-before",
+      "title": "原来怎样理解",
+      "action": "保留并重写",
+      "currentTarget": "revision-before"
+    },
+    {
+      "id": "revision-evidence",
+      "title": "什么带来变化",
+      "action": "保留并重写",
+      "currentTarget": "revision-evidence"
+    },
+    {
+      "id": "revision-after",
+      "title": "现在怎样理解",
+      "action": "保留并重写",
+      "currentTarget": "revision-after"
+    },
+    {
+      "id": "revision-open",
+      "title": "仍不知道什么",
+      "action": "合并",
+      "currentTarget": "revision-after"
+    }
+  ],
+  "aliases": {
+    "system-analysis": "loss-test",
+    "comparison": "ranking-task",
+    "tradeoff-method": "cost-api",
+    "check-evidence": "define-problem",
+    "learn-from-gaps": "small-trial",
+    "independent-feedback": "weekly-review",
+    "revision-open": "revision-after"
+  }
+}

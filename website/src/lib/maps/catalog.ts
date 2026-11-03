@@ -73,7 +73,7 @@ export function buildEdges(map: MapDefinition): MapEdge[] {
 
 export function filterCatalog(nodes: CatalogNode[], filters: CatalogFilters, edges: MapEdge[] = []) {
   const query = filters.q.trim().toLocaleLowerCase();
-  return nodes.filter((node) => (!filters.type || node.type === filters.type) && (!filters.understanding || node.understanding === filters.understanding) && (!filters.verification || node.verification === filters.verification) && (!query || `${node.title} ${node.summary} ${node.detail} 学习状态：${node.understanding} 核实状态：${node.verification} ${node.lesson ? JSON.stringify(node.lesson) : ''} ${node.topic ? JSON.stringify(node.topic) : ''} ${JSON.stringify(node.records ?? [])} ${JSON.stringify(node.teamProfile ?? {})} ${edges.filter((edge) => edge.from === node.id || edge.targetMap === node.mapId && edge.to === node.id).map((edge) => edge.label + ' ' + (edge.description ?? '')).join(' ')}`.toLocaleLowerCase().includes(query)));
+  return nodes.filter((node) => (!filters.type || node.type === filters.type) && (!filters.understanding || node.understanding === filters.understanding) && (!filters.verification || node.verification === filters.verification) && (!query || `${node.title} ${node.summary} ${node.detail} ${node.boundary ?? ''} 学习状态：${node.understanding} 核实状态：${node.verification} ${node.lesson ? JSON.stringify(node.lesson) : ''} ${node.topic ? JSON.stringify(node.topic) : ''} ${JSON.stringify(node.records ?? [])} ${JSON.stringify(node.teamProfile ?? {})} ${edges.filter((edge) => edge.from === node.id || edge.targetMap === node.mapId && edge.to === node.id).map((edge) => edge.label + ' ' + (edge.description ?? '')).join(' ')}`.toLocaleLowerCase().includes(query)));
 }
 
 // 总览只展示一级主题；搜索命中深层条目时仍保留它所属的主题。

@@ -206,7 +206,7 @@ export const domainMap: MapDefinition = {
       point('rag', 'RAG', '先找到依据，再生成并核对回答；分别检查检索错和资料误用。', ['K-RAG', 'T-RETRIEVAL'], ['S02', 'L3'], [cross('ecosystem', 'research-origins', '由研究团队提出'), cross('cognition', 'system-view', '用系统拆解排查')]),
       point('inference', '推理', '用已有模型处理输入得到输出，区分运行、训练与部署。', ['K-DEPLOY'], ['L2', 'L6', 'S10']),
       point('deployment', '部署', '组织可访问的接口、引用与异常处理，分别检查网页和模型服务。', ['K-DEPLOY', 'T-VLLM', 'T-OLLAMA'], ['S10', 'L3'], [cross('ecosystem', 'api-platforms', '由平台提供推理服务'), cross('cognition', 'cost-api', '用效果与成本权衡')]),
-      point('monitoring', '监控', '核实失败、定位环节并转成回归检查，持续保留修订理由。', ['D-PIPELINE', 'D-EVALUATION'], ['L3', 'L6'], [cross('cognition', 'independent-feedback', '由独立反馈推动修订')]),
+      point('monitoring', '监控', '核实失败、定位环节并转成回归检查，持续保留修订理由。', ['D-PIPELINE', 'D-EVALUATION'], ['L3', 'L6'], [cross('cognition', 'weekly-review', '由独立反馈与复盘推动修订')]),
     ]),
   ],
 };

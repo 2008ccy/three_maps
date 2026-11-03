@@ -1,0 +1,65 @@
+[
+  {
+    "oldId": "system-analysis",
+    "expected": "损失下降与答疑质量",
+    "notice": true,
+    "scrollTop": 0,
+    "title": "损失下降与答疑质量",
+    "url": "http://127.0.0.1:3001/three_maps/docs/cognition/#node-system-analysis",
+    "pass": true
+  },
+  {
+    "oldId": "comparison",
+    "expected": "榜单与课程适配",
+    "notice": true,
+    "scrollTop": 0,
+    "title": "榜单与课程适配",
+    "url": "http://127.0.0.1:3001/three_maps/docs/cognition/#node-comparison",
+    "pass": true
+  },
+  {
+    "oldId": "tradeoff-method",
+    "expected": "效果与成本取舍",
+    "notice": true,
+    "scrollTop": 0,
+    "title": "效果与成本取舍",
+    "url": "http://127.0.0.1:3001/three_maps/docs/cognition/#node-tradeoff-method",
+    "pass": true
+  },
+  {
+    "oldId": "check-evidence",
+    "expected": "定义问题与记录证据",
+    "notice": true,
+    "scrollTop": 0,
+    "title": "定义问题与记录证据",
+    "url": "http://127.0.0.1:3001/three_maps/docs/cognition/#node-check-evidence",
+    "pass": true
+  },
+  {
+    "oldId": "learn-from-gaps",
+    "expected": "小规模试验与复验",
+    "notice": true,
+    "scrollTop": 0,
+    "title": "小规模试验与复验",
+    "url": "http://127.0.0.1:3001/three_maps/docs/cognition/#node-learn-from-gaps",
+    "pass": true
+  },
+  {
+    "oldId": "independent-feedback",
+    "expected": "独立反馈与每周复盘",
+    "notice": true,
+    "scrollTop": 0,
+    "title": "独立反馈与每周复盘",
+    "url": "http://127.0.0.1:3001/three_maps/docs/cognition/#node-independent-feedback",
+    "pass": true
+  },
+  {
+    "oldId": "revision-open",
+    "expected": "修正结论与下一步",
+    "notice": true,
+    "scrollTop": 0,
+    "title": "修正结论与下一步",
+    "url": "http://127.0.0.1:3001/three_maps/docs/cognition/#node-revision-open",
+    "pass": true
+  }
+]

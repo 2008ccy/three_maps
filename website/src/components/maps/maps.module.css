@@ -195,7 +195,7 @@
 @media (max-width:767px) { .groupGrid { grid-template-columns: minmax(0,1fr); gap: 15px; } .groupCard { min-height: 260px; padding: 22px; } .groupTitle { font-size: 24px; } .floating { width: calc(100% - 24px); padding: 20px; top: 18px; max-height: calc(100dvh - 36px); border-radius: 17px; } .floating .panelTop { top: -20px; } .floating h2 { font-size: 26px; } .floating .readingSummary { padding: 15px; font-size: 15px; } .panelTop > div { gap: 7px; } .panelTop > div > span { font-size: 10px; } .floating .panelTop > button { width: 36px; height: 36px; } .childCards { grid-template-columns: minmax(0,1fr); } .childCard { min-height: 165px; } .relations strong { flex-basis: 100%; padding-left: 26px; } }
 @media (prefers-reduced-motion:reduce) { .map * { animation: none !important; transition: none !important; } }
 
-/* 领域地图教学层：样式只作用于领域地图，其他地图沿用原布局。 */
+/* 三张地图共享教学卡片与阅读层。 */
 .map[data-learning] { padding-top: 18px; }
 .map[data-learning] .breadcrumb { margin-bottom: 10px; }
 .domainIntro { display: flex; align-items: center; justify-content: space-between; gap: 28px; }
@@ -232,7 +232,6 @@
 .map[data-learning] .groupCardBottom > span { font-size: 13px; line-height: 1.7; }
 .map[data-learning] .groupCardBottom > svg { color: var(--tone); flex-shrink: 0; }
 .map[data-learning] .domainDialog { width: min(920px,calc(100% - 64px)); max-height: 88dvh; top: 6dvh; padding: 0; display: flex; flex-direction: column; overflow: hidden; }
-.map[data-learning] .domainDialog[data-topic=true] { width: min(1040px,calc(100% - 64px)); }
 .domainPanelTop { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-shrink: 0; padding: 15px 24px; border-bottom: 1px solid #ffffff12; }
 .domainPanelTop > div { display: flex; align-items: center; flex-wrap: wrap; gap: 14px; color: #b4abc1; font-size: 13px; }
 .domainPanelTop button { display: flex; align-items: center; gap: 7px; min-height: 36px; color: var(--tone); }
@@ -249,9 +248,13 @@
 .topicTeaching > strong { font-size: 15px; line-height: 1.8; display: block; color: #d8cfee; font-weight: 500; }
 .classification { border-left: 2px solid var(--tone); padding-left: 14px; color: #bdb3cc; font-size: 15px; }
 .map[data-learning] .childCards { grid-template-columns: repeat(2,minmax(0,1fr)); }
+@media (min-width:768px) {
+  .map[data-map=cognition] .childCards { grid-template-columns: repeat(3,minmax(0,1fr)); }
+  .map[data-map=cognition] .domainDialog[data-topic=true] { width: min(1180px,calc(100% - 64px)); }
+}
 .map[data-learning] .childCard { min-height: 230px; }
 .map[data-learning] .childCardMeta,.map[data-learning] .childCardFooter { font-size: 13px; }
-.map[data-learning] .childCardSummary { font-size: 16px; }
+.map[data-learning] .childCardSummary { font-size: 16px; line-height: 1.8; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; overflow: hidden; }
 .knowledgeStatus { display: flex; flex-wrap: wrap; gap: 8px; margin-block: 12px 18px; }
 .knowledgeStatus > span { display: inline-flex; align-items: center; padding: 4px 9px; border-radius: 6px; border: 1px solid #b8afff35; background: #b8afff12; color: #cfc5f4; font-size: 13px; line-height: 1.6; }
 .knowledgeStatus > span[data-status=verification] { color: #d5c398; background: #d5b76e0d; border-color: #d5b76e30; }
@@ -353,7 +356,6 @@
 /* Shared teaching reader; the seventh stage reuses the site's muted lavender. */
 .map [data-tone="6"] { --tone: #beb0e3; --tone-rgb: 190 176 227; }
 .topicHandoff { color: var(--tone); font-size: 15px; border: 1px solid rgb(var(--tone-rgb)/.25); padding: 12px 16px; border-radius: 9px; background: rgb(var(--tone-rgb)/.06); }
-.map[data-map=ecosystem] .childCardSummary { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; overflow: hidden; line-height: 1.8; }
 .teamProfile dl { display: grid; grid-template-columns: 130px minmax(0,1fr); border: 1px solid #ffffff20; border-radius: 10px; overflow: hidden; font-size: 15px; line-height: 1.8; }
 .teamProfile dt,.teamProfile dd { padding: 13px 16px; border-bottom: 1px solid #ffffff14; }
 .teamProfile dt { color: var(--tone); background: #ffffff03; }
@@ -397,13 +399,6 @@
   .ecosystemGraphToolbar select { flex: 1; min-width: 0; }
   .ecosystemGraph .graphViewport { height: 560px; }
 }
-.map[data-map=ecosystem] .domainDialog[data-topic=true] { width: min(920px,calc(100% - 64px)); }
-.map[data-map=cognition] .groupGrid { grid-template-columns: repeat(2,minmax(0,1fr)); }
-.map[data-map=cognition] .domainDialog[data-topic=true] { width: min(920px,calc(100% - 64px)); }
-.map[data-map=cognition] .childCardSummary { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; overflow: hidden; }
-.lessonCaseLinks { margin: -6px 0 22px; }
-.lessonCaseLinks button { display: flex; gap: 12px; align-items: center; width: 100%; padding: 13px 16px; border: 1px solid #b8afff45; border-radius: 10px; background: #b8afff0c; color: #d8cfff; font-size: 14px; line-height: 1.7; text-align: left; }
-.lessonCaseLinks button svg { margin-left: auto; flex-shrink: 0; }
 .cognitionLearningGraph .graphViewport { height: 720px; }
 .cognitionLearningGraph .graphHeader { flex-wrap: wrap; }
 .cognitionLearningGraph .graphNode,.cognitionLearningGraph .graphNode[data-root=true] { width: 228px; height: 78px; }
@@ -414,7 +409,6 @@
 .cognitionLegend { display: flex; flex-wrap: wrap; gap: 8px 20px; padding: 13px 20px; font-size: 13px; line-height: 1.8; color: #b8adc7; border-bottom: 1px solid #ffffff15; }
 .cognitionLegend span:nth-child(2) { color: #9bc6ed; }
 .cognitionLegend span:nth-child(3) { color: #9bcabb; }
-@media (max-width:767px) { .map[data-map=cognition] .groupGrid { grid-template-columns: minmax(0,1fr); } .map[data-map=cognition] .domainDialog[data-topic=true] { width: 100%; } .cognitionLearningGraph .graphViewport { height: 560px; } }
+@media (max-width:767px) { .cognitionLearningGraph .graphViewport { height: 560px; } }
 .groupHandoff { display: block; color: var(--tone); font-size: 13px; margin-bottom: 6px; }
-@media (max-width:767px) { .map[data-map=ecosystem] .domainDialog[data-topic=true] { width: 100%; } }
 .ecosystemLines[data-overview=true] text { opacity: 1; font-size: 13px; }

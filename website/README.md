@@ -122,7 +122,7 @@ related: ["K-RAG", "C-RANKING"]
 
 L6 是浙大版讲解稿，归档 PDF 放在 `public/sources/ai-model-building-zju.pdf`，知识树原图在 `public/images/domain/zju-knowledge-tree.png`。学校课程信息来自讲解稿转述，正式培养方案原件仍待核验。更新归档材料时同步 `map__text` 与网站副本。
 
-L7 是用户提供的 `认知地图关系图.html`，原件归档于 `map__text`，网站在 `public/sources/cognition-relationships.txt` 提供原始 HTML 文本。认知地图按其中的四条主干、三个方法组合及三个案例组织；六类习惯与四个修正问题沿用原有素材展开。
+L7 是用户提供的 `认知地图关系图.html`，原件归档于 `map__text`，网站在 `public/sources/cognition-relationships.txt` 提供原始 HTML 文本。认知地图保留四条主干，三个方法组合并入对应案例；六类习惯合为三组行动，四个修正问题合为三个步骤。原有内容与关系快照保存在 `future-updates/cognition-2026-11-02/`，便于恢复与后续更新。
 
 **关系：** 正文使用 `[显示名称](node:稳定ID)`，例如 `[LoRA](node:K-LORA)`；不要手写完整域名或 `/three_maps`，避免更换部署地址后失效。普通站内链接使用 `/docs/...`。
 
@@ -165,12 +165,13 @@ GitHub Pages 只负责静态页面。后续 AI 接入需要额外服务端，密
 
 ## 8. 导图维护
 
-### 认知教学地图（2026-10-29）
+### 认知教学地图（2026-11-02 精简）
 
-- `src/lib/maps/cognition-learning.ts` 维护4主题、19教学条目、32本图联系（含原5条指导/反馈）及20跨图联系；`cognition-base.ts` 保留原23节点ID、层级、来源与反馈方向。3组方法和案例归属不变，主题浮层同时列出方法与案例卡，避免多次钻取。
-- 三图共用 `LearningExplorer` 和教学正文。认知使用独立 `cognition-learning-graph.tsx` / `lib/maps/cognition-learning-graph.ts`，四列稳定布局；旧14节点投影仅用于历史图兼容与方向回归。关系与学习路线独立维护，不把教学建议画成技术依赖。
-- 教学推演不等于真实实验，理解解析不改变状态；课堂正式名称及个人经历继续保留待核实边界。原生hashchange与公开History API保持Next规范地址同步，片段/筛选/跨图返回不复制框架私有历史对象。
-- 认知内容、关系清单和截图见根目录 `qa-cognition-learning-2026-10-29/README.md`。68项测试、类型/内容、默认及GitHub Pages子路径构建与链接检查通过。本轮未提交或发布。
+- `src/lib/maps/cognition-learning.ts`维护四主题、12核心条目、12条归属、26条本图联系及19条跨图联系；每主题3个直接知识点，方法直接融入三个案例，不再嵌套钻取。
+- `nodeAliases`保留7个旧地址，合并提示从阅读顶部开始。十二个核心ID、七篇正文路径和文档ID保留；课堂求真观的正式名称与成员经历继续待核实。
+- 三图使用共享的LearningExplorer和教学正文。主题卡桌面三列；认知知识卡按2026-11-03调整采用桌面三列、手机单列，主题阅读面板最大1180px；另外两图知识卡保持双列。摘要继续共享三行截断规则。认知关系图保留四列主题分区、原五条指导反馈及核心/全部关系选择。
+- 精简前完整地图、源码、七篇正文和来源统一归档至 `../future-updates/cognition-2026-11-02/`，附manifest与恢复说明；历史HTML关系图测试使用归档快照，当前测试验证四主题十二条目。`cognition-base.ts`仅为兼容导出，不再携带旧教学结构。
+- 教学对象文本减少约59.5%，七篇正文同步精简；完整材料不在生产地图中重复展示，来源目录继续保留。
 
 
 - 转场生命周期的 `isTransitionPage` 同时接受 Next 已去掉 basePath 的路由和浏览器完整路径，避免 GitHub Pages 下进入地图时提前取消动画；链接验证仍用严格的 `mapAtPath`。修复证据在 `qa-transition-fix-2026-10-29/`。

@@ -1,0 +1,29 @@
+[
+  {
+    "font": "16px",
+    "grid": "442.664px 442.664px 442.664px",
+    "map": "domain",
+    "padding": "19px 22px",
+    "scrollWidth": 1440,
+    "titleFont": "23px",
+    "viewport": 1440
+  },
+  {
+    "font": "16px",
+    "grid": "442.664px 442.664px 442.664px",
+    "map": "ecosystem",
+    "padding": "19px 22px",
+    "scrollWidth": 1440,
+    "titleFont": "23px",
+    "viewport": 1440
+  },
+  {
+    "font": "16px",
+    "grid": "442.664px 442.664px 442.664px",
+    "map": "cognition",
+    "padding": "19px 22px",
+    "scrollWidth": 1440,
+    "titleFont": "23px",
+    "viewport": 1440
+  }
+]
