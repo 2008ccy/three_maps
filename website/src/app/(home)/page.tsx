@@ -85,10 +85,8 @@ export default function HomePage() {
 
       <footer className={styles.footer} hidden={phase === 'intro'} inert={phase !== 'expanded'} aria-hidden={phase !== 'expanded'}>
         <div><p className={styles.eyebrow}>一张会生长的地图</p><h2>持续更新，保留依据。</h2><p className={styles.footerNote}>记录认识的变化，也说明还不知道什么。</p></div>
-        <nav aria-label="来源与项目记录">
-          <Link href="/docs/sources">来源目录 <ArrowUpRight size={15} aria-hidden="true" /></Link>
+        <nav aria-label="网站更新">
           <Link href="/docs/project/updates">更新记录 <ArrowUpRight size={15} aria-hidden="true" /></Link>
-          <Link href="/docs/project/status">项目进度 <ArrowUpRight size={15} aria-hidden="true" /></Link>
         </nav>
       </footer>
     </HomeExperience>

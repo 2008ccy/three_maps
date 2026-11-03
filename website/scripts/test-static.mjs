@@ -4,7 +4,10 @@ import { readFileSync, existsSync } from 'node:fs';
 import { load } from 'cheerio';
 import { createStaticSearch } from '../src/lib/static-search.mjs';
 import { readPages } from './content-utils.mjs';
-import { documentReturnTarget, isAppUrl } from '../src/lib/document-navigation.ts';
+import { documentReturnTarget, isAppUrl, isLegacyMapArticle } from '../src/lib/document-navigation.ts';
+import { maps } from '../src/lib/maps/content.ts';
+import { buildCatalog } from '../src/lib/maps/catalog.ts';
+import { mapSearchIndexes } from '../src/lib/map-search-indexes.ts';
 
 const { basePath } = JSON.parse(readFileSync('out/.site-build.json', 'utf8'));
 const searchFile = ['out/api/search', 'out/api/search/index.json', 'out/api/search/index.html'].find((file) => {
@@ -19,16 +22,46 @@ test.after(() => { globalThis.fetch = originalFetch; });
 const client = createStaticSearch(`${basePath}/api/search/`);
 
 for (const [query, target] of [
-  ['微调', '/docs/domain/entries/k-sft'],
-  ['检索增强', '/docs/domain/entries/k-rag'],
-  ['LoRA', '/docs/domain/entries/k-lora'],
-  ['RAG', '/docs/domain/entries/k-rag'],
+  ['微调', '/docs/domain/#node-finetuning'],
+  ['检索增强', '/docs/domain/#node-rag'],
+  ['LoRA', '/docs/domain/#node-lora'],
+  ['RAG', '/docs/domain/#node-rag'],
+  ['独立反馈', '/docs/cognition/#node-weekly-review'],
 ]) {
   test(`exported browser search: ${query}`, async () => {
     const results = await client.search(query);
-    assert.ok(results.some((item) => item.url.split('#')[0].replace(/\/$/, '') === target));
+    assert.ok(results.some((item) => item.url === target));
+    for (const result of results) {
+      assert.ok(!isLegacyMapArticle(result.url), result.url);
+      assert.ok((result.url.match(/#/g) ?? []).length <= 1, result.url);
+    }
   });
 }
+test('search indexes every active node directly without retired addresses or duplicate fragments', () => {
+  const indexes = mapSearchIndexes();
+  const expected = maps.flatMap((map) => [`/docs/${map.id}/`, ...buildCatalog(map).map((node) => `/docs/${map.id}/#node-${node.id}`)]);
+  assert.deepEqual(indexes.map((entry) => entry.url), expected);
+  assert.equal(new Set(indexes.map((entry) => entry.id)).size, indexes.length);
+  assert.equal(new Set(indexes.map((entry) => entry.url)).size, indexes.length);
+  for (const entry of indexes) {
+    assert.equal(entry.structuredData.headings.length, 0);
+    assert.ok(entry.structuredData.contents.every((content) => !content.heading));
+  }
+});
+test('search omits the original docs introduction including its section results', async () => {
+  for (const query of ['从预训练模型到课程答疑助手', 'RAG', '认知地图']) {
+    const results = await client.search(query);
+    assert.ok(results.every((entry) => !isLegacyMapArticle(entry.url)), query);
+  }
+  for (const href of ['/docs', '/docs/', '/docs?query=rag', '/docs/#入门']) assert.ok(isLegacyMapArticle(href), href);
+  for (const href of ['/', '/docs/domain/', '/docs/cognition/#node-system-view', '/docs/project/updates/', '/docs/sources/#l1']) assert.ok(!isLegacyMapArticle(href), href);
+});
+test('search retains current updates and sources as public destinations', async () => {
+  for (const [query, target] of [['更新记录', '/docs/project/updates'], ['来源与依据', '/docs/sources']]) {
+    const results = await client.search(query);
+    assert.ok(results.some((entry) => entry.url.split('#')[0].replace(/\/$/, '') === target), query);
+  }
+});
 test('unknown search returns no fabricated result', async () => {
   assert.deepEqual(await client.search('zzzxnonexistent999'), []);
 });

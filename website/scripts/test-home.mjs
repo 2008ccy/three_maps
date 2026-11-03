@@ -4,6 +4,10 @@ import { readFileSync } from 'node:fs';
 import { load } from 'cheerio';
 import { HOME_SESSION_KEY, restoreHomePhase, rememberHomeExpanded, isHomeRoute } from '../src/lib/home-scene.ts';
 import { transitionTiming, handoffProgress, titleFrame, homeMapLink, mapAtPath, isTransitionPage, plainLinkActivation, mapTransitionTarget } from '../src/lib/map-transition.ts';
+import { explorationPaths } from '../src/app/(home)/home-content.ts';
+import { maps, flattenNodes } from '../src/lib/maps/content.ts';
+import { isLegacyMapArticle } from '../src/lib/document-navigation.ts';
+import { filesIn } from './content-utils.mjs';
 
 const { basePath } = JSON.parse(readFileSync('out/.site-build.json', 'utf8'));
 
@@ -43,6 +47,32 @@ test('exported first visit has an activation target and usable no-script map lin
   }
   assert.equal($('canvas[aria-hidden="true"]').length, 1);
   assert.equal($('[data-map-transition="idle"][hidden]').length, 1, 'transition layer is inactive in static/no-script output');
+  assert.deepEqual($('footer nav a').map((_, item) => $(item).text().trim()).get(), ['更新记录']);
+  assert.equal($(`footer a[href^="${basePath}/docs/sources"], footer a[href^="${basePath}/docs/project/status"]`).length, 0);
+});
+
+test('stored home exploration routes only target current map nodes', () => {
+  for (const path of explorationPaths) for (const step of path.steps) {
+    const [, mapId, nodeId] = step.href.match(/^\/docs\/(domain|ecosystem|cognition)\/#node-([a-z0-9-]+)$/) ?? [];
+    assert.ok(mapId && nodeId, step.href);
+    assert.ok(flattenNodes(maps.find((map) => map.id === mapId).branches).some((node) => node.id === nodeId), step.href);
+  }
+});
+
+test('every exported page omits navigation to the original map articles', () => {
+  const origin = 'https://three-maps.test';
+  for (const file of filesIn('out').filter((file) => file.endsWith('.html'))) {
+    const $ = load(readFileSync(file, 'utf8'), { scriptingEnabled: false });
+    const route = `${basePath}/${file.slice(4).replace(/index\.html$/, '')}`;
+    for (const item of $('a[href], area[href], form[action]').toArray()) {
+      const href = $(item).attr('href') ?? $(item).attr('action');
+      if (!href || href.startsWith('#')) continue;
+      const url = new URL(href, origin + route);
+      if (url.origin !== origin) continue;
+      const pathname = basePath && url.pathname.startsWith(basePath + '/') ? url.pathname.slice(basePath.length) : url.pathname;
+      assert.ok(!isLegacyMapArticle(pathname), `${file}: ${href}`);
+    }
+  }
 });
 
 test('map transitions preserve native modified, new-tab, middle-button and download link actions', () => {

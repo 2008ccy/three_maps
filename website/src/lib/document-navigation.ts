@@ -1,8 +1,10 @@
 const mapTitles = { domain: '领域地图', ecosystem: '生态地图', cognition: '认知地图' };
 
-// Deep article routes remain addressable for old bookmarks, but are no longer learning-card destinations.
+// Original introduction and deep articles stay addressable for bookmarks,
+// but are no longer navigation or search destinations.
 export function isLegacyMapArticle(href: string) {
-  return /^\/docs\/(?:domain|ecosystem|cognition)\/[^/?#]+/.test(href);
+  const pathname = href.split(/[?#]/, 1)[0].replace(/\/$/, '');
+  return pathname === '/docs' || /^\/docs\/(?:domain|ecosystem|cognition)\/[^/]+/.test(pathname);
 }
 
 export function documentReturnTarget(pathname: string) {
