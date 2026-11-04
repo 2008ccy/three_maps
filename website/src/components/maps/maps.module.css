@@ -413,4 +413,6 @@
 .groupHandoff { display: block; color: var(--tone); font-size: 13px; margin-bottom: 6px; }
 .feedbackAction { margin-top: 28px; border-top: 1px solid #ffffff16; padding-top: 18px; }
 .feedbackAction a { display: inline-flex; align-items: center; gap: 8px; color: #c7bafa; font-size: 14px; padding: 8px 0; }
+.mapFeedback { display: flex; justify-content: flex-end; margin: 8px 0; font-size: 13px; color: #c7bafa; }
+.mapFeedback a { display: inline-flex; align-items: center; gap: 6px; padding: 6px 0; }
 .ecosystemLines[data-overview=true] text { opacity: 1; font-size: 13px; }

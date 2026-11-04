@@ -121,6 +121,8 @@ html > body[data-scroll-locked] {
 .reading-relations strong { display: flex; align-items: center; justify-content: space-between; gap: 8px; font-size: 12px; font-weight: 450; color: #c4b2df; line-height: 1.8; }
 .reading-relations svg { flex-shrink: 0; }
 .reading-aside-foot { margin-top: 24px; }
+.reading-feedback { margin-top: 28px; padding-top: 16px; border-top: 1px solid #ffffff14; font-size: 14px; color: #c7bafa; }
+.reading-feedback a { display: inline-flex; align-items: center; gap: 7px; padding: 6px 0; }
 .reading-aside-foot .document-return-link { font-size: 11px; line-height: 1.7; padding: 9px 10px; text-align: left; }
 .reading-aside-foot svg { flex-shrink: 0; }
 .reading-next { border-top: 1px solid #ffffff14; margin-top: 32px; padding-top: 22px; }

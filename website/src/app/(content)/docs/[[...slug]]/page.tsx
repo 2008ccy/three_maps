@@ -9,6 +9,7 @@ import { DocumentReturnLink } from '@/components/document-return-link';
 import Link from 'next/link';
 import { ArrowRight, ArrowUpRight, BookOpen, Network } from 'lucide-react';
 import { ContentLink, NodeGrid } from '@/components/content';
+import { feedbackComposeHref } from '@/lib/feedback-targets';
 
 export default async function Page(props: PageProps<'/docs/[[...slug]]'>) {
   const params = await props.params;
@@ -29,6 +30,7 @@ export default async function Page(props: PageProps<'/docs/[[...slug]]'>) {
         <header className="reading-header"><p className="reading-eyebrow"><BookOpen size={14} />{owner?.map.title ?? '资料与项目'}<span> / {compact ? '知识条目' : '主题阅读'}</span></p><h1>{page.data.title}</h1><p className="reading-description">{page.data.description}</p><div className="content-meta"><span>{page.data.status}</span><span>更新于 {page.data.updated}</span><a target="_blank" rel="noreferrer" href={`https://github.com/${gitConfig.user}/${gitConfig.repo}/edit/${gitConfig.branch}/website/content/docs/${page.path}`}>编辑本页 <ArrowUpRight size={12} /></a></div></header>
         {owner && <p className="reading-context"><Network size={15} /><span>在地图中的位置：{[...owner.node.path, owner.node.title].join(' → ')}</span></p>}
         <div className="article-content prose"><MDX components={getMDXComponents({ a: ContentLink, NodeGrid })} /></div>
+        <nav className="reading-feedback" aria-label="内容反馈"><Link href={owner ? feedbackComposeHref({ mapId: owner.map.id, ...(owner.node.collection ? {} : { nodeId: owner.node.id }) }) : '/feedback/'}>反馈与改进 <ArrowUpRight size={14} aria-hidden="true" /></Link></nav>
         {!updates && !!relatedReadings.length && <section className="reading-next" aria-label="关联阅读"><h2>继续阅读</h2><div>{relatedReadings.map((item) => <Link key={item.href} href={item.href}><span>{item.title}</span><ArrowRight size={15} /></Link>)}</div></section>}
         <nav className="document-return" aria-label="正文返回导航"><DocumentReturnLink map={owner?.map.id} href={returnHref} title={returnTitle} /></nav>
       </article>

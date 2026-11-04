@@ -26,12 +26,16 @@ export const feedbackInputSchema = z.object({
 }).strict();
 export const publicFeedbackSchema = z.object({
   id: z.string().regex(feedbackIdPattern), target: feedbackTargetSchema,
-  type: z.enum(feedbackTypes), content: z.string(), nickname: z.string().optional(),
-  referenceUrl: z.string().optional(), createdAt: z.iso.datetime(),
-  status: z.enum(feedbackStatuses), reply: z.string().optional(),
-  resolution: z.string().optional(), releaseVersion: z.string().regex(releaseVersionPattern).optional(),
+  type: z.enum(feedbackTypes), content: feedbackInputSchema.shape.content, nickname: feedbackInputSchema.shape.nickname,
+  referenceUrl: feedbackInputSchema.shape.referenceUrl, createdAt: z.iso.datetime(),
+  status: z.enum(feedbackStatuses), reply: z.string().refine((value) => characterCount(value) <= 10000).optional(),
+  resolution: z.string().refine((value) => characterCount(value) <= 10000).optional(), releaseVersion: z.string().regex(releaseVersionPattern).optional(),
 }).strip();
-export const feedbackPageSchema = z.object({ items: z.array(publicFeedbackSchema), nextCursor: z.string().nullable() }).strip();
+export const feedbackPageSchema = z.object({ items: z.array(publicFeedbackSchema).max(20), nextCursor: z.string().min(1).max(1024).nullable() }).strip();
+export const feedbackFiltersSchema = z.object({
+  map: feedbackTargetSchema.shape.mapId.optional(), type: z.enum(feedbackTypes).optional(),
+  status: z.enum(feedbackStatuses).optional(), cursor: z.string().min(1).max(1024).optional(),
+}).strict();
 export type FeedbackTarget = z.infer<typeof feedbackTargetSchema>;
 export type FeedbackInput = z.infer<typeof feedbackInputSchema>;
 export type PublicFeedback = z.infer<typeof publicFeedbackSchema>;

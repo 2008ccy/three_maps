@@ -54,7 +54,7 @@ for (const map of maps) {
       assert.ok(item.text().includes(node.detail), node.id);
       for (const ref of node.sources) assert.ok(item.find(`a[href="${basePath}/docs/sources/#${ref.toLowerCase()}"]`).length, ref);
     }
-    // 地图只保留首页、节点关系与来源，不再提供独立完整文章入口。
+    // 地图保留首页、节点关系、来源和当前对象反馈，不提供旧完整文章入口。
     assert.equal($('[aria-label="完整正文"], [aria-label="辅助阅读入口"]').length, 0);
     const officialLinks = new Set(flattenNodes(map.branches).flatMap((node) => node.teamProfile?.official.map((item) => item.href) ?? []));
     for (const anchor of $('[data-map] a[href]').toArray()) {
@@ -64,7 +64,9 @@ for (const map of maps) {
       if (path.startsWith('/feedback/?')) {
         const query = new URL(href, 'https://example.test').searchParams;
         assert.equal(query.get('map'), map.id);
-        assert.ok(flattenNodes(map.branches).some((node) => node.id === query.get('node')), href);
+        if (query.has('node')) assert.ok(flattenNodes(map.branches).some((node) => node.id === query.get('node')), href);
+        else assert.equal($(anchor).closest('nav').attr('aria-label'), '整图反馈', href);
+        assert.ok([...query.keys()].every((key) => ['map', 'node'].includes(key)), href);
         continue;
       }
       assert.ok(path === '/' || /^\/docs\/(?:domain|ecosystem|cognition)\/#node-[a-z0-9-]+$/.test(path) || /^\/docs\/sources\/#/.test(path), href);

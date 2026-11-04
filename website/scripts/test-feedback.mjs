@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { load } from 'cheerio';
-import { feedbackInputSchema, feedbackHref, feedbackReferenceHref, feedbackReleaseHref, feedbackComposeHref } from '../src/lib/feedback-contract.ts';
+import { feedbackInputSchema, feedbackPageSchema, publicFeedbackSchema, feedbackHref, feedbackReferenceHref, feedbackReleaseHref, feedbackComposeHref } from '../src/lib/feedback-contract.ts';
 import { feedbackTargets, findFeedbackTarget } from '../src/lib/feedback-targets.ts';
 import { createFeedbackClient, feedbackServiceConfig } from '../src/lib/feedback-client.ts';
 
@@ -81,13 +81,70 @@ test('feedback client handles rate limits, invalid responses, timeout and cancel
   await assert.rejects(createFeedbackClient(configured, slowFetch).listFeedback({}, controller.signal), { code: 'ABORTED' });
 });
 
-test('static feedback page is honest when cloud storage is not configured', () => {
-  const { basePath } = JSON.parse(readFileSync('out/.site-build.json', 'utf8'));
+test('static feedback page follows its build configuration without manufacturing records', () => {
+  const { basePath, feedbackConfigured } = JSON.parse(readFileSync('out/.site-build.json', 'utf8'));
+  assert.equal(typeof feedbackConfigured, 'boolean');
   const $ = load(readFileSync('out/feedback/index.html', 'utf8'));
   assert.equal($('h1').text(), '反馈与改进');
-  assert.ok($.text().includes('共享反馈尚未开放'));
+  assert.equal($.text().includes('共享反馈尚未开放'), !feedbackConfigured);
   assert.equal($('button[type="submit"][disabled]').length, 1);
   assert.ok(!$.text().includes('还没有公开反馈。欢迎指出第一个具体问题。'));
   assert.equal($('.feedback-record[data-id]').length, 0);
   assert.ok($(`a[href="${basePath}/feedback/"]`).length);
+  assert.equal($('button').filter((_, item) => $(item).text() === '预览反馈').length, 1);
+});
+
+test('feedback client rejects invalid and mismatched records before reporting success', async () => {
+  for (const bad of [
+    { ...record, target: { mapId: 'cognition' } }, { ...record, content: '这是另一条反馈的正文。' },
+    { ...record, referenceUrl: 'javascript:alert(1)' }, { ...record, content: '字'.repeat(1001) },
+  ]) {
+    const client = createFeedbackClient(configured, async () => response({ item: bad }));
+    await assert.rejects(client.submitFeedback(input, '11111111-1111-4111-8111-111111111111'), { code: 'INVALID_RESPONSE' });
+  }
+  const wrongId = createFeedbackClient(configured, async () => response({ item: { ...record, id: 'FB-22222222-2222-4222-8222-222222222222' } }));
+  await assert.rejects(wrongId.getFeedback(id), { code: 'INVALID_RESPONSE' });
+  const duplicate = createFeedbackClient(configured, async () => response({ items: [record, record], nextCursor: null }));
+  await assert.rejects(duplicate.listFeedback(), { code: 'INVALID_RESPONSE' });
+  const wrongFilter = createFeedbackClient(configured, async () => response({ items: [record], nextCursor: null }));
+  await assert.rejects(wrongFilter.listFeedback({ status: '已完成' }), { code: 'INVALID_RESPONSE' });
+  assert.equal(feedbackPageSchema.safeParse({ items: Array(21).fill(record), nextCursor: null }).success, false);
+  assert.equal(publicFeedbackSchema.safeParse({ ...record, reply: '字'.repeat(10001) }).success, false);
+  assert.equal(publicFeedbackSchema.safeParse({ ...record, reply: '😀'.repeat(10000) }).success, true);
+});
+
+test('invalid filters and cancelled requests never reach the server', async () => {
+  const client = createFeedbackClient(configured, async () => assert.fail('Unexpected request'));
+  await assert.rejects(client.listFeedback({ status: 'unknown' }), { code: 'INVALID_FILTERS' });
+  await assert.rejects(client.listFeedback({ cursor: 'x'.repeat(1025) }), { code: 'INVALID_FILTERS' });
+  const controller = new AbortController(); controller.abort();
+  await assert.rejects(client.listFeedback({}, controller.signal), { code: 'ABORTED' });
+});
+
+test('rate-limit delay supports seconds and HTTP dates, and errors never echo server content', async () => {
+  const response429 = (delay) => createFeedbackClient(configured, async () => response({ error: { message: 'secret internal details' } }, { status: 429, headers: { 'Retry-After': delay } }));
+  await assert.rejects(response429('999999999').listFeedback(), (error) => error.retryAfter === 3600 && !error.message.includes('secret'));
+  await assert.rejects(response429(new Date(Date.now() + 60000).toUTCString()).listFeedback(), (error) => error.retryAfter >= 59 && error.retryAfter <= 60);
+  await assert.rejects(response429('invalid').listFeedback(), (error) => error.retryAfter === undefined);
+  await assert.rejects(createFeedbackClient(configured, async () => response({}, { status: 403 })).listFeedback(), (error) => error.status === 403 && error.message.includes('未获准'));
+});
+
+test('timeouts and cancellation while reading the response body retain their error classification', async () => {
+  const slowBody = async (_, options) => ({ ok: true, headers: new Headers(), json: () => new Promise((_, reject) => {
+    if (options.signal.aborted) reject(new Error('body aborted'));
+    else options.signal.addEventListener('abort', () => reject(new Error('body aborted')), { once: true });
+  }) });
+  await assert.rejects(createFeedbackClient(configured, slowBody, 5).listFeedback(), { code: 'TIMEOUT' });
+  const controller = new AbortController();
+  const request = createFeedbackClient(configured, slowBody).listFeedback({}, controller.signal);
+  controller.abort();
+  await assert.rejects(request, { code: 'ABORTED' });
+});
+
+test('map feedback entries carry the canonical map target for root and subpath builds', () => {
+  const { basePath } = JSON.parse(readFileSync('out/.site-build.json', 'utf8'));
+  for (const map of ['domain', 'ecosystem', 'cognition']) {
+    const $ = load(readFileSync(`out/docs/${map}/index.html`, 'utf8'));
+    assert.equal($('nav[aria-label="整图反馈"] a').attr('href'), `${basePath}/feedback/?map=${map}`);
+  }
 });

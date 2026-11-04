@@ -1,0 +1,865 @@
+{
+  "openapi": "3.1.0",
+  "jsonSchemaDialect": "https://json-schema.org/draft/2020-12/schema",
+  "info": {
+    "title": "三张活地图公开反馈 API",
+    "version": "1.0.0",
+    "description": "未连接云服务的接入契约。此文件不表示云资源已创建或真实跨设备验收已通过。公开匿名接口，无登录、无公开修改操作；仅返回 isPublic=true 的显式公开字段。请求字段 schema 描述 trim 后的规范化值，服务端在校验长度前执行 trim。未知请求字段和未知查询参数返回 400。公开响应会忽略额外字段，但服务端按白名单投影，不返回内部管理信息。"
+  },
+  "servers": [
+    {
+      "url": "https://replace-with-your-feedback-api.example",
+      "description": "占位地址，替换为已核实网关的 API 基址；不包含 /feedback 后缀。若有前缀，在此填写且由网关剥离。"
+    }
+  ],
+  "security": [],
+  "tags": [
+    {
+      "name": "feedback",
+      "description": "公开反馈与小组处理结果；管理员在受保护的平台控制台维护数据。"
+    }
+  ],
+  "paths": {
+    "/feedback": {
+      "get": {
+        "tags": [
+          "feedback"
+        ],
+        "summary": "分页读取公开反馈",
+        "operationId": "listFeedback",
+        "description": "每页最多 20 条，按 createdAt 降序、id 降序稳定排序。只接受 map、type、status、cursor；空值等同未指定。游标签名并绑定原筛选条件，切换筛选必须丢弃旧游标。不返回总数，不扫描隐藏反馈给客户端。",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Origin"
+          },
+          {
+            "name": "map",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/MapId"
+                },
+                {
+                  "const": ""
+                }
+              ]
+            }
+          },
+          {
+            "name": "type",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/FeedbackType"
+                },
+                {
+                  "const": ""
+                }
+              ]
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/FeedbackStatus"
+                },
+                {
+                  "const": ""
+                }
+              ]
+            }
+          },
+          {
+            "name": "cursor",
+            "in": "query",
+            "required": false,
+            "description": "原样传回上页 nextCursor；不得自行构造，空字符串视为第一页。",
+            "schema": {
+              "type": "string",
+              "maxLength": 1024
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "只含公开字段的反馈页。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FeedbackPage"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/InvalidInput"
+          },
+          "403": {
+            "$ref": "#/components/responses/ForbiddenOrigin"
+          },
+          "503": {
+            "$ref": "#/components/responses/Unavailable"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "feedback"
+        ],
+        "summary": "匿名提交公开反馈",
+        "operationId": "submitFeedback",
+        "description": "创建 status=待核实、isPublic=true 的公开反馈。五个允许的访客字段之外一律拒绝（含 id/status/reply/resolution/isPublic/createdAt/releaseVersion）。目标必须来自 data/targets.json 的当前白名单，不接收旧别名。请求体 UTF-8 JSON 最多 16000 字节，网关事件原始 body 字符串最多 24000 字符；超限为 400。数据库同时提交反馈、幂等索引和来源限流计数，任何一步失败全部回滚。同一请求的网络重试应复用相同 Idempotency-Key。",
+        "parameters": [
+          {
+            "name": "Origin",
+            "in": "header",
+            "required": true,
+            "description": "GET 可不携带；若携带必须属于配置的允许列表。Origin 是完整协议+主机+可选端口，不含路径。POST 和 OPTIONS 必填。CORS 不是管理员认证，也不能防止非浏览器伪造 Origin。",
+            "schema": {
+              "type": "string",
+              "format": "uri"
+            },
+            "example": "https://example.com"
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "description": "调用方为一份规范化输入生成一次；重试复用，输入变化后换新键。不是访客身份凭证。",
+            "schema": {
+              "type": "string",
+              "minLength": 16,
+              "maxLength": 100,
+              "pattern": "^[a-zA-Z0-9-]{16,100}$"
+            },
+            "example": "11111111-1111-4111-8111-111111111111"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "description": "application/json（允许 charset=utf-8）；空可选字段会省略，不接受额外字段。不接受查询参数。",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FeedbackInput"
+              },
+              "example": {
+                "target": {
+                  "mapId": "domain",
+                  "nodeId": "rag"
+                },
+                "type": "内容错误",
+                "content": "【接口测试，非真实反馈】请核对这个知识点的引用说明。"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "同键同内容幂等重放，返回原反馈编号和当前公开字段；不再次写入或消耗限频。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FeedbackItemResponse"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "新反馈提交成功。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FeedbackItemResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/InvalidInput"
+          },
+          "403": {
+            "$ref": "#/components/responses/ForbiddenOrigin"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "415": {
+            "$ref": "#/components/responses/UnsupportedMedia"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          },
+          "503": {
+            "$ref": "#/components/responses/Unavailable"
+          }
+        }
+      },
+      "options": {
+        "summary": "CORS 预检",
+        "operationId": "preflightFeedbackCollection",
+        "description": "公布 GET, POST, OPTIONS。预检必须携带允许的 Origin 和 GET/POST 访问方法。",
+        "parameters": [
+          {
+            "name": "Origin",
+            "in": "header",
+            "required": true,
+            "description": "GET 可不携带；若携带必须属于配置的允许列表。Origin 是完整协议+主机+可选端口，不含路径。POST 和 OPTIONS 必填。CORS 不是管理员认证，也不能防止非浏览器伪造 Origin。",
+            "schema": {
+              "type": "string",
+              "format": "uri"
+            },
+            "example": "https://example.com"
+          },
+          {
+            "name": "Access-Control-Request-Method",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "GET",
+                "POST"
+              ]
+            }
+          },
+          {
+            "name": "Access-Control-Request-Headers",
+            "in": "header",
+            "required": false,
+            "description": "以逗号分隔，不区分大小写；只接受 accept、content-type、idempotency-key。",
+            "schema": {
+              "type": "string"
+            },
+            "example": "content-type,idempotency-key"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "预检通过；空响应体。",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "schema": {
+                  "const": "GET, POST, OPTIONS"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "schema": {
+                  "const": "Accept, Content-Type, Idempotency-Key"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/InvalidInput"
+          },
+          "403": {
+            "$ref": "#/components/responses/ForbiddenOrigin"
+          },
+          "503": {
+            "$ref": "#/components/responses/Unavailable"
+          }
+        }
+      }
+    },
+    "/feedback/{id}": {
+      "get": {
+        "tags": [
+          "feedback"
+        ],
+        "summary": "读取一条公开反馈",
+        "operationId": "getFeedback",
+        "description": "只接受稳定编号，不接受查询参数。已隐藏记录与不存在记录均返回 404。历史知识点退休后已公开反馈仍可读取，目标不再产生失效站内链接。",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/FeedbackId"
+          },
+          {
+            "$ref": "#/components/parameters/Origin"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "编号对应的公开反馈。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FeedbackItemResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/InvalidInput"
+          },
+          "403": {
+            "$ref": "#/components/responses/ForbiddenOrigin"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "503": {
+            "$ref": "#/components/responses/Unavailable"
+          }
+        }
+      },
+      "options": {
+        "summary": "CORS 预检",
+        "operationId": "preflightFeedbackDetail",
+        "description": "只公布 GET, OPTIONS；POST 详情请求仍被 405 拒绝。",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/FeedbackId"
+          },
+          {
+            "name": "Origin",
+            "in": "header",
+            "required": true,
+            "description": "GET 可不携带；若携带必须属于配置的允许列表。Origin 是完整协议+主机+可选端口，不含路径。POST 和 OPTIONS 必填。CORS 不是管理员认证，也不能防止非浏览器伪造 Origin。",
+            "schema": {
+              "type": "string",
+              "format": "uri"
+            },
+            "example": "https://example.com"
+          },
+          {
+            "name": "Access-Control-Request-Method",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "GET",
+                "POST"
+              ]
+            }
+          },
+          {
+            "name": "Access-Control-Request-Headers",
+            "in": "header",
+            "required": false,
+            "description": "以逗号分隔，不区分大小写；只接受 accept、content-type、idempotency-key。",
+            "schema": {
+              "type": "string"
+            },
+            "example": "content-type,idempotency-key"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "预检通过；空响应体。",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "schema": {
+                  "const": "GET, OPTIONS"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "schema": {
+                  "const": "Accept, Content-Type, Idempotency-Key"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/InvalidInput"
+          },
+          "403": {
+            "$ref": "#/components/responses/ForbiddenOrigin"
+          },
+          "503": {
+            "$ref": "#/components/responses/Unavailable"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "parameters": {
+      "Origin": {
+        "name": "Origin",
+        "in": "header",
+        "required": false,
+        "description": "GET 可不携带；若携带必须属于配置的允许列表。Origin 是完整协议+主机+可选端口，不含路径。POST 和 OPTIONS 必填。CORS 不是管理员认证，也不能防止非浏览器伪造 Origin。",
+        "schema": {
+          "type": "string",
+          "format": "uri"
+        },
+        "example": "https://example.com"
+      },
+      "FeedbackId": {
+        "name": "id",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "$ref": "#/components/schemas/FeedbackId"
+        }
+      }
+    },
+    "schemas": {
+      "MapId": {
+        "type": "string",
+        "enum": [
+          "domain",
+          "ecosystem",
+          "cognition"
+        ]
+      },
+      "FeedbackType": {
+        "type": "string",
+        "enum": [
+          "内容错误",
+          "链接问题",
+          "使用体验",
+          "其他建议"
+        ]
+      },
+      "FeedbackStatus": {
+        "type": "string",
+        "enum": [
+          "待核实",
+          "已采纳待修改",
+          "已完成",
+          "暂不采纳"
+        ]
+      },
+      "FeedbackId": {
+        "type": "string",
+        "pattern": "^[Ff][Bb]-[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89aAbB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$",
+        "description": "服务端创建的稳定编号，使用 FB-UUIDv4。不得由访客提交或修改。",
+        "examples": [
+          "FB-11111111-1111-4111-8111-111111111111"
+        ]
+      },
+      "FeedbackTarget": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "mapId"
+        ],
+        "properties": {
+          "mapId": {
+            "$ref": "#/components/schemas/MapId"
+          },
+          "nodeId": {
+            "type": "string",
+            "pattern": "^[a-z0-9-]+$",
+            "description": "可省略表示整张地图。POST 只接受当前白名单中的活动节点；GET 允许历史节点的合法结构。"
+          }
+        }
+      },
+      "FeedbackInput": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "target",
+          "type",
+          "content"
+        ],
+        "properties": {
+          "target": {
+            "$ref": "#/components/schemas/FeedbackTarget"
+          },
+          "type": {
+            "$ref": "#/components/schemas/FeedbackType"
+          },
+          "content": {
+            "type": "string",
+            "minLength": 5,
+            "maxLength": 1000,
+            "description": "先 trim 两端空白，再按 Unicode 码点计数。纯文本；公开展示，请勿填写私人信息。"
+          },
+          "nickname": {
+            "type": "string",
+            "maxLength": 20,
+            "description": "可选。先 trim，两端空白移除后按 Unicode 码点计数；空字符串省略，展示为匿名访客。"
+          },
+          "referenceUrl": {
+            "type": "string",
+            "maxLength": 2048,
+            "description": "可选。先 trim，空字符串省略；非空时必须是有 hostname 的 HTTP/HTTPS 绝对 URL，不允许用户名和密码。服务端不会请求该地址。",
+            "examples": [
+              "https://example.com/source"
+            ]
+          }
+        }
+      },
+      "PublicFeedback": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "target",
+          "type",
+          "content",
+          "createdAt",
+          "status"
+        ],
+        "properties": {
+          "id": {
+            "$ref": "#/components/schemas/FeedbackId"
+          },
+          "target": {
+            "$ref": "#/components/schemas/FeedbackTarget"
+          },
+          "type": {
+            "$ref": "#/components/schemas/FeedbackType"
+          },
+          "content": {
+            "type": "string",
+            "minLength": 5,
+            "maxLength": 1000,
+            "description": "先 trim 两端空白，再按 Unicode 码点计数。纯文本；公开展示，请勿填写私人信息。"
+          },
+          "nickname": {
+            "type": "string",
+            "maxLength": 20,
+            "description": "可选。先 trim，两端空白移除后按 Unicode 码点计数；空字符串省略，展示为匿名访客。"
+          },
+          "referenceUrl": {
+            "type": "string",
+            "maxLength": 2048,
+            "description": "可选。先 trim，空字符串省略；非空时必须是有 hostname 的 HTTP/HTTPS 绝对 URL，不允许用户名和密码。服务端不会请求该地址。",
+            "examples": [
+              "https://example.com/source"
+            ]
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
+            "description": "服务端 UTC 时间，固定毫秒精度。"
+          },
+          "status": {
+            "$ref": "#/components/schemas/FeedbackStatus"
+          },
+          "reply": {
+            "type": "string",
+            "maxLength": 10000,
+            "description": "管理员公开回复，按 Unicode 码点计数，纯文本。"
+          },
+          "resolution": {
+            "type": "string",
+            "maxLength": 10000,
+            "description": "管理员公开处理说明，按 Unicode 码点计数。内部备注不能放在此字段。"
+          },
+          "releaseVersion": {
+            "type": "string",
+            "pattern": "^v\\d+\\.\\d+$",
+            "description": "实际已发布版本，例如 v1.5；不要填计划版本。前端仅为更新日志中真实存在的版本生成链接。"
+          }
+        }
+      },
+      "FeedbackItemResponse": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "item"
+        ],
+        "properties": {
+          "item": {
+            "$ref": "#/components/schemas/PublicFeedback"
+          }
+        }
+      },
+      "FeedbackPage": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "items",
+          "nextCursor"
+        ],
+        "properties": {
+          "items": {
+            "type": "array",
+            "maxItems": 20,
+            "items": {
+              "$ref": "#/components/schemas/PublicFeedback"
+            }
+          },
+          "nextCursor": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 1024,
+                "pattern": "^[A-Za-z0-9_-]+\\.[a-f0-9]{64}$"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "null 表示已到最后一页。"
+          }
+        }
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "error"
+        ],
+        "properties": {
+          "error": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "code",
+              "message"
+            ],
+            "properties": {
+              "code": {
+                "type": "string",
+                "enum": [
+                  "INVALID_INPUT",
+                  "ORIGIN_NOT_ALLOWED",
+                  "ORIGIN_REQUIRED",
+                  "NOT_FOUND",
+                  "METHOD_NOT_ALLOWED",
+                  "IDEMPOTENCY_CONFLICT",
+                  "UNSUPPORTED_MEDIA_TYPE",
+                  "RATE_LIMITED",
+                  "SERVICE_UNAVAILABLE"
+                ]
+              },
+              "message": {
+                "type": "string",
+                "description": "可公开的中文错误说明；不包含数据库错误、堆栈、环境变量和请求头。"
+              }
+            }
+          }
+        }
+      }
+    },
+    "responses": {
+      "InvalidInput": {
+        "description": "400：非法 JSON、请求标识、字段、对象、筛选、游标、预检头或请求体过长。",
+        "headers": {
+          "Cache-Control": {
+            "schema": {
+              "const": "no-store"
+            }
+          },
+          "Access-Control-Allow-Origin": {
+            "description": "仅当请求 Origin 在允许列表内时回显；没有该头不代表服务可被任意来源写入。",
+            "schema": {
+              "type": "string"
+            }
+          }
+        },
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            }
+          }
+        }
+      },
+      "ForbiddenOrigin": {
+        "description": "403：携带的 Origin 不在服务端允许列表，或 POST 缺失 Origin。",
+        "headers": {
+          "Cache-Control": {
+            "schema": {
+              "const": "no-store"
+            }
+          },
+          "Access-Control-Allow-Origin": {
+            "description": "仅当请求 Origin 在允许列表内时回显；没有该头不代表服务可被任意来源写入。",
+            "schema": {
+              "type": "string"
+            }
+          }
+        },
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            }
+          }
+        }
+      },
+      "NotFound": {
+        "description": "404：接口不存在、反馈不存在或已隐藏；不会泄露隐藏记录。",
+        "headers": {
+          "Cache-Control": {
+            "schema": {
+              "const": "no-store"
+            }
+          },
+          "Access-Control-Allow-Origin": {
+            "description": "仅当请求 Origin 在允许列表内时回显；没有该头不代表服务可被任意来源写入。",
+            "schema": {
+              "type": "string"
+            }
+          }
+        },
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            }
+          }
+        }
+      },
+      "MethodNotAllowed": {
+        "description": "405：不允许访客修改、回复或删除；详情接口也不接受 POST。",
+        "headers": {
+          "Cache-Control": {
+            "schema": {
+              "const": "no-store"
+            }
+          },
+          "Access-Control-Allow-Origin": {
+            "description": "仅当请求 Origin 在允许列表内时回显；没有该头不代表服务可被任意来源写入。",
+            "schema": {
+              "type": "string"
+            }
+          }
+        },
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            }
+          }
+        }
+      },
+      "Conflict": {
+        "description": "409：同一 Idempotency-Key 已用于不同的规范化反馈内容。",
+        "headers": {
+          "Cache-Control": {
+            "schema": {
+              "const": "no-store"
+            }
+          },
+          "Access-Control-Allow-Origin": {
+            "description": "仅当请求 Origin 在允许列表内时回显；没有该头不代表服务可被任意来源写入。",
+            "schema": {
+              "type": "string"
+            }
+          }
+        },
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            }
+          }
+        }
+      },
+      "UnsupportedMedia": {
+        "description": "415：POST 必须使用 application/json 或 application/json; charset=utf-8。",
+        "headers": {
+          "Cache-Control": {
+            "schema": {
+              "const": "no-store"
+            }
+          },
+          "Access-Control-Allow-Origin": {
+            "description": "仅当请求 Origin 在允许列表内时回显；没有该头不代表服务可被任意来源写入。",
+            "schema": {
+              "type": "string"
+            }
+          }
+        },
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            }
+          }
+        }
+      },
+      "RateLimited": {
+        "description": "429：同一可信来源 IP 每个自然分钟最多 5 条新反馈；幂等重放不重复计数。",
+        "headers": {
+          "Cache-Control": {
+            "schema": {
+              "const": "no-store"
+            }
+          },
+          "Access-Control-Allow-Origin": {
+            "description": "仅当请求 Origin 在允许列表内时回显；没有该头不代表服务可被任意来源写入。",
+            "schema": {
+              "type": "string"
+            }
+          },
+          "Retry-After": {
+            "description": "距下个分钟窗口的正整数秒数。允许来源可通过 CORS 读取此头。",
+            "schema": {
+              "type": "string",
+              "pattern": "^[1-9][0-9]*$"
+            }
+          }
+        },
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            }
+          }
+        }
+      },
+      "Unavailable": {
+        "description": "503：服务未完成配置、平台可信来源缺失、数据库或其他依赖不可用；不回显底层异常或凭据。",
+        "headers": {
+          "Cache-Control": {
+            "schema": {
+              "const": "no-store"
+            }
+          },
+          "Access-Control-Allow-Origin": {
+            "description": "仅当请求 Origin 在允许列表内时回显；没有该头不代表服务可被任意来源写入。",
+            "schema": {
+              "type": "string"
+            }
+          }
+        },
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            }
+          }
+        }
+      }
+    }
+  },
+  "x-global-response-headers": {
+    "Cache-Control": "no-store",
+    "Content-Type": "application/json; charset=utf-8",
+    "X-Content-Type-Options": "nosniff",
+    "Vary": "Origin",
+    "Access-Control-Expose-Headers": "Retry-After（仅允许来源）"
+  },
+  "x-unsupported-methods": {
+    "methods": [
+      "PUT",
+      "PATCH",
+      "DELETE"
+    ],
+    "status": 405,
+    "description": "管理员修改只通过受保护的平台数据库管理入口。无匿名管理接口，无浏览器数据库直连授权。"
+  }
+}

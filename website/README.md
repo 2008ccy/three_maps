@@ -142,11 +142,13 @@ L7 是用户提供的 `认知地图关系图.html`，原件归档于 `map__text`
 
 ### 共享反馈接入准备
 
-`/feedback/`提供公开反馈表单、筛选、分页和稳定编号入口，三图知识卡可带入当前对象。当前服务未配置，页面会明确提示尚未开放，不提交请求、不用浏览器本地存储或演示反馈代替共享数据。
+`/feedback/`提供公开反馈表单、筛选、分页和稳定编号入口；地图总览、主题、知识点和正文均有反馈入口，可带入当前有效对象。表单支持提交前预览、逐字段校验、错误焦点、失败保留内容和限流重试倒计时；成功提交会进入该条详情，不会被之前的列表筛选隐藏。预览在未配置服务时仍可使用，明确标注尚未提交或保存。当前服务未配置，提交保持禁用，不发送请求，也不用浏览器本地存储或演示反馈代替共享数据。
 
-云端候选部署源码、数据库拒绝规则、管理字段说明和真实验收清单位于`../feedback-cloud/README.md`。必须先核实当前WorkBuddy应用的数据库模式、云函数、受保护管理入口、网关与额度；不得默认现有应用已经可用，也不为复用代码新建另一套云环境。此目录的本地测试不等于云端权限或跨设备验收。
+云端部署源码、数据库拒绝规则、管理字段说明和真实验收清单位于[后端说明](../feedback-cloud/README.md)。支持 PostgreSQL 与传统 CloudBase 文档数据库两种适配器，前端使用同一 HTTP 协议；[WorkBuddy 交接说明](../feedback-cloud/WORKBUDDY-HANDOFF.md)提供可复制的接入指令，[OpenAPI 契约](../feedback-cloud/openapi.json)定义请求和响应。复用当前 WorkBuddy 应用的数据库、云函数与受保护管理入口，不为复用代码另建云环境。本地测试不等于云端权限或跨设备验收。
 
 只有云端真实验收后才配置`website/.env.example`中的公开接口基址和已核验标记，重新构建网站。不得在NEXT_PUBLIC变量中放数据库凭据、管理员密码或哈希密钥。未配置或未核验时按钮保持禁用；故障时展示错误，不伪造提交成功。
+
+GitHub Pages 自动构建时，在仓库 Settings → Secrets and variables → Actions → Variables 中设置 `NEXT_PUBLIC_FEEDBACK_API_BASE_URL` 和 `NEXT_PUBLIC_FEEDBACK_SERVICE_VERIFIED`。前者是HTTPS基址（可带网关前缀，不包含末尾 `/feedback`），后者通过真实验收后设为 `true`；重新运行构建才会生效。两者都不是数据库凭据。静态构建元信息只记录是否配置，不包含接口地址；测试可验证开启和关闭两种构建状态。
 
 云端活动对象白名单位于`feedback-cloud/data/targets.json`，与三图目录同步。`npm run check`验证一致性，地图内容变更后需同步该文件。更新日志的`UpdateEntry`支持可选`feedbackIds`数组；只引用真实反馈编号。实际发布后才填写反馈中的`releaseVersion`与“已完成”状态，下一发布版本预留v1.5。
 
@@ -161,7 +163,7 @@ L7 是用户提供的 `认知地图关系图.html`，原件归档于 `map__text`
 
 Pull Request 只检查和构建，不部署。构建或测试失败时不会触发发布，已上线版本保持不变。可恢复上一条已知可用提交再重新运行工作流回滚。若更换仓库名或使用根域名，调整工作流中的 `NEXT_PUBLIC_BASE_PATH`，并同步 `src/lib/shared.ts` 的 GitHub 编辑入口。
 
-GitHub Pages 只负责静态页面。后续 AI 接入需要额外服务端，密钥不能写入正文、浏览器代码或 `NEXT_PUBLIC_*` 变量。反馈可另接 GitHub Discussions/giscus 或独立服务，本版没有预装登录或评论占位按钮。
+GitHub Pages 只负责静态页面。共享反馈由独立云函数和数据库处理；后续 AI 接入同样需要服务端，密钥不能写入正文、浏览器代码或 `NEXT_PUBLIC_*` 变量。本版不增加用户登录或独立评论系统。
 
 ## 7. 检查项与已知边界
 

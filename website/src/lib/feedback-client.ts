@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { feedbackInputSchema, feedbackPageSchema, publicFeedbackSchema, feedbackIdPattern, type FeedbackFilters, type FeedbackInput } from './feedback-contract.ts';
+import { feedbackInputSchema, feedbackPageSchema, publicFeedbackSchema, feedbackFiltersSchema, feedbackIdPattern, type FeedbackFilters, type FeedbackInput } from './feedback-contract.ts';
 import { findFeedbackTarget } from './feedback-targets.ts';
 
 export class FeedbackApiError extends Error {
@@ -19,8 +19,9 @@ export function feedbackServiceConfig(value: string | undefined, verified: strin
 export const feedbackService = feedbackServiceConfig(process.env.NEXT_PUBLIC_FEEDBACK_API_BASE_URL, process.env.NEXT_PUBLIC_FEEDBACK_SERVICE_VERIFIED);
 
 export function createFeedbackClient(config = feedbackService, fetcher: typeof fetch = globalThis.fetch, timeoutMs = 12000) {
-async function request(path: string, schema: z.ZodType, options: RequestInit = {}, signal?: AbortSignal) {
+async function request<T>(path: string, schema: z.ZodType<T>, options: RequestInit = {}, signal?: AbortSignal): Promise<T> {
   if (!config.configured) throw new FeedbackApiError('NOT_CONFIGURED', config.message);
+  if (signal?.aborted) throw new FeedbackApiError('ABORTED', '已取消请求。');
   const controller = new AbortController();
   const abort = () => controller.abort();
   if (signal?.aborted) controller.abort();
@@ -28,11 +29,16 @@ async function request(path: string, schema: z.ZodType, options: RequestInit = {
   const timer = setTimeout(abort, timeoutMs);
   try {
     const response = await fetcher(config.baseUrl + path, { ...options, signal: controller.signal, credentials: 'omit', cache: 'no-store', headers: { Accept: 'application/json', ...options.headers } });
-    const data: unknown = await response.json().catch(() => null);
+    const data: unknown = await response.json().catch((error: unknown) => {
+      if (controller.signal.aborted) throw error;
+      return null;
+    });
     if (!response.ok) {
-      const retryAfter = Number(response.headers.get('Retry-After'));
-      const messages: Record<number, string> = { 400: '反馈信息无效，请检查内容与链接。', 404: '这条反馈不存在或暂未公开。', 409: '这次提交与先前请求不一致，请重新提交。', 429: '提交过于频繁，请稍后重试。', 503: '共享反馈服务暂时不可用，请稍后重试。' };
-      throw new FeedbackApiError(`HTTP_${response.status}`, messages[response.status] ?? '反馈服务返回错误，请稍后重试。', response.status, retryAfter > 0 ? retryAfter : undefined);
+      const header = response.headers.get('Retry-After');
+      const seconds = header && /^\d+$/.test(header) ? Number(header) : header ? Math.ceil((Date.parse(header) - Date.now()) / 1000) : 0;
+      const retryAfter = Number.isFinite(seconds) && seconds > 0 ? Math.min(3600, seconds) : undefined;
+      const messages: Record<number, string> = { 400: '反馈信息无效，请检查内容与链接。', 403: '当前网站未获准访问反馈服务，请联系网站维护者。', 404: '这条反馈不存在或暂未公开。', 409: '这次提交与先前请求不一致，请重新提交。', 413: '提交内容过长，请缩短后重试。', 415: '反馈接口协议不兼容，请联系网站维护者。', 429: '提交过于频繁，请稍后重试。', 503: '共享反馈服务暂时不可用，请稍后重试。' };
+      throw new FeedbackApiError(`HTTP_${response.status}`, messages[response.status] ?? '反馈服务返回错误，请稍后重试。', response.status, retryAfter);
     }
     const parsed = schema.safeParse(data);
     if (!parsed.success) throw new FeedbackApiError('INVALID_RESPONSE', '反馈服务返回的数据无法识别，请稍后重试。');
@@ -45,20 +51,32 @@ async function request(path: string, schema: z.ZodType, options: RequestInit = {
 }
 
 async function listFeedback(filters: FeedbackFilters = {}, signal?: AbortSignal) {
+  const validated = feedbackFiltersSchema.safeParse(filters);
+  if (!validated.success) throw new FeedbackApiError('INVALID_FILTERS', '筛选条件无效，请重新选择。');
   const query = new URLSearchParams();
-  for (const [key, value] of Object.entries(filters)) if (value) query.set(key, value);
-  return await request(`/feedback${query.size ? `?${query}` : ''}`, feedbackPageSchema, {}, signal) as z.infer<typeof feedbackPageSchema>;
+  for (const [key, value] of Object.entries(validated.data)) if (value) query.set(key, value);
+  const page = await request(`/feedback${query.size ? `?${query}` : ''}`, feedbackPageSchema, {}, signal);
+  if (new Set(page.items.map((item) => item.id)).size !== page.items.length || page.items.some((item) =>
+    filters.map && item.target.mapId !== filters.map || filters.type && item.type !== filters.type || filters.status && item.status !== filters.status)) {
+    throw new FeedbackApiError('INVALID_RESPONSE', '反馈服务返回的列表与筛选条件不一致，请稍后重试。');
+  }
+  return page;
 }
 async function getFeedback(id: string, signal?: AbortSignal) {
   if (!feedbackIdPattern.test(id)) throw new FeedbackApiError('INVALID_ID', '反馈编号无效。');
-  const data = await request(`/feedback/${encodeURIComponent(id)}`, z.object({ item: publicFeedbackSchema }).strip(), {}, signal) as { item: z.infer<typeof publicFeedbackSchema> };
+  const data = await request(`/feedback/${encodeURIComponent(id)}`, z.object({ item: publicFeedbackSchema }).strip(), {}, signal);
+  if (data.item.id !== id) throw new FeedbackApiError('INVALID_RESPONSE', '反馈服务返回的编号不一致，请稍后重试。');
   return data.item;
 }
 async function submitFeedback(input: FeedbackInput, idempotencyKey: string, signal?: AbortSignal) {
   const parsed = feedbackInputSchema.safeParse(input);
   if (!parsed.success || !findFeedbackTarget(input.target)) throw new FeedbackApiError('INVALID_INPUT', parsed.success ? '请选择当前有效的地图或知识点。' : parsed.error.issues[0]?.message ?? '反馈信息无效。');
   if (!/^[a-zA-Z0-9-]{16,100}$/.test(idempotencyKey)) throw new FeedbackApiError('INVALID_REQUEST', '提交请求无效，请刷新页面重试。');
-  const data = await request('/feedback', z.object({ item: publicFeedbackSchema }).strip(), { method: 'POST', headers: { 'Content-Type': 'application/json', 'Idempotency-Key': idempotencyKey }, body: JSON.stringify(parsed.data) }, signal) as { item: z.infer<typeof publicFeedbackSchema> };
+  const data = await request('/feedback', z.object({ item: publicFeedbackSchema }).strip(), { method: 'POST', headers: { 'Content-Type': 'application/json', 'Idempotency-Key': idempotencyKey }, body: JSON.stringify(parsed.data) }, signal);
+  const item = data.item, expected = parsed.data;
+  if (item.target.mapId !== expected.target.mapId || item.target.nodeId !== expected.target.nodeId || item.type !== expected.type || item.content !== expected.content || (item.nickname ?? '') !== (expected.nickname ?? '') || (item.referenceUrl ?? '') !== (expected.referenceUrl ?? '')) {
+    throw new FeedbackApiError('INVALID_RESPONSE', '反馈服务返回的内容与本次提交不一致，请保留内容并重试。');
+  }
   return data.item;
 }
 return { listFeedback, getFeedback, submitFeedback };

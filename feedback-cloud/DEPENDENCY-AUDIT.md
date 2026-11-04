@@ -22,3 +22,9 @@
 兼容性检查使用真实锁定SDK：数据库构造、`runTransaction`、文档get/set、筛选与游标查询均通过离线传输层测试；真实SDK返回的事务文档对象、非事务文档数组、序列化参数和事务回调结果均与适配器一致。业务测试另验证失败写入会连同限频与幂等索引一起回滚。
 
 真实云环境中的数据库模式、权限、可信IP来源、事务冲突、复合索引及跨设备行为仍需按README验收；服务核验标记继续默认false。
+
+## PostgreSQL 适配补充 · 2026-11-04
+
+新增并精确锁定运行依赖 `pg` 8.23.1；新增仅测试使用的开发依赖 `@electric-sql/pglite` 0.5.15。安装使用 `--ignore-scripts`，npm当前registry审计结果仍为0项漏洞；云端部署使用 `npm ci --omit=dev --ignore-scripts`，不部署PGlite。原有SDK override不变。
+
+PG连接固定启用证书校验，可提供平台CA；拒绝连接字符串查询参数，避免 `sslmode=no-verify` 等覆盖显式TLS设置。数据库访问全部参数化，事务始终使用同一个连接，池大小为2。开发引擎测试执行实际SQL、索引、约束和RLS，不是以JavaScript数组模拟SQL；其单连接测试不覆盖真实多连接锁竞争、数据库网络或TLS，后续接入WorkBuddy需按README验收。
