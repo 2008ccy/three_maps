@@ -1,0 +1,29 @@
+Use case: ui-mockup. Asset type: high-fidelity desktop homepage.
+Create ONE production-quality Chinese homepage for “三张活地图 · 模型构建”, visually inspired by the mature VERCEL website and its engineering design language. This is a knowledge portal about building a course question-answering assistant, with three directly accessible learning maps: domain, ecosystem, cognition.
+Target dimensions: 1440 × 1024. Straight-on flat full-bleed website screenshot, one coherent page, no browser chrome, device, framing, collage or external option labels.
+
+Input image roles:
+Image 1 is Vercel's official homepage visual asset: stark geometric shape, extreme precision, black/white contrast and controlled illumination. It is a visual inspiration source, NOT a literal UI template.
+Image 2 is Vercel's official light product illustration: study its clarity, monochrome precision, open whitespace, understated fine borders and modern sans typography. Do NOT copy Notion, the N logo, AI chat content or any brand marks.
+Image 3 is the existing Chinese homepage: content reference ONLY. Preserve its Chinese brand and map questions. Completely redesign away from the old particle background and floating purple-glass cards.
+
+Art direction: a distinctly LIGHT engineering/blueprint alternative. Clean off-white #fcfcfc, strong near-black #171717, gray #777, extremely pale fine square grid #ededed. One or two slender accent signal lines in cool blue #318af4 and teal #37a78c, tiny warm red endpoint if useful. No rainbow wallpaper. Technology should come from geometric rigor, visualized connections and impeccable spacing. Use Noto Sans CJK-like precise Chinese sans-serif; a compatible monospace treatment only for tiny annotations. No serif display fonts.
+
+Composition:
+A narrow top masthead across x100–1340, y0–80: small original geometric network mark plus bold “三张活地图”, secondary “模型构建”; right navigation “领域  生态  认知  更新记录” and a subtle “搜索地图” text control. Fine bottom border.
+Page's main content is bounded by two very light vertical grid rules at x100 and x1340, with small engineering crosshair markers at major section intersections. Avoid making it look like a drawing application.
+Hero at y130–390: small centered label “MODEL BUILDING / 学习地图”, extremely confident 58–64px black Chinese headline centered in two clean lines:
+“从预训练模型，”
+“走向有依据的回答。”
+Short gray sentence centered below “一个课程答疑助手怎样构建？从知识、协作与判断三个视角出发。”
+At y400–665: ONE elegant technical topology illustration on the pale square grid. Three precise thin-line geometric planes / wireframe schematic clusters converge around a small central black rectangular hub labeled “课程答疑助手”. Left plane labeled “知识构建”, right plane “生态协作”, front plane “证据判断”. Each has just 3–4 thin connectors and small circles, not dense diagrams. Very subtle pale surface fills, mostly black and gray linework; a thin blue connector and teal connector indicate the three views relate. It should feel like a Vercel-level architectural graphic, mathematically clean and open, not a generic 3D AI render, not a sci-fi scene. Do NOT copy Vercel's triangle logo. Do not falsely present this conceptual illustration as live measured data.
+Bottom y710–925: THREE equal sections forming one continuous horizontal grid strip with very fine separators and a shared top and bottom rule. All sections open on the same white page, no detached rounded cards, no shadows. Each includes a small line icon, small mono index “01 / DOMAIN”, “02 / ECOSYSTEM”, “03 / COGNITION”, a crisp 30px Chinese title and 17px guiding question, a short one-line annotation, and a right arrow.
+Exact text:
+“领域地图” “学什么，怎样构建？” “从任务、概念到工具与实践。”
+“生态地图” “谁在推动，如何协作？” “连接研究者、模型团队与开源社区。”
+“认知地图” “怎样判断，如何修正？” “用证据检查判断，再修正认识。”
+The first section may have one slim black text CTA “进入地图 →”; all three entrances are clearly available.
+Very quiet footer y980: “持续更新，保留依据。” and “更新记录 ↗”.
+
+All Chinese must be accurate, readable and aligned. Keep generous usable whitespace. No fake statistics, benchmark claims, timelines, signup, login, pricing, customer logo strips, AI chat input, deployments or fictional product functionality. No large color gradients, luminous purple titles, random particles, glassmorphism, bento-card dashboard, floating windows, or oversized pill badges. This should feel like a mature technical infrastructure site transformed into a clean educational atlas.
+

@@ -1,0 +1,28 @@
+Use case: ui-mockup. Asset type: production-quality Chinese desktop homepage preview.
+Create ONE homepage for “三张活地图 · 模型构建”, taking visual inspiration from the mature LINEAR website and product interface. This is a learning atlas about building a course question-answering assistant, organized into domain, ecosystem and cognition maps. The user wants a polished technology-forward direction grounded in an established real product, without generic AI ornament.
+Target dimensions: 1440 × 1024. Flat straight-on full-bleed website screenshot, one page only, no device, browser chrome, presentation frame, collage or external concept number.
+
+Reference image roles:
+1. Official Linear project UI: use the precision of its charcoal surfaces, fine edges, strong sans-serif titles, quiet secondary copy and occasional cold-blue accent. Do not copy the project name, dates, people, company logos, status metadata or Linear branding.
+2. Official Linear issue UI: use its meticulous spacing, sophisticated border treatment and restrained controls. Do not reproduce an issue creation form or its actions.
+3. Actual “三张活地图” domain-map screenshot: use it to understand the EXISTING graph content, theme names, connected nodes and reading use case. It is content grounding, not a visual style target. Do not invent project management features.
+4. Current Chinese homepage: identity and three map labels/questions ONLY; remove its particle texture, purple glowing headline and floating card constellation.
+
+Art direction: a dark, quiet, highly engineered product presentation. Near-black #0b0c0e full-page background, charcoal #16171b graph preview surface, bright off-white #f0f1f4 major text, cool gray #979ba6 secondary text, very restrained ice-blue #8aa8ed accents. Small amounts of controlled cold top-edge illumination around ONE central map preview are welcome, not broad decorative neon. Chinese sans-serif analogous to Inter/Noto Sans CJK, impeccable legibility and rhythm, no more than two fonts. Technology through precision, a real knowledge-graph preview and material depth, not stars or sci-fi art.
+
+Layout:
+Compact masthead y0–74 within x120–1320: small original network mark with “三张活地图”, smaller “模型构建”, and right navigation “领域  生态  认知  更新记录”, subtle search icon. Quiet bottom rule.
+Hero y130–390 is spacious and left aligned. Small eyebrow “模型构建 · 三张学习地图”. Large white 64px Chinese sans headline over two clean lines, left margin x145:
+“从预训练模型，”
+“走向有依据的回答。”
+Below, short muted introductory copy, maximum two lines: “一个课程答疑助手怎样构建？沿着三张相互关联的地图，找到答案与下一步。” A restrained small white button “探索领域地图 →” may sit on the same lower hero row with secondary text link “搜索知识点”.
+Central product preview from x145 to x1295 and y445 to y765: ONE precise, front-facing full-width knowledge-map interface, about 1150×320px. A subtle cold top edge and fine charcoal border, 8px radius maximum. This is not a whole page inside a floating card; it is a purposeful product illustration occupying the hero's lower half.
+Preview has dim static navigation column ~155px wide at left with heading “三张活地图” and three small links “领域地图”“生态地图”“认知地图”, first active in a subtle cool-gray row. Main preview title “领域地图 / 关系图”, very small subtitle “沿着关系，理解知识”. Main canvas displays a refined simplified version of the attached real domain map: five topic clusters “任务”“数据”“模型”“训练”“系统”, each linked to just two useful smaller labeled concept nodes, examples “预测”“生成”, “采集”“清洗”, “Token”“注意力”, “SFT”“LoRA”, “检索”“RAG”. Thin delicate gray connectors, a few ice-blue selected nodes, no heavy filled boxes, no excessive detail. Clearly show a concept preview, not a data dashboard. Do not imply arbitrary statistical relationships. Tiny bottom-right text “打开领域地图 ↗”. No issue IDs, avatars, progress percentages, artificial status, timeline or project board.
+Below at y825–950 a precise THREE-COLUMN directory with top rule and fine separators. Each open section has small index, 28px title, 17px guiding question and an arrow, all three comfortably visible:
+“01 领域地图” “学什么，怎样构建？”
+“02 生态地图” “谁在推动，如何协作？”
+“03 认知地图” “怎样判断，如何修正？”
+Footer near y990 has quiet “持续更新，保留依据。” and “更新记录 ↗”.
+
+All Chinese must be accurate and readable. Maintain beautiful negative space and consistent left alignment; don't overcrowd the preview. No fake metrics, fictional live features, user counts, dates, pricing, signup, login, download or testimonials. Avoid purple gradient headline, decorative particle wallpaper, orbital constellations, floating bento cards, glassmorphism, giant AI brain, robots, random glowing noodles, saturated gradient background and gratuitous badges. A mature, serene technology product homepage translated faithfully into an educational atlas concept.
+

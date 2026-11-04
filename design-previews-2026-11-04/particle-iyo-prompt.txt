@@ -1,0 +1,28 @@
+Use case: ui-mockup.
+Asset type: high-fidelity Chinese homepage concept.
+Create ONE production-quality desktop homepage for “三张活地图 · 模型构建”, inspired by the mature iyO homepage's fine monochrome particle field and morphing nodal wave patterns. This is a knowledge website about building a course question-answering assistant, not a hardware shop. The user explicitly requested particle effects, and this direction must be distinctly different from colorful spatial particle scenes: a quiet, almost monochrome typography-led particle composition.
+Target dimensions: 1440 × 1024, one flat straight-on full-bleed website screenshot. No browser chrome, device, presentation border, multiple variants, moodboard or external option-number badge.
+
+Reference image 1: OFFICIAL current iyO homepage social preview, a charcoal-black surface with a subtly articulated field of countless fine white points arranged into organic Chladni-like nodal loops. The actual homepage uses a GPU particle simulation that morphs such shapes. Use the real image's delicate point scale, restrained silver-on-black palette, generous dark space and material tactility. Do NOT copy the iyO logo, hardware, marketing slogans or poems.
+Reference image 2: current Chinese homepage for identity, Chinese copy and actual three map topics ONLY. Entirely redesign its composition; do not reproduce its old square particle wallpaper, purple glow, central rounded hero card or floating map cards.
+
+Art direction: black #111111, warm-white #efeee9 type, refined silver-gray #b4b5b0 particles, muted graphite secondary text; nearly monochrome, with only a faint desaturated pale-cyan detail if useful. Chinese sans-serif, intelligent line lengths and thin-to-regular weight for the large display title. Calm confident cultural-technology aesthetic, polished and precise. No card containers, no chrome outlines, no iridescent 3D surfaces, no neon.
+
+Page composition:
+A minimal 76px masthead, x95–1345. Left brand “三张活地图”, small label “模型构建”. Right nav “领域  生态  认知  更新记录”, quiet search link “搜索地图”. A very faint divider.
+Main hero is centered, open on the black page from y150 to y780. Small uppercase-like label “模型构建 · 学习地图” centered at y155.
+Center a large precise, light-to-regular weight 67–73px Chinese headline in two lines:
+“从预训练模型，”
+“走向有依据的回答。”
+Keep it white, actual type-like sharp edges, not made of particles so the Chinese remains readable. Below, centered short paragraph in 18px gray:
+“一个课程答疑助手怎样构建？沿着三张相互关联的地图，找到答案与下一步。”
+At y430–740 the hero's central focal artwork is ONE large horizontal family of three organically connected, CHLADNI-LIKE NODAL LOOPS, formed entirely from extremely fine individually discernible white particles. The loops are coherent and sinuous like a vibration pattern made visible in fine silver dust; the most dense ridges form subtle branching pathways, with sparse fine grains toward the edges. Loops combine into one generous 900×300px composition, not separate circular objects. The middle loop slightly intersects two others, suggesting the three maps belong to one system. Density and darkness create shape, not drawn solid lines. A few particles drift subtly away from ridges, but no fireworks or smeared motion blur. Delicate optical detail and controlled contrast, a serene real-time particle simulation captured in one frame. The pattern may reach behind the title faintly at the edges, but never compromise text readability. Leave substantial black negative space above and around the artwork. No random galaxy stars, no smoke, no crystalline sphere, no network connecting every point.
+Immediately below the artwork, y805–945, THREE simple text-link chapter entrances on one quiet horizontal baseline, x150–1290, no filled panels or enclosing cards. Thin short separators only if needed. Small muted numerals above crisp 29px titles and 17px questions:
+“01” “领域地图” “学什么，怎样构建？”
+“02” “生态地图” “谁在推动，如何协作？”
+“03” “认知地图” “怎样判断，如何修正？”
+Each has a modest diagonal arrow beside its title. The map names are clear real entry links, all visible in this frame, with enough separation from the particle artwork.
+Quiet bottom footer y990 with “持续更新，保留依据。” and “更新记录 ↗”.
+
+All Chinese must be accurately spelled, legible, aligned and comfortably spaced. This is one static homepage frame indicating a mature particle animation direction; do not show multiple time steps, parameter controls or a tutorial. No fake data, metrics, dates, shopping carts, pricing, login, fake AI chat or new functionality. Avoid any purple gradient headline, bright neon, colorful aurora, generic rounded app cards, floating glass panels, dense sci-fi HUD and scattered noise wallpaper. The silver particle ridges should be visible enough to inspect while typography and three map entrances remain primary.
+

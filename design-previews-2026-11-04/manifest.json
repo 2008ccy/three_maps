@@ -1,0 +1,95 @@
+{
+  "tool": "built-in image_gen",
+  "purpose": "首页改版预览，非已实施页面",
+  "display_order": [
+    {
+      "number": 1,
+      "direction": "Editorial",
+      "file": "01-editorial.png"
+    },
+    {
+      "number": 2,
+      "direction": "Retypeset",
+      "file": "02-retypeset.png"
+    },
+    {
+      "number": 3,
+      "direction": "Astro Erudite",
+      "file": "03-erudite.png"
+    },
+    {
+      "number": 4,
+      "direction": "Accession",
+      "file": "04-accession.png"
+    },
+    {
+      "number": 5,
+      "direction": "Gallery",
+      "file": "05-gallery.png"
+    },
+    {
+      "number": 6,
+      "direction": "Raycast",
+      "file": "06-raycast.png",
+      "reference": "https://www.raycast.com/",
+      "prompt": "tech-raycast-prompt.txt"
+    },
+    {
+      "number": 7,
+      "direction": "Vercel",
+      "file": "07-vercel.png",
+      "reference": "https://vercel.com/",
+      "prompt": "tech-vercel-prompt.txt"
+    },
+    {
+      "number": 8,
+      "direction": "Linear",
+      "file": "08-linear.png",
+      "reference": "https://linear.app/",
+      "prompt": "tech-linear-prompt.txt"
+    },
+    {
+      "number": 9,
+      "direction": "Active Theory 粒子空间",
+      "file": "09-active-theory-particles.png",
+      "reference": "https://activetheory.net/",
+      "prompt": "particle-active-theory-prompt.txt"
+    },
+    {
+      "number": 10,
+      "direction": "iyO 单色粒子波纹",
+      "file": "10-iyo-particles.png",
+      "reference": "https://www.iyo.ai/",
+      "prompt": "particle-iyo-prompt.txt"
+    }
+  ],
+  "prompts": "prompts.md",
+  "source_pages": {
+    "Editorial": "https://html5up.net/editorial",
+    "Retypeset": "https://github.com/radishzzz/astro-theme-retypeset",
+    "Astro Erudite": "https://astro-erudite.vercel.app/",
+    "Accession": "https://www.framer.com/marketplace/templates/accession/",
+    "Gallery": "https://www.framer.com/marketplace/templates/gallery/",
+    "Raycast": "https://www.raycast.com/",
+    "Vercel": "https://vercel.com/",
+    "Linear": "https://linear.app/",
+    "Active Theory": "https://activetheory.net/",
+    "iyO": "https://www.iyo.ai/"
+  },
+  "additional_reference_pages": [
+    "https://linear.app/docs/projects",
+    "https://linear.app/docs/creating-issues"
+  ],
+  "particle_reference_verification": {
+    "Active Theory": {
+      "official_visual": "https://storage.googleapis.com/activetheory-v6.appspot.com/media/social.jpg",
+      "homepage_script": "https://activetheory.net/assets/js/app.1780406240914.js",
+      "evidence": "当前首页加载脚本包含 Antimatter 粒子模块与粒子几何资源，官方图片可见粒子。"
+    },
+    "iyO": {
+      "official_visual": "https://cdn.prod.website-files.com/6842cbd0245d993ef9bf60ac/694268b773e434a82f01bc4b_iyo-ai.png",
+      "homepage_script": "https://iyo2.vercel.app/app.js",
+      "evidence": "当前首页 HomeScene 使用 GpgpuParticles，并运行 Chladni 与图像聚合变形；官方图片可见单色粒子波纹。"
+    }
+  }
+}

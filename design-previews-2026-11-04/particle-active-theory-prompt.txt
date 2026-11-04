@@ -1,0 +1,28 @@
+Use case: ui-mockup.
+Asset type: high-fidelity Chinese educational homepage concept.
+Create ONE production-quality desktop homepage for the existing website “三张活地图 · 模型构建”, taking inspiration from the real particle-based immersive spatial homepage of ACTIVE THEORY. The user explicitly wants a mature PARTICLE EFFECT direction. This concept must make particles a deliberate spatial composition rather than scatter decorative dots behind glass cards.
+Target dimensions 1440 × 1024, one flat straight-on full-bleed website screenshot. No browser chrome, device, outer framing, moodboard or multiple concepts. Do not put an option number in the image.
+
+Reference image 1: the OFFICIAL Active Theory visual supplied by its current website. Study the spatial depth, many tiny luminous beads, layered transparent spatial planes, cyan/blue/pearl accents, immersive atmosphere and minimal typography. It is art-direction inspiration, not a literal clone. Do NOT copy its branded logo, spine, film posters, client imagery or portfolio panels.
+Reference image 2: current “三张活地图” homepage, for accurate brand identity, Chinese copy and three map questions ONLY. Discard its old square particle wallpaper, glowing purple title and floating rounded cards. This is a new design.
+
+Purpose: help students enter the domain, ecosystem and cognition maps to understand how to build a course question-answering assistant. Keep all three map entrances directly visible, readable and approachable.
+Visual art direction: midnight blue-black #0b1017, clear warm-white type #f1f3f5, muted steel gray secondary type, pearl/cyan particles with a small amount of warm amber. Rich dimensional WebGL-looking particle sculpture with restrained color, no generic purple-blue neon gradient. Clear clean Chinese sans-serif typography, body 17–18px. Precise modest header. No glassmorphism, no floating UI cards, no sci-fi instrument dashboard.
+
+Composition:
+Top 75px header, x85–1355: an original tiny network glyph, “三张活地图” in white with small topic “模型构建”, right nav “领域  生态  认知  更新记录” and a small search icon. Subtle separator.
+Hero occupies y140–720. Left ~47%, x100–685 is calm dark negative space reserved for text. Small eyebrow “模型构建 / 学习地图”. Large 58–64px white sans headline, beautiful Chinese line breaks:
+“从预训练模型，”
+“走向有依据的回答。”
+Short paragraph: “一个课程答疑助手怎样构建？沿着三张相互关联的地图，找到答案与下一步。”
+A restrained white outline text button “开始探索 →”, small secondary text “搜索地图”. No large pill buttons.
+Right ~53%, x710–1400 and y145–740: a remarkable single spatial PARTICLE ATLAS, composed of many individually visible delicate round beads. Three vertically offset curving map-like sheets are made entirely of luminous point clouds, partially interwoven and joined by streams of small points. A near sheet in pearl-white, a higher sheet in restrained cyan, and a more distant sheet with quiet amber highlights. Their surfaces have topographic ridges and a few denser nodes, like knowledge taking physical form. Distinct fine particles and point density define all shapes, not solid glossy surfaces or a photographic nebula. Soft perspective and convincing depth; selected particles slightly brighter, the rest recede into darkness. Short tiny anchor labels near the sculpture “知识”“协作”“判断”, with a fine leader line if useful. Keep this an abstract conceptual atlas, not real data or a false scientific visualization.
+Spatial particles are concentrated into the artwork on the right; left text stays completely legible. Few particles may fade across the center dividing area; never evenly tile the entire background with dots or stars. No drawn network of hundreds of connecting lines.
+Lower y795–950: a calm horizontal three-part navigation rail on the same dark page, spanning x100–1340, shared top hairline and very quiet vertical separators. No enclosing rounded cards. Each section has a small index, crisp 30px title, 17px guiding question, short annotation and an arrow:
+“01 领域地图” “学什么，怎样构建？” “任务、概念与工具”
+“02 生态地图” “谁在推动，如何协作？” “研究者、团队与开源社区”
+“03 认知地图” “怎样判断，如何修正？” “证据、判断与修正”
+Footer y990: small “持续更新，保留依据。” and link “更新记录 ↗”.
+
+All Chinese must be correctly rendered, readable, with excellent alignment and spacing. This is a static frame suggesting a refined interactive particle scene, not an animation storyboard. Do not add fake metrics, people, testimonials, dates, pricing, authentication or imaginary live features. Avoid particle spheres, AI brains, robots, random sparkles, bright galaxy wallpaper, heavy bloom, blue-purple gradient words, glass-card constellations and overly complex HUDs. Make the artwork memorable and the learning entrances obvious.
+

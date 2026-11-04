@@ -1,0 +1,23 @@
+Use case: ui-mockup. Asset type: production-quality desktop educational website homepage mockup.
+Create ONE new homepage for the existing Chinese website “三张活地图 · 模型构建”, taking visual inspiration from the mature RAYCAST official homepage. The website is an educational atlas about building a course question-answering assistant, with domain, ecosystem, and cognition as three learning maps. The user wants stronger technology aesthetics while retaining mature, intentional design.
+Target dimensions: 1440 × 1024, one straight-on flat full-bleed website screenshot. No browser chrome, no device, no presentation frame, no collage, no option labels or numbering outside the actual site content.
+
+Reference image 1 is Raycast's OFFICIAL marketing visual: study the precise black interface, bold white sans-serif title, restrained red/coral directional light streaks and handsome search-command panel. Use it as art-direction inspiration, not a literal clone. Do NOT copy the Raycast logo, product name, English headline, file list or OS features.
+Reference image 2 is the existing Chinese homepage: use only accurate site identity, Chinese copy, three map topics and guiding questions. Discard its particle field, floating card constellation and purple glow.
+Visual system: near-black #0c0d0f, warm white #f4f3f1, muted gray #a1a1a7, restrained vermilion #f35c49. Crisp geometric Chinese sans-serif, sophisticated tracking and generous spacing, no more than two fonts. Technology conveyed by precise UI, warm directional illumination and strong composition; no scattered stars, sci-fi HUD, robots or visual noise.
+
+Page layout:
+Compact 78px masthead with left brand “三张活地图”, small “模型构建”, and right nav “领域  生态  认知  更新记录” plus understated search icon, thin subtle bottom rule.
+Large asymmetric hero from y155 to y635. Left about 52%: small label “模型构建 / 知识入口”, strong 60px white headline split with excellent Chinese line breaks:
+“从预训练模型，”
+“走向有依据的回答。”
+Below a restrained two-line paragraph “一个课程答疑助手怎样构建？沿着三张相互关联的地图，找到答案与下一步。” One small, solid white primary button “从领域地图开始 →”, and understated secondary text “搜索知识点”.
+Right about 43%: ONE finely crafted dark search/concept-index window, front facing, not piled with other windows. A restrained red-orange diagonal band glows BEHIND this window, as in Raycast art direction; keep text zones dark and calm. Window has crisp 1px charcoal borders and restrained 10px radius, no thick glass. Top input with magnifier and placeholder “搜索地图或知识点”. Below small label “概念索引” and three grouped search rows with simple tiny outline glyphs: “检索增强生成 RAG”, “监督微调 SFT”, “低秩适配 LoRA”. Right on rows a small subdued category “领域”. Bottom of window a quiet hint “选择条目，进入地图阅读”. No chat, AI input, agent, fake log output, personalized recent activity or app-install controls.
+Lower page y720–915: thin divider, small label “三个视角，一条构建路径”, then THREE broad horizontally aligned open entry columns with fine vertical separators, no enclosing cards. Each has a small precise index numeral, a small coral accent tick, 30px title, guiding question, concise description, and arrow:
+“01 领域地图” “学什么，怎样构建？” “任务、概念与工具”
+“02 生态地图” “谁在推动，如何协作？” “研究者、团队与开源社区”
+“03 认知地图” “怎样判断，如何修正？” “证据、判断与修正”
+Footer at y980 thin line and small “持续更新，保留依据。” with “更新记录 ↗”.
+
+Chinese copy must be correctly spelled, clearly legible, all three map entrances comfortably visible. Avoid fake usage metrics, dates, pricing, login, download CTAs, testimonials, partner logos, invented live features. No purple gradient title, particle wallpaper, floating glass tiles, oversized rounded cards, excessive badges, or generic AI brain symbol. Make it feel like a highly polished real developer/productivity product adapted into a knowledge portal.
+
