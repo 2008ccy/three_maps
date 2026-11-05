@@ -1,0 +1,58 @@
+1:"$Sreact.fragment"
+2:"static/chunks/500-fc3b64d9ff4a32a7.js"
+3:"static/chunks/827-6098173449bf4d51.js"
+4:"static/chunks/324-8041ecfdc37e504f.js"
+5:"static/chunks/495-d563e43d75ae1658.js"
+6:"static/chunks/454-61757abd5747d2ed.js"
+7:"static/chunks/845-6d37c696114a905f.js"
+8:"static/chunks/app/layout-933414f3fc16cb3e.js"
+9:I[66,["500","$2","827","$3","324","$4","495","$5","454","$6","845","$7","177","$8"],"Provider"]
+a:I[7121,[],""]
+b:I[4581,[],""]
+c:"static/chunks/625-22f474f64e9ccdfa.js"
+d:"static/chunks/app/(content)/docs/%5B%5B...slug%5D%5D/page-c9a05e40f3872f75.js"
+e:I[8500,["500","$2","827","$3","625","$c","395","$d"],""]
+15:"static/chunks/728-b60a167d76a90afd.js"
+16:"static/chunks/app/(content)/docs/layout-3f1e62a46d677617.js"
+17:I[1728,["827","$3","324","$4","625","$c","728","$15","530","$16"],"HomeLayout"]
+18:I[8637,["500","$2","827","$3","625","$c","395","$d"],"default"]
+29:"ViewportBoundary"
+2a:I[484,[],"$29"]
+2b:"MetadataBoundary"
+2c:I[484,[],"$2b"]
+2d:"$Sreact.suspense"
+:HL["/_next/static/css/e62837cc23197924.css","style"]
+:HL["/_next/static/css/c870aacaa3af08eb.css","style"]
+10:X
+13:X
+13:C
+1c:[["children",{"s":"__PAGE__","h":160,"d":{"r":["$","$1","c",{"children":[["$","div",null,{"className":"reading-shell","children":[["$","nav",null,{"className":"reading-breadcrumb","aria-label":"正文所属路径","children":[["$","$Le",null,{"href":"/","children":"首页"}],["$","span",null,{"children":"/"}],[["$","$Le",null,{"href":"/docs/domain/","children":"领域地图"}],[],["$","span",null,{"children":["/ ","方法与路线比较"]}]]]}],["$","div",null,{"className":"reading-grid","children":[["$","article",null,{"className":"reading-article ","children":[["$","header",null,{"className":"reading-header","children":[["$","p",null,{"className":"reading-eyebrow","children":[["$","$L18",null,{"icon":{"name":"book-open","size":24,"node":[["path",{"d":"M12 5v16","key":"1f6ucr"}],["path",{"d":"M20.001 19A2 2 0 0022 17V5a2 2 0 00-1.999-2L16 3.002A5 5 0 0012 5a5 5 0 00-4-2H4a2 2 0 00-2 2v12a2 2 0 001.999 2H8a5 5 0 014 2 5 5 0 014-2z","key":"1fyvmf"}]]},"size":14}],"领域地图",["$","span",null,{"children":[" / ","主题阅读"]}]]}],["$","h1",null,{"children":"方法与路线比较"}],["$","p",null,{"className":"reading-description","children":"方法之间是依赖、替代还是协同"}],["$","div",null,{"className":"content-meta","children":[["$","span",null,{"children":"资料整理 · 理解程度待自评"}],["$","span",null,{"children":["更新于 ","2026-10-26"]}],["$","a",null,{"target":"_blank","rel":"noreferrer","href":"https://github.com/2008ccy/three_maps/edit/main/website/content/docs/domain/methods.mdx","children":["编辑本页 ",["$","$L18",null,{"icon":{"name":"arrow-up-right","size":24,"node":[["path",{"d":"M7 7h10v10","key":"1tivn9"}],["path",{"d":"M7 17 17 7","key":"1vkiza"}]]},"size":12}]]}]]}]]}],["$","p",null,{"className":"reading-context","children":[["$","$L18",null,{"icon":"$14:0:1:d:r:props:children:1:props:nav:title:0:props:icon","size":15}],["$","span",null,{"children":["在地图中的位置：","训练与适配"]}]]}],["$","div",null,{"className":"article-content prose","children":[["$","div",null,{"className":"relative overflow-auto prose-no-margin my-6","tabIndex":0,"children":["$","table",null,{"children":[["$","thead",null,{"children":["$","tr",null,{"children":[["$","th",null,{"children":"路线"}],["$","th",null,{"children":"解决什么"}],["$","th",null,{"children":"与其他路线的关系"}],["$","th",null,{"children":"什么时候采用与主要局限"}]]}]}],["$","tbody",null,{"children":[["$","tr",null,{"children":[["$","td",null,{"children":"提示与上下文示例"}],["$","td",null,{"children":"说明任务、格式和回答边界"}],["$","td",null,{"children":"是低成本基线，也能与其他方案组合"}],["$","td",null,{"children":"先试；不能仅靠提示补齐缺失知识"}]]}],["$","tr",null,{"children":[["$","td",null,{"children":"RAG"}],["$","td",null,{"children":"按问题提供可更新的外部资料"}],["$","td",null,{"children":"与微调互补；与长上下文部分替代"}],["$","td",null,{"children":"需要引用、课程知识经常变化时优先试；依赖检索质量"}]]}],["$","tr",null,{"children":[["$","td",null,{"children":"SFT"}],["$","td",null,{"children":"学习示范回答的行为模式"}],["$","td",null,{"children":"依赖已有模型和样本；可用全参或 LoRA 实现"}],"$L1d"]}],"$L1e","$L1f","$L20","$L21","$L22"]}]]}]}],"\n","$L23"]}],"$L24",false,"$L25"]}],"$L26"]}]]}],null,"$L27"]}],"p":"$@28","v":null,"s":"$10"}}]]
+1a:[["children",{"s":{"n":"slug","t":"oc","k":"domain/methods","s":["cognition","domain","ecosystem"]},"h":96,"d":{"r":["$","$1","c",{"children":[null,["$","$La",null,{"parallelRouterKey":"children","template":["$","$Lb",null,{}]}]]}],"p":"$@1b","v":"$13","s":"$10"},"c":"$Q1c"}]]
+14:[["children",{"s":"docs","h":96,"d":{"r":["$","$1","c",{"children":[null,["$","$L17",null,{"themeSwitch":{"enabled":false},"nav":{"title":[["$","$L18",null,{"icon":{"name":"network","size":24,"node":[["rect",{"x":"16","y":"16","width":"6","height":"6","rx":"1","key":"4q2zg0"}],["rect",{"x":"2","y":"16","width":"6","height":"6","rx":"1","key":"8cvhb9"}],["rect",{"x":"9","y":"2","width":"6","height":"6","rx":"1","key":"1egb70"}],["path",{"d":"M5 16v-3a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v3","key":"1jsf9p"}],["path",{"d":"M12 12V8","key":"2874zd"}]]},"className":"text-fd-primary","size":22}],["$","span",null,{"children":"三张活地图"}],["$","span",null,{"className":"brand-note","children":"模型构建"}]]},"links":[{"text":"领域","url":"/docs/domain","active":"nested-url"},{"text":"生态","url":"/docs/ecosystem","active":"nested-url"},{"text":"认知","url":"/docs/cognition","active":"nested-url"},{"text":"更新记录","url":"/docs/project/updates"},{"text":"反馈","url":"/feedback"}],"githubUrl":"https://github.com/2008ccy/three_maps","children":["$","$La",null,{"parallelRouterKey":"children","template":["$","$Lb",null,{}]}]}]]}],"p":"$@19","v":null,"s":"$10"},"c":"$Q1a"}]]
+11:[["children",{"s":"(content)","h":96,"d":{"r":["$","$1","c",{"children":[null,["$","$La",null,{"parallelRouterKey":"children","template":["$","$Lb",null,{}]}]]}],"p":"$@12","v":"$13","s":"$10"},"c":"$Q14"}]]
+0:{"t":{"t":{"s":"","h":80,"d":{"r":["$","$1","c",{"children":[[["$","link","0",{"rel":"stylesheet","href":"/_next/static/css/e62837cc23197924.css","precedence":"next"}],["$","link","1",{"rel":"stylesheet","href":"/_next/static/css/c870aacaa3af08eb.css","precedence":"next"}]],["$","html",null,{"lang":"zh-CN","className":"dark","style":{"colorScheme":"dark"},"suppressHydrationWarning":true,"children":["$","body",null,{"className":"flex flex-col min-h-screen","children":["$","$L9",null,{"children":["$","$La",null,{"parallelRouterKey":"children","template":["$","$Lb",null,{}],"notFound":[["$","main",null,{"className":"home-shell py-24","children":[["$","p",null,{"className":"eyebrow","children":"404"}],["$","h1",null,{"className":"text-3xl font-semibold my-6","children":"这个页面还没有收录"}],["$","p",null,{"className":"mb-6","children":"请返回首页，或使用搜索查找相关概念。"}],["$","$Le",null,{"className":"primary-link","href":"/","children":"返回首页 →"}]]}],[]]}]}]}]}]]}],"p":"$@f","v":null,"s":"$10"},"c":"$Q11"},"h":{"r":["$","$1","h",{"children":[null,["$","$L2a",null,{"children":[["$","meta","0",{"charSet":"utf-8"}],["$","meta","1",{"name":"viewport","content":"width=device-width, initial-scale=1"}]]}],["$","$L2c",null,{"children":[["$","div",null,{"hidden":true,"children":["$","$2d",null,{"name":"Next.Metadata","children":[["$","title","0",{"children":"方法与路线比较 · 三张活地图"}],["$","meta","1",{"name":"description","content":"方法之间是依赖、替代还是协同"}]]}]}],null]}],null]}],"p":"$@2e","v":null,"s":"$10"}},"a":"$@2f","u":"$@30","b":"xTXGvPq_O0CQiLbxU58EV"}
+31:"DocumentReturnLink"
+32:I[877,["500","$2","827","$3","625","$c","395","$d"],"$31"]
+33:I[484,[],"OutletBoundary"]
+1d:["$","td",null,{"children":"格式和引导方式持续不合适时考虑；存在过拟合和能力回退"}]
+1e:["$","tr",null,{"children":[["$","td",null,{"children":"LoRA/QLoRA"}],["$","td",null,{"children":"在受限资源下实现模型适配"}],["$","td",null,{"children":"是 SFT 等训练的参数/显存方案，不与 SFT 平级互斥"}],["$","td",null,{"children":"有可用设备和合格样本时再做；兼容性、序列长度影响资源"}]]}]
+1f:["$","tr",null,{"children":[["$","td",null,{"children":"全参数微调"}],["$","td",null,{"children":"更新全部模型参数"}],["$","td",null,{"children":"与 LoRA 是不同的适配方案"}],["$","td",null,{"children":"可作比较背景；本组缺乏资源时不强行执行"}]]}]
+20:["$","tr",null,{"children":[["$","td",null,{"children":"偏好优化"}],["$","td",null,{"children":"调整偏好、回答行为"}],["$","td",null,{"children":"通常在已有模型与数据基础上进一步开展"}],["$","td",null,{"children":"自主拓展；不作为第一版依赖"}]]}]
+21:["$","tr",null,{"children":[["$","td",null,{"children":"蒸馏与推理量化"}],["$","td",null,{"children":"降低推理资源需求"}],["$","td",null,{"children":"可与已适配模型协同使用"}],["$","td",null,{"children":"确实需要自托管推理时评估；要重新测质量"}]]}]
+22:["$","tr",null,{"children":[["$","td",null,{"children":"工具调用/Agent"}],["$","td",null,{"children":"获取信息或执行动作"}],["$","td",null,{"children":"可与 RAG 组合"}],["$","td",null,{"children":"只有问答需要行动时才加，需处理权限与错误传播"}]]}]
+23:["$","p",null,{"children":[["$","strong",null,{"children":"本组路线判断："}]," 先用授权资料和 API 完成可引用问答；若错误来自找不到资料，先改解析、切块和检索；若资料已找对但输出行为持续不符合要求，再评估 LoRA。是否“微调优于 RAG”不能脱离任务、数据与预算作绝对判断。[分析判断；",["$","$Le",null,{"href":"/docs/sources/#s02","children":"S02"}],"—",["$","$Le",null,{"href":"/docs/sources/#s06","children":"S06"}],"]"]}]
+24:["$","nav",null,{"className":"reading-feedback","aria-label":"内容反馈","children":["$","$Le",null,{"href":"/feedback/?map=domain&node=training","children":["反馈与改进 ",["$","$L18",null,{"icon":"$1c:0:1:d:r:props:children:0:props:children:1:props:children:0:props:children:0:props:children:3:props:children:2:props:children:1:props:icon","size":14,"aria-hidden":"true"}]]}]}]
+25:["$","nav",null,{"className":"document-return","aria-label":"正文返回导航","children":["$","$L32",null,{"map":"domain","href":"/docs/domain/#node-training","title":"返回领域地图 · 训练与适配"}]}]
+26:["$","aside",null,{"className":"reading-aside","aria-label":"阅读辅助导航","children":[false,["$","nav",null,{"className":"reading-relations","aria-label":"相关知识","children":[["$","h2",null,{"children":"知识之间的联系"}],[["$","$Le","/docs/domain/#node-pretraining:0",{"href":"/docs/domain/#node-pretraining","children":[["$","span",null,{"children":"包含"}],["$","strong",null,{"children":["预训练",["$","$L18",null,{"icon":"$1c:0:1:d:r:props:children:0:props:children:1:props:children:0:props:children:0:props:children:3:props:children:2:props:children:1:props:icon","size":12}]]}]]}],["$","$Le","/docs/domain/#node-loss:1",{"href":"/docs/domain/#node-loss","children":[["$","span",null,{"children":"包含"}],["$","strong",null,{"children":["损失",["$","$L18",null,{"icon":"$1c:0:1:d:r:props:children:0:props:children:1:props:children:0:props:children:0:props:children:3:props:children:2:props:children:1:props:icon","size":12}]]}]]}],["$","$Le","/docs/domain/#node-finetuning:2",{"href":"/docs/domain/#node-finetuning","children":[["$","span",null,{"children":"包含"}],["$","strong",null,{"children":["监督微调 SFT",["$","$L18",null,{"icon":"$1c:0:1:d:r:props:children:0:props:children:1:props:children:0:props:children:0:props:children:3:props:children:2:props:children:1:props:icon","size":12}]]}]]}],["$","$Le","/docs/domain/#node-lora:3",{"href":"/docs/domain/#node-lora","children":[["$","span",null,{"children":"包含"}],["$","strong",null,{"children":["LoRA",["$","$L18",null,{"icon":"$1c:0:1:d:r:props:children:0:props:children:1:props:children:0:props:children:0:props:children:3:props:children:2:props:children:1:props:icon","size":12}]]}]]}]]]}],["$","div",null,{"className":"reading-aside-foot","children":["$","$L32",null,{"map":"domain","href":"/docs/domain/#node-training","title":"返回领域地图 · 训练与适配"}]}]]}]
+27:["$","$L33",null,{"children":["$","$2d",null,{"name":"Next.MetadataOutlet","children":"$@34"}]}]
+10:300
+34:null
+30:true
+10:C
+2f:0
+1b:"$undefined"
+19:"$undefined"
+12:"$undefined"
+f:"$undefined"
+2e:"$undefined"
+28:"$undefined"

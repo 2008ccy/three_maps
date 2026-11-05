@@ -1,0 +1,61 @@
+1:"$Sreact.fragment"
+2:"static/chunks/500-fc3b64d9ff4a32a7.js"
+3:"static/chunks/827-6098173449bf4d51.js"
+4:"static/chunks/324-8041ecfdc37e504f.js"
+5:"static/chunks/495-d563e43d75ae1658.js"
+6:"static/chunks/454-61757abd5747d2ed.js"
+7:"static/chunks/845-6d37c696114a905f.js"
+8:"static/chunks/app/layout-933414f3fc16cb3e.js"
+9:I[66,["500","$2","827","$3","324","$4","495","$5","454","$6","845","$7","177","$8"],"Provider"]
+a:I[7121,[],""]
+b:I[4581,[],""]
+c:"static/chunks/625-22f474f64e9ccdfa.js"
+d:"static/chunks/app/(content)/docs/%5B%5B...slug%5D%5D/page-c9a05e40f3872f75.js"
+e:I[8500,["500","$2","827","$3","625","$c","395","$d"],""]
+15:"static/chunks/728-b60a167d76a90afd.js"
+16:"static/chunks/app/(content)/docs/layout-3f1e62a46d677617.js"
+17:I[1728,["827","$3","324","$4","625","$c","728","$15","530","$16"],"HomeLayout"]
+18:I[8637,["500","$2","827","$3","625","$c","395","$d"],"default"]
+1d:I[8518,["500","$2","827","$3","625","$c","395","$d"],"Heading"]
+2c:"ViewportBoundary"
+2d:I[484,[],"$2c"]
+2e:"MetadataBoundary"
+2f:I[484,[],"$2e"]
+30:"$Sreact.suspense"
+:HL["/_next/static/css/e62837cc23197924.css","style"]
+:HL["/_next/static/css/c870aacaa3af08eb.css","style"]
+10:X
+13:X
+13:C
+1c:[["children",{"s":"__PAGE__","h":160,"d":{"r":["$","$1","c",{"children":[["$","div",null,{"className":"reading-shell","children":[["$","nav",null,{"className":"reading-breadcrumb","aria-label":"正文所属路径","children":[["$","$Le",null,{"href":"/","children":"首页"}],["$","span",null,{"children":"/"}],[["$","$Le",null,{"href":"/docs/domain/","children":"领域地图"}],[],["$","span",null,{"children":["/ ","数据、评测与资源"]}]]]}],["$","div",null,{"className":"reading-grid","children":[["$","article",null,{"className":"reading-article ","children":[["$","header",null,{"className":"reading-header","children":[["$","p",null,{"className":"reading-eyebrow","children":[["$","$L18",null,{"icon":{"name":"book-open","size":24,"node":[["path",{"d":"M12 5v16","key":"1f6ucr"}],["path",{"d":"M20.001 19A2 2 0 0022 17V5a2 2 0 00-1.999-2L16 3.002A5 5 0 0012 5a5 5 0 00-4-2H4a2 2 0 00-2 2v12a2 2 0 001.999 2H8a5 5 0 014 2 5 5 0 014-2z","key":"1fyvmf"}]]},"size":14}],"领域地图",["$","span",null,{"children":[" / ","主题阅读"]}]]}],["$","h1",null,{"children":"数据、评测与资源"}],["$","p",null,{"className":"reading-description","children":"需要什么数据、评测与硬件"}],["$","div",null,{"className":"content-meta","children":[["$","span",null,{"children":"资料整理 · 理解程度待自评"}],["$","span",null,{"children":["更新于 ","2026-10-26"]}],["$","a",null,{"target":"_blank","rel":"noreferrer","href":"https://github.com/2008ccy/three_maps/edit/main/website/content/docs/domain/evaluation.mdx","children":["编辑本页 ",["$","$L18",null,{"icon":{"name":"arrow-up-right","size":24,"node":[["path",{"d":"M7 7h10v10","key":"1tivn9"}],["path",{"d":"M7 17 17 7","key":"1vkiza"}]]},"size":12}]]}]]}]]}],["$","p",null,{"className":"reading-context","children":[["$","$L18",null,{"icon":"$14:0:1:d:r:props:children:1:props:nav:title:0:props:icon","size":15}],["$","span",null,{"children":["在地图中的位置：","数据与评测"]}]]}],["$","div",null,{"className":"article-content prose","children":[["$","$L1d",null,{"as":"h2","id":"数据","children":"数据"}],"\n",["$","p",null,{"children":"第一批数据用经授权的课程讲义、教学大纲、教材节选及人工核对的问答。每份资料记录作者、许可/使用范围、章节、时间、版本和来源链接；不将完整受限课件直接公开。Common Crawl、The Pile 等只作为预训练背景，不是完成本次作业必须下载的数据。"}],"\n",["$","$L1d",null,{"as":"h2","id":"评测","children":"评测"}],"\n",["$","p",null,{"children":"建议从 30 道真实问题起步，再扩展到 50—100 道。这是项目建议数量，不是作业指定指标。题目至少覆盖概念解释、关系比较、资料定位、无答案和模糊问题；训练、调参与最终测试分开。评价时同时记录："}],"\n",["$","div",null,{"className":"relative overflow-auto prose-no-margin my-6","tabIndex":0,"children":["$","table",null,{"children":[["$","thead",null,{"children":["$","tr",null,{"children":[["$","th",null,{"children":"维度"}],["$","th",null,{"children":"操作定义"}],["$","th",null,{"children":"记录方式"}]]}]}],["$","tbody",null,{"children":[["$","tr",null,{"children":[["$","td",null,{"children":"答案正确性"}],["$","td",null,{"children":"按预先写好的要点，是否正确且不遗漏关键条件"}],"$L1e"]}],"$L1f","$L20","$L21","$L22","$L23"]}]]}]}],"\n","$L24","\n","$L25","\n","$L26"]}],"$L27",false,"$L28"]}],"$L29"]}]]}],null,"$L2a"]}],"p":"$@2b","v":null,"s":"$10"}}]]
+1a:[["children",{"s":{"n":"slug","t":"oc","k":"domain/evaluation","s":["cognition","domain","ecosystem"]},"h":96,"d":{"r":["$","$1","c",{"children":[null,["$","$La",null,{"parallelRouterKey":"children","template":["$","$Lb",null,{}]}]]}],"p":"$@1b","v":"$13","s":"$10"},"c":"$Q1c"}]]
+14:[["children",{"s":"docs","h":96,"d":{"r":["$","$1","c",{"children":[null,["$","$L17",null,{"themeSwitch":{"enabled":false},"nav":{"title":[["$","$L18",null,{"icon":{"name":"network","size":24,"node":[["rect",{"x":"16","y":"16","width":"6","height":"6","rx":"1","key":"4q2zg0"}],["rect",{"x":"2","y":"16","width":"6","height":"6","rx":"1","key":"8cvhb9"}],["rect",{"x":"9","y":"2","width":"6","height":"6","rx":"1","key":"1egb70"}],["path",{"d":"M5 16v-3a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v3","key":"1jsf9p"}],["path",{"d":"M12 12V8","key":"2874zd"}]]},"className":"text-fd-primary","size":22}],["$","span",null,{"children":"三张活地图"}],["$","span",null,{"className":"brand-note","children":"模型构建"}]]},"links":[{"text":"领域","url":"/docs/domain","active":"nested-url"},{"text":"生态","url":"/docs/ecosystem","active":"nested-url"},{"text":"认知","url":"/docs/cognition","active":"nested-url"},{"text":"更新记录","url":"/docs/project/updates"},{"text":"反馈","url":"/feedback"}],"githubUrl":"https://github.com/2008ccy/three_maps","children":["$","$La",null,{"parallelRouterKey":"children","template":["$","$Lb",null,{}]}]}]]}],"p":"$@19","v":null,"s":"$10"},"c":"$Q1a"}]]
+11:[["children",{"s":"(content)","h":96,"d":{"r":["$","$1","c",{"children":[null,["$","$La",null,{"parallelRouterKey":"children","template":["$","$Lb",null,{}]}]]}],"p":"$@12","v":"$13","s":"$10"},"c":"$Q14"}]]
+0:{"t":{"t":{"s":"","h":80,"d":{"r":["$","$1","c",{"children":[[["$","link","0",{"rel":"stylesheet","href":"/_next/static/css/e62837cc23197924.css","precedence":"next"}],["$","link","1",{"rel":"stylesheet","href":"/_next/static/css/c870aacaa3af08eb.css","precedence":"next"}]],["$","html",null,{"lang":"zh-CN","className":"dark","style":{"colorScheme":"dark"},"suppressHydrationWarning":true,"children":["$","body",null,{"className":"flex flex-col min-h-screen","children":["$","$L9",null,{"children":["$","$La",null,{"parallelRouterKey":"children","template":["$","$Lb",null,{}],"notFound":[["$","main",null,{"className":"home-shell py-24","children":[["$","p",null,{"className":"eyebrow","children":"404"}],["$","h1",null,{"className":"text-3xl font-semibold my-6","children":"这个页面还没有收录"}],["$","p",null,{"className":"mb-6","children":"请返回首页，或使用搜索查找相关概念。"}],["$","$Le",null,{"className":"primary-link","href":"/","children":"返回首页 →"}]]}],[]]}]}]}]}]]}],"p":"$@f","v":null,"s":"$10"},"c":"$Q11"},"h":{"r":["$","$1","h",{"children":[null,["$","$L2d",null,{"children":[["$","meta","0",{"charSet":"utf-8"}],["$","meta","1",{"name":"viewport","content":"width=device-width, initial-scale=1"}]]}],["$","$L2f",null,{"children":[["$","div",null,{"hidden":true,"children":["$","$30",null,{"name":"Next.Metadata","children":[["$","title","0",{"children":"数据、评测与资源 · 三张活地图"}],["$","meta","1",{"name":"description","content":"需要什么数据、评测与硬件"}]]}]}],null]}],null]}],"p":"$@31","v":null,"s":"$10"}},"a":"$@32","u":"$@33","b":"xTXGvPq_O0CQiLbxU58EV"}
+34:"DocumentReturnLink"
+35:I[877,["500","$2","827","$3","625","$c","395","$d"],"$34"]
+36:I[484,[],"OutletBoundary"]
+1e:["$","td",null,{"children":"每题 0/1/2 分并记录判分理由"}]
+1f:["$","tr",null,{"children":[["$","td",null,{"children":"引用支持率"}],["$","td",null,{"children":"所引用的片段是否确实支持对应结论"}],["$","td",null,{"children":"支持的引用数/检查的引用数，同时给出分子分母"}]]}]
+20:["$","tr",null,{"children":[["$","td",null,{"children":"检索表现"}],["$","td",null,{"children":"标注的支持片段是否进入前 k 条结果"}],["$","td",null,{"children":"记录 k、命中题数和总题数"}]]}]
+21:["$","tr",null,{"children":[["$","td",null,{"children":"无答案处理"}],["$","td",null,{"children":"无依据时是否恰当拒答或要求补充"}],["$","td",null,{"children":"单列无答案题的结果，检查过度拒答"}]]}]
+22:["$","tr",null,{"children":[["$","td",null,{"children":"使用体验"}],["$","td",null,{"children":"同学是否能理解，并找到原文和后续入口"}],["$","td",null,{"children":"独立试用记录与具体问题"}]]}]
+23:["$","tr",null,{"children":[["$","td",null,{"children":"时延和成本"}],["$","td",null,{"children":"端到端耗时、输入输出 token 和费用"}],["$","td",null,{"children":"小样本报逐条数据/中位数；量足够后再看 P95"}]]}]
+24:["$","p",null,{"children":"不要为了凑指标使用无来源的“90%准确率”或“4秒内完成”；先跑基线，再确定本组目标。自动模型评分可以辅助归类，评分规则和抽样人工复核仍由小组负责。"}]
+25:["$","$L1d",null,{"as":"h2","id":"资源","children":"资源"}]
+26:["$","p",null,{"children":["网页交互、内容整理和调用模型 API 可用普通笔记本开发。公开网站用托管平台；AI 推理由提供方执行，本组按使用付费。训练实验另用可获得的学校 GPU 或短租 GPU，先小模型、小样本、小批量试跑。不能用“7B 权重约占若干 GB”代替整套训练显存估计，序列长度、激活、优化器和运行框架都会影响峰值。[",["$","$Le",null,{"href":"/docs/sources/#l2","children":"L2"}],"、",["$","$Le",null,{"href":"/docs/sources/#s04","children":"S04"}],"]"]}]
+27:["$","nav",null,{"className":"reading-feedback","aria-label":"内容反馈","children":["$","$Le",null,{"href":"/feedback/?map=domain&node=data","children":["反馈与改进 ",["$","$L18",null,{"icon":"$1c:0:1:d:r:props:children:0:props:children:1:props:children:0:props:children:0:props:children:3:props:children:2:props:children:1:props:icon","size":14,"aria-hidden":"true"}]]}]}]
+28:["$","nav",null,{"className":"document-return","aria-label":"正文返回导航","children":["$","$L35",null,{"map":"domain","href":"/docs/domain/#node-data","title":"返回领域地图 · 数据与评测"}]}]
+29:["$","aside",null,{"className":"reading-aside","aria-label":"阅读辅助导航","children":[["$","nav",null,{"className":"reading-toc","aria-label":"本页目录","children":[["$","h2",null,{"children":"本页目录"}],[["$","a","#数据",{"href":"#数据","data-depth":2,"children":"数据"}],["$","a","#评测",{"href":"#评测","data-depth":2,"children":"评测"}],["$","a","#资源",{"href":"#资源","data-depth":2,"children":"资源"}]]]}],["$","nav",null,{"className":"reading-relations","aria-label":"相关知识","children":[["$","h2",null,{"children":"知识之间的联系"}],[["$","$Le","/docs/domain/#node-collection:0",{"href":"/docs/domain/#node-collection","children":[["$","span",null,{"children":"包含"}],["$","strong",null,{"children":["采集",["$","$L18",null,{"icon":"$1c:0:1:d:r:props:children:0:props:children:1:props:children:0:props:children:0:props:children:3:props:children:2:props:children:1:props:icon","size":12}]]}]]}],["$","$Le","/docs/domain/#node-cleaning:1",{"href":"/docs/domain/#node-cleaning","children":[["$","span",null,{"children":"包含"}],["$","strong",null,{"children":["清洗",["$","$L18",null,{"icon":"$1c:0:1:d:r:props:children:0:props:children:1:props:children:0:props:children:0:props:children:3:props:children:2:props:children:1:props:icon","size":12}]]}]]}],["$","$Le","/docs/domain/#node-evaluation-set:2",{"href":"/docs/domain/#node-evaluation-set","children":[["$","span",null,{"children":"包含"}],["$","strong",null,{"children":["评测集",["$","$L18",null,{"icon":"$1c:0:1:d:r:props:children:0:props:children:1:props:children:0:props:children:0:props:children:3:props:children:2:props:children:1:props:icon","size":12}]]}]]}]]]}],["$","div",null,{"className":"reading-aside-foot","children":["$","$L35",null,{"map":"domain","href":"/docs/domain/#node-data","title":"返回领域地图 · 数据与评测"}]}]]}]
+2a:["$","$L36",null,{"children":["$","$30",null,{"name":"Next.MetadataOutlet","children":"$@37"}]}]
+10:300
+37:null
+33:true
+10:C
+32:0
+1b:"$undefined"
+19:"$undefined"
+12:"$undefined"
+f:"$undefined"
+31:"$undefined"
+2b:"$undefined"

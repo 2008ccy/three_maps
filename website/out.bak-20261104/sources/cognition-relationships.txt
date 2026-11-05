@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>认知地图 · 知识点关系图</title>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<style>
+  body { font-family: "Microsoft YaHei", "PingFang SC", sans-serif; background:#f7f5f2; margin:0; padding:36px 16px; }
+  h1 { text-align:center; color:#2c2c2c; font-size:21px; margin:0 0 6px; }
+  p.sub { text-align:center; color:#9a9a9a; font-size:13px; margin:0 0 26px; }
+  .wrap { max-width: 920px; margin:0 auto; background:#fff; border-radius:14px; padding:26px 14px; box-shadow:0 2px 18px rgba(0,0,0,.06); }
+  .tip { max-width: 920px; margin:20px auto 0; color:#8a8a8a; font-size:13px; line-height:1.7; }
+</style>
+</head>
+<body>
+<h1>认知地图 · 知识点关系图</h1>
+<p class="sub">人工智能课作业 · 认知地图板块</p>
+<div class="wrap">
+<pre class="mermaid">
+graph TD
+    root["认知地图<br/>＝探索和判断的方法<br/>怎样理解 · 比较 · 检验"]
+
+    root --> guan["三个观<br/>看问题的三个侧面"]
+    root --> fangfa["分析方法<br/>六选二到三"]
+    root --> xiguan["成长习惯<br/>六类"]
+    root --> xiuzheng["认识修正<br/>四问"]
+
+    guan --> g1["系统观<br/>结构 · 瓶颈在哪一环"]
+    guan --> g2["发展观<br/>历史 · 新方法带来新限制"]
+    guan --> g3["求真观<br/>真伪 · 凭什么信、怎么检验"]
+
+    fangfa --> f1["系统拆解 ＋ 反例检查"]
+    fangfa --> f2["对照比较 ＋ 问题定义"]
+    fangfa --> f3["多目标取舍 ＋ 演进分析"]
+
+    f1 --> c1["案例① 损失下降 ≠ 回答更好"]
+    f2 --> c2["案例② 榜单排名 ≠ 适合答疑"]
+    f3 --> c3["案例③ 效果与成本的取舍"]
+
+    c1 -.->|跑过后修正| xiuzheng
+    c2 -.->|跑过后修正| xiuzheng
+    c3 -.->|跑过后修正| xiuzheng
+
+    xiuzheng -.->|反哺习惯| xiguan
+    guan -.->|指导选方法| fangfa
+</pre>
+</div>
+<div class="tip">读图顺序：从「认知地图」出发 → 三个观定视角 → 分析方法落地成三个具体案例 → 案例跑完回到「认识修正」，修正的经验再反哺成长习惯。虚线是这条闭环的流向。</div>
+<script>mermaid.initialize({ startOnLoad:true, theme:'default', flowchart:{ useMaxWidth:true } });</script>
+</body>
+</html>

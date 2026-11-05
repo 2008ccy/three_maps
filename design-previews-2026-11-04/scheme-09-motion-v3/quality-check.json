@@ -1,0 +1,44 @@
+[
+  {
+    "file": "scheme-09-matched-particle-loop-v3.gif",
+    "bytes": 39644798,
+    "size": [
+      1280,
+      911
+    ],
+    "frames": 160,
+    "durationSeconds": 8.0,
+    "uniqueDelaysMs": [
+      50
+    ],
+    "loop": 0,
+    "fixedRegionMaxDifference": {
+      "header": 0,
+      "heading": 0,
+      "footer": 0
+    },
+    "firstStepMeanDifference": 7.375,
+    "loopSeamMeanDifference": 7.391
+  },
+  {
+    "file": "scheme-09-matched-preview-v3.gif",
+    "bytes": 20814491,
+    "size": [
+      960,
+      683
+    ],
+    "frames": 160,
+    "durationSeconds": 8.0,
+    "uniqueDelaysMs": [
+      50
+    ],
+    "loop": 0,
+    "fixedRegionMaxDifference": {
+      "header": 0,
+      "heading": 0,
+      "footer": 0
+    },
+    "firstStepMeanDifference": 7.111,
+    "loopSeamMeanDifference": 7.264
+  }
+]

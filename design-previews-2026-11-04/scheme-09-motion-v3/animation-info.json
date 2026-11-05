@@ -1,0 +1,16 @@
+{
+  "concept": 9,
+  "version": 3,
+  "horizontalGain": 2.6,
+  "verticalGain": 2.1,
+  "width": 1280,
+  "height": 911,
+  "frames": 160,
+  "durationSeconds": 8,
+  "source": "09-active-theory-particles.png",
+  "firstFrame": "exact source texture at output resolution",
+  "protectedPixelsMaxDifference": 0,
+  "frameMeanAbsoluteDifference": 7.725507683863886,
+  "animatedPixels": 431537,
+  "method": "local particle-region video texture displacement; static original typography and layout; asynchronous multiscale curl fields"
+}

@@ -1,0 +1,59 @@
+1:"$Sreact.fragment"
+2:"static/chunks/500-fc3b64d9ff4a32a7.js"
+3:"static/chunks/827-6098173449bf4d51.js"
+4:"static/chunks/324-8041ecfdc37e504f.js"
+5:"static/chunks/495-d563e43d75ae1658.js"
+6:"static/chunks/454-61757abd5747d2ed.js"
+7:"static/chunks/845-6d37c696114a905f.js"
+8:"static/chunks/app/layout-933414f3fc16cb3e.js"
+9:I[66,["500","$2","827","$3","324","$4","495","$5","454","$6","845","$7","177","$8"],"Provider"]
+a:I[7121,[],""]
+b:I[4581,[],""]
+c:"static/chunks/625-22f474f64e9ccdfa.js"
+d:"static/chunks/app/(content)/docs/%5B%5B...slug%5D%5D/page-c9a05e40f3872f75.js"
+e:I[8500,["500","$2","827","$3","625","$c","395","$d"],""]
+15:"static/chunks/728-b60a167d76a90afd.js"
+16:"static/chunks/app/(content)/docs/layout-3f1e62a46d677617.js"
+17:I[1728,["827","$3","324","$4","625","$c","728","$15","530","$16"],"HomeLayout"]
+18:I[8637,["500","$2","827","$3","625","$c","395","$d"],"default"]
+1d:I[8518,["500","$2","827","$3","625","$c","395","$d"],"Heading"]
+2a:"ViewportBoundary"
+2b:I[484,[],"$2a"]
+2c:"MetadataBoundary"
+2d:I[484,[],"$2c"]
+2e:"$Sreact.suspense"
+:HL["/_next/static/css/e62837cc23197924.css","style"]
+:HL["/_next/static/css/c870aacaa3af08eb.css","style"]
+10:X
+13:X
+13:C
+1c:[["children",{"s":"__PAGE__","h":160,"d":{"r":["$","$1","c",{"children":[["$","div",null,{"className":"reading-shell","children":[["$","nav",null,{"className":"reading-breadcrumb","aria-label":"正文所属路径","children":[["$","$Le",null,{"href":"/","children":"首页"}],["$","span",null,{"children":"/"}],[["$","$Le",null,{"href":"/docs/ecosystem/","children":"生态地图"}],[],["$","span",null,{"children":["/ ","模型记录与课程评测"]}]]]}],["$","div",null,{"className":"reading-grid","children":[["$","article",null,{"className":"reading-article ","children":[["$","header",null,{"className":"reading-header","children":[["$","p",null,{"className":"reading-eyebrow","children":[["$","$L18",null,{"icon":{"name":"book-open","size":24,"node":[["path",{"d":"M12 5v16","key":"1f6ucr"}],["path",{"d":"M20.001 19A2 2 0 0022 17V5a2 2 0 00-1.999-2L16 3.002A5 5 0 0012 5a5 5 0 00-4-2H4a2 2 0 00-2 2v12a2 2 0 001.999 2H8a5 5 0 014 2 5 5 0 014-2z","key":"1fyvmf"}]]},"size":14}],"生态地图",["$","span",null,{"children":[" / ","主题阅读"]}]]}],["$","h1",null,{"children":"模型记录与课程评测"}],["$","p",null,{"className":"reading-description","children":"明确复用对象，并区分公开初筛与课程验收。"}],["$","div",null,{"className":"content-meta","children":[["$","span",null,{"children":"核心内容整理 · 实践结果待补证"}],["$","span",null,{"children":["更新于 ","2026-11-02"]}],["$","a",null,{"target":"_blank","rel":"noreferrer","href":"https://github.com/2008ccy/three_maps/edit/main/website/content/docs/ecosystem/resources.mdx","children":["编辑本页 ",["$","$L18",null,{"icon":{"name":"arrow-up-right","size":24,"node":[["path",{"d":"M7 7h10v10","key":"1tivn9"}],["path",{"d":"M7 17 17 7","key":"1vkiza"}]]},"size":12}]]}]]}]]}],["$","p",null,{"className":"reading-context","children":[["$","$L18",null,{"icon":"$14:0:1:d:r:props:children:1:props:nav:title:0:props:icon","size":15}],["$","span",null,{"children":["在地图中的位置：","成果与资源"]}]]}],["$","div",null,{"className":"article-content prose","children":[["$","$L1d",null,{"as":"h2","id":"模型交接保留四项","children":"模型交接保留四项"}],"\n",["$","p",null,{"children":[["$","strong",null,{"children":"具体对象｜版本或 revision｜官方来源与实际入口｜使用条件。"}]," 自行获取权重时检查文件与配置，调用服务时记录模型标识。模型卡、论文、代码、权重和接口分别辨认。",["$","$Le",null,{"href":"/docs/sources/#s11","children":"S11"}],"、",["$","$Le",null,{"href":"/docs/sources/#l8","children":"L8"}]]}],"\n",["$","$L1d",null,{"as":"h2","id":"评测分清三层","children":"评测分清三层"}],"\n",["$","div",null,{"className":"relative overflow-auto prose-no-margin my-6","tabIndex":0,"children":["$","table",null,{"children":[["$","thead",null,{"children":["$","tr",null,{"children":[["$","th",null,{"children":"层次"}],["$","th",null,{"children":"用途"}],["$","th",null,{"children":"必须保留的记录"}]]}]}],["$","tbody",null,{"children":[["$","tr",null,{"children":[["$","td",null,{"children":"通用基准"}],["$","td",null,{"children":"初筛公开表现"}],["$","td",null,{"children":"任务、评分口径、模型与设置"}]]}],"$L1e","$L1f"]}]]}]}],"\n","$L20","\n","$L21","\n","$L22","\n","$L23","\n","$L24"]}],"$L25",false,"$L26"]}],"$L27"]}]]}],null,"$L28"]}],"p":"$@29","v":null,"s":"$10"}}]]
+1a:[["children",{"s":{"n":"slug","t":"oc","k":"ecosystem/resources","s":["cognition","domain","ecosystem"]},"h":96,"d":{"r":["$","$1","c",{"children":[null,["$","$La",null,{"parallelRouterKey":"children","template":["$","$Lb",null,{}]}]]}],"p":"$@1b","v":"$13","s":"$10"},"c":"$Q1c"}]]
+14:[["children",{"s":"docs","h":96,"d":{"r":["$","$1","c",{"children":[null,["$","$L17",null,{"themeSwitch":{"enabled":false},"nav":{"title":[["$","$L18",null,{"icon":{"name":"network","size":24,"node":[["rect",{"x":"16","y":"16","width":"6","height":"6","rx":"1","key":"4q2zg0"}],["rect",{"x":"2","y":"16","width":"6","height":"6","rx":"1","key":"8cvhb9"}],["rect",{"x":"9","y":"2","width":"6","height":"6","rx":"1","key":"1egb70"}],["path",{"d":"M5 16v-3a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v3","key":"1jsf9p"}],["path",{"d":"M12 12V8","key":"2874zd"}]]},"className":"text-fd-primary","size":22}],["$","span",null,{"children":"三张活地图"}],["$","span",null,{"className":"brand-note","children":"模型构建"}]]},"links":[{"text":"领域","url":"/docs/domain","active":"nested-url"},{"text":"生态","url":"/docs/ecosystem","active":"nested-url"},{"text":"认知","url":"/docs/cognition","active":"nested-url"},{"text":"更新记录","url":"/docs/project/updates"},{"text":"反馈","url":"/feedback"}],"githubUrl":"https://github.com/2008ccy/three_maps","children":["$","$La",null,{"parallelRouterKey":"children","template":["$","$Lb",null,{}]}]}]]}],"p":"$@19","v":null,"s":"$10"},"c":"$Q1a"}]]
+11:[["children",{"s":"(content)","h":96,"d":{"r":["$","$1","c",{"children":[null,["$","$La",null,{"parallelRouterKey":"children","template":["$","$Lb",null,{}]}]]}],"p":"$@12","v":"$13","s":"$10"},"c":"$Q14"}]]
+0:{"t":{"t":{"s":"","h":80,"d":{"r":["$","$1","c",{"children":[[["$","link","0",{"rel":"stylesheet","href":"/_next/static/css/e62837cc23197924.css","precedence":"next"}],["$","link","1",{"rel":"stylesheet","href":"/_next/static/css/c870aacaa3af08eb.css","precedence":"next"}]],["$","html",null,{"lang":"zh-CN","className":"dark","style":{"colorScheme":"dark"},"suppressHydrationWarning":true,"children":["$","body",null,{"className":"flex flex-col min-h-screen","children":["$","$L9",null,{"children":["$","$La",null,{"parallelRouterKey":"children","template":["$","$Lb",null,{}],"notFound":[["$","main",null,{"className":"home-shell py-24","children":[["$","p",null,{"className":"eyebrow","children":"404"}],["$","h1",null,{"className":"text-3xl font-semibold my-6","children":"这个页面还没有收录"}],["$","p",null,{"className":"mb-6","children":"请返回首页，或使用搜索查找相关概念。"}],["$","$Le",null,{"className":"primary-link","href":"/","children":"返回首页 →"}]]}],[]]}]}]}]}]]}],"p":"$@f","v":null,"s":"$10"},"c":"$Q11"},"h":{"r":["$","$1","h",{"children":[null,["$","$L2b",null,{"children":[["$","meta","0",{"charSet":"utf-8"}],["$","meta","1",{"name":"viewport","content":"width=device-width, initial-scale=1"}]]}],["$","$L2d",null,{"children":[["$","div",null,{"hidden":true,"children":["$","$2e",null,{"name":"Next.Metadata","children":[["$","title","0",{"children":"模型记录与课程评测 · 三张活地图"}],["$","meta","1",{"name":"description","content":"明确复用对象，并区分公开初筛与课程验收。"}]]}]}],null]}],null]}],"p":"$@2f","v":null,"s":"$10"}},"a":"$@30","u":"$@31","b":"xTXGvPq_O0CQiLbxU58EV"}
+32:"DocumentReturnLink"
+33:I[877,["500","$2","827","$3","625","$c","395","$d"],"$32"]
+34:I[484,[],"OutletBoundary"]
+1e:["$","tr",null,{"children":[["$","td",null,{"children":"评测框架"}],["$","td",null,{"children":"组织可重复运行"}],["$","td",null,{"children":"接口、题库与配置；lm-evaluation-harness 的维护者为 EleutherAI"}]]}]
+1f:["$","tr",null,{"children":[["$","td",null,{"children":"课程验收"}],["$","td",null,{"children":"判断本任务是否达标"}],["$","td",null,{"children":"固定问题、支持片段、逐题回答和判分理由"}]]}]
+20:["$","p",null,{"children":["框架入口见 ",["$","$Le",null,{"href":"/docs/sources/#s09","children":"S09"}],"。OpenCompass 与 lm-evaluation-harness 是不同框架，采用前核对具体任务支持。"]}]
+21:["$","$L1d",null,{"as":"h2","id":"最小验收项","children":"最小验收项"}]
+22:["$","ol",null,{"children":["\n",["$","li",null,{"children":"内容：关键概念与条件是否正确。"}],"\n",["$","li",null,{"children":"引用：出处能否回查，是否支持结论。"}],"\n",["$","li",null,{"children":"无答案：资料不足时是否说明限制。"}],"\n"]}]
+23:["$","p",null,{"children":["资料、提示或模型改变后，按固定问题复测。调试题与最终独立测试分别保留。",["$","$Le",null,{"href":"/docs/sources/#l8","children":"L8"}]]}]
+24:["$","p",null,{"children":[["$","$Le",null,{"href":"/docs/ecosystem/#node-stage-evaluate","children":"在地图中阅读评测与验收"}],"。"]}]
+25:["$","nav",null,{"className":"reading-feedback","aria-label":"内容反馈","children":["$","$Le",null,{"href":"/feedback/?map=ecosystem","children":["反馈与改进 ",["$","$L18",null,{"icon":"$1c:0:1:d:r:props:children:0:props:children:1:props:children:0:props:children:0:props:children:3:props:children:2:props:children:1:props:icon","size":14,"aria-hidden":"true"}]]}]}]
+26:["$","nav",null,{"className":"document-return","aria-label":"正文返回导航","children":["$","$L33",null,{"map":"ecosystem","href":"/docs/ecosystem/#node-resources","title":"返回生态地图 · 成果与资源"}]}]
+27:["$","aside",null,{"className":"reading-aside","aria-label":"阅读辅助导航","children":[["$","nav",null,{"className":"reading-toc","aria-label":"本页目录","children":[["$","h2",null,{"children":"本页目录"}],[["$","a","#模型交接保留四项",{"href":"#模型交接保留四项","data-depth":2,"children":"模型交接保留四项"}],["$","a","#评测分清三层",{"href":"#评测分清三层","data-depth":2,"children":"评测分清三层"}],["$","a","#最小验收项",{"href":"#最小验收项","data-depth":2,"children":"最小验收项"}]]]}],false,["$","div",null,{"className":"reading-aside-foot","children":["$","$L33",null,{"map":"ecosystem","href":"/docs/ecosystem/#node-resources","title":"返回生态地图 · 成果与资源"}]}]]}]
+28:["$","$L34",null,{"children":["$","$2e",null,{"name":"Next.MetadataOutlet","children":"$@35"}]}]
+10:300
+35:null
+31:true
+10:C
+30:0
+1b:"$undefined"
+19:"$undefined"
+12:"$undefined"
+f:"$undefined"
+2f:"$undefined"
+29:"$undefined"

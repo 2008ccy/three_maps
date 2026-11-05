@@ -1,0 +1,5 @@
+appId: wbapp_pKlQiFEGLYBr7gJ1WeGUQW
+name: 三张活地图
+localDir: /Users/changyichen/Developer/projects/three_maps/website/out
+appType: web
+entryHtml: index.html

@@ -1,0 +1,30 @@
+1:"$Sreact.fragment"
+2:"static/chunks/500-fc3b64d9ff4a32a7.js"
+3:"static/chunks/827-6098173449bf4d51.js"
+4:"static/chunks/324-8041ecfdc37e504f.js"
+5:"static/chunks/495-d563e43d75ae1658.js"
+6:"static/chunks/454-61757abd5747d2ed.js"
+7:"static/chunks/845-6d37c696114a905f.js"
+8:"static/chunks/app/layout-933414f3fc16cb3e.js"
+9:I[66,["500","$2","827","$3","324","$4","495","$5","454","$6","845","$7","177","$8"],"Provider"]
+a:I[7121,[],""]
+b:I[4581,[],""]
+c:"static/chunks/app/not-found-a0b34bab5325a293.js"
+d:I[8500,["500","$2","345","$c"],""]
+11:I[484,[],"OutletBoundary"]
+12:"$Sreact.suspense"
+14:"ViewportBoundary"
+15:I[484,[],"$14"]
+17:"MetadataBoundary"
+18:I[484,[],"$17"]
+1a:I[7123,[],"default",1]
+:HL["/_next/static/css/e62837cc23197924.css","style"]
+:HL["/_next/static/css/c870aacaa3af08eb.css","style"]
+f:X
+10:[["children",{"s":"__PAGE__","h":512,"d":{"r":["$","$1","c",{"children":[["$","main",null,{"className":"home-shell py-24","children":[["$","p",null,{"className":"eyebrow","children":"404"}],["$","h1",null,{"className":"text-3xl font-semibold my-6","children":"这个页面还没有收录"}],["$","p",null,{"className":"mb-6","children":"请返回首页，或使用搜索查找相关概念。"}],["$","$Ld",null,{"className":"primary-link","href":"/","children":"返回首页 →"}]]}],null,["$","$L11",null,{"children":["$","$12",null,{"name":"Next.MetadataOutlet","children":"$@13"}]}]]}],"p":false,"v":null}}]]
+e:[["children",{"s":"_not-found","h":512,"d":{"r":["$","$1","c",{"children":[null,["$","$La",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$Lb",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","forbidden":"$undefined","unauthorized":"$undefined"}]]}],"p":false,"v":"$f"},"c":"$Q10"}]]
+0:{"P":null,"c":["","_not-found",""],"q":"","i":false,"t":{"t":{"s":"","h":528,"d":{"r":["$","$1","c",{"children":[[["$","link","0",{"rel":"stylesheet","href":"/_next/static/css/e62837cc23197924.css","precedence":"next","crossOrigin":"$undefined","nonce":"$undefined"}],["$","link","1",{"rel":"stylesheet","href":"/_next/static/css/c870aacaa3af08eb.css","precedence":"next","crossOrigin":"$undefined","nonce":"$undefined"}]],["$","html",null,{"lang":"zh-CN","className":"dark","style":{"colorScheme":"dark"},"suppressHydrationWarning":true,"children":["$","body",null,{"className":"flex flex-col min-h-screen","children":["$","$L9",null,{"children":["$","$La",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$Lb",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":[["$","main",null,{"className":"home-shell py-24","children":[["$","p",null,{"className":"eyebrow","children":"404"}],["$","h1",null,{"className":"text-3xl font-semibold my-6","children":"这个页面还没有收录"}],["$","p",null,{"className":"mb-6","children":"请返回首页，或使用搜索查找相关概念。"}],["$","$Ld",null,{"className":"primary-link","href":"/","children":"返回首页 →"}]]}],[]],"forbidden":"$undefined","unauthorized":"$undefined"}]}]}]}]]}],"p":false,"v":null},"c":"$Qe"},"h":{"r":["$","$1","h",{"children":[["$","meta",null,{"name":"robots","content":"noindex"}],["$","$L15",null,{"children":"$L16"}],["$","$L18",null,{"children":[["$","div",null,{"hidden":true,"children":["$","$12",null,{"name":"Next.Metadata","children":"$L19"}]}],null]}],null]}],"p":false,"v":null}},"m":"$undefined","G":["$1a",[]],"S":true,"r":"$undefined","s":"$undefined","a":"$undefined","l":"$undefined","p":"$undefined","d":"$undefined","b":"xTXGvPq_O0CQiLbxU58EV"}
+f:C
+16:[["$","meta","0",{"charSet":"utf-8"}],["$","meta","1",{"name":"viewport","content":"width=device-width, initial-scale=1"}]]
+13:null
+19:[["$","title","0",{"children":"三张活地图 · 模型构建"}],["$","meta","1",{"name":"description","content":"从预训练模型到课程答疑助手：探索领域知识、参与者与认识方法。"}]]

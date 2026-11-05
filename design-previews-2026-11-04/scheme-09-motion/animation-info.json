@@ -1,0 +1,11 @@
+{
+  "concept": 9,
+  "frames": 160,
+  "duration_seconds": 9.6,
+  "size": [
+    1100,
+    782
+  ],
+  "motion": "三层随机点云 独立多尺度流场 局部涡流与密度聚散 无规则点阵 无同步起伏",
+  "loop": "infinite"
+}

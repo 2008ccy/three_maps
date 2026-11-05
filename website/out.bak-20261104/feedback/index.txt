@@ -1,0 +1,39 @@
+1:"$Sreact.fragment"
+2:"static/chunks/500-fc3b64d9ff4a32a7.js"
+3:"static/chunks/827-6098173449bf4d51.js"
+4:"static/chunks/324-8041ecfdc37e504f.js"
+5:"static/chunks/495-d563e43d75ae1658.js"
+6:"static/chunks/454-61757abd5747d2ed.js"
+7:"static/chunks/845-6d37c696114a905f.js"
+8:"static/chunks/app/layout-933414f3fc16cb3e.js"
+9:I[66,["500","$2","827","$3","324","$4","495","$5","454","$6","845","$7","177","$8"],"Provider"]
+a:I[7121,[],""]
+b:I[4581,[],""]
+c:"static/chunks/app/not-found-a0b34bab5325a293.js"
+d:I[8500,["500","$2","345","$c"],""]
+12:"static/chunks/625-22f474f64e9ccdfa.js"
+13:"static/chunks/728-b60a167d76a90afd.js"
+14:"static/chunks/558-ec97aa9b373dc46c.js"
+15:"static/chunks/app/(content)/feedback/page-1a3da72dc5a30409.js"
+16:I[1728,["500","$2","827","$3","324","$4","625","$12","728","$13","558","$14","769","$15"],"HomeLayout"]
+17:I[8637,["500","$2","827","$3","324","$4","625","$12","728","$13","558","$14","769","$15"],"default"]
+18:I[112,["500","$2","827","$3","324","$4","625","$12","728","$13","558","$14","769","$15"],"FeedbackBoard"]
+19:I[484,[],"OutletBoundary"]
+1a:"$Sreact.suspense"
+1c:"ViewportBoundary"
+1d:I[484,[],"$1c"]
+1f:"MetadataBoundary"
+20:I[484,[],"$1f"]
+22:I[7123,[],"default",1]
+:HL["/_next/static/css/e62837cc23197924.css","style"]
+:HL["/_next/static/css/c870aacaa3af08eb.css","style"]
+:HL["/_next/static/css/3ed4e7bb77b13176.css","style"]
+f:X
+11:[["children",{"s":"__PAGE__","h":512,"d":{"r":["$","$1","c",{"children":[["$","$L16",null,{"themeSwitch":{"enabled":false},"nav":{"title":[["$","$L17",null,{"ref":"$undefined","icon":{"name":"network","size":24,"node":[["rect",{"x":"16","y":"16","width":"6","height":"6","rx":"1","key":"4q2zg0"}],["rect",{"x":"2","y":"16","width":"6","height":"6","rx":"1","key":"8cvhb9"}],["rect",{"x":"9","y":"2","width":"6","height":"6","rx":"1","key":"1egb70"}],["path",{"d":"M5 16v-3a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v3","key":"1jsf9p"}],["path",{"d":"M12 12V8","key":"2874zd"}]]},"className":"text-fd-primary","size":22}],["$","span",null,{"children":"三张活地图"}],["$","span",null,{"className":"brand-note","children":"模型构建"}]]},"links":[{"text":"领域","url":"/docs/domain","active":"nested-url"},{"text":"生态","url":"/docs/ecosystem","active":"nested-url"},{"text":"认知","url":"/docs/cognition","active":"nested-url"},{"text":"更新记录","url":"/docs/project/updates"},{"text":"反馈","url":"/feedback"}],"githubUrl":"https://github.com/2008ccy/three_maps","children":["$","$L18",null,{"releasedVersions":["v1.4","v1.3","v1.2","v1.1","v1.0"]}]}],[["$","link","0",{"rel":"stylesheet","href":"/_next/static/css/3ed4e7bb77b13176.css","precedence":"next","crossOrigin":"$undefined","nonce":"$undefined"}]],["$","$L19",null,{"children":["$","$1a",null,{"name":"Next.MetadataOutlet","children":"$@1b"}]}]]}],"p":false,"v":null}}]]
+10:[["children",{"s":"feedback","h":512,"d":{"r":["$","$1","c",{"children":[null,["$","$La",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$Lb",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","forbidden":"$undefined","unauthorized":"$undefined"}]]}],"p":false,"v":"$f"},"c":"$Q11"}]]
+e:[["children",{"s":"(content)","h":512,"d":{"r":["$","$1","c",{"children":[null,["$","$La",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$Lb",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","forbidden":"$undefined","unauthorized":"$undefined"}]]}],"p":false,"v":"$f"},"c":"$Q10"}]]
+0:{"P":null,"c":["","feedback",""],"q":"","i":false,"t":{"t":{"s":"","h":528,"d":{"r":["$","$1","c",{"children":[[["$","link","0",{"rel":"stylesheet","href":"/_next/static/css/e62837cc23197924.css","precedence":"next","crossOrigin":"$undefined","nonce":"$undefined"}],["$","link","1",{"rel":"stylesheet","href":"/_next/static/css/c870aacaa3af08eb.css","precedence":"next","crossOrigin":"$undefined","nonce":"$undefined"}]],["$","html",null,{"lang":"zh-CN","className":"dark","style":{"colorScheme":"dark"},"suppressHydrationWarning":true,"children":["$","body",null,{"className":"flex flex-col min-h-screen","children":["$","$L9",null,{"children":["$","$La",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$Lb",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":[["$","main",null,{"className":"home-shell py-24","children":[["$","p",null,{"className":"eyebrow","children":"404"}],["$","h1",null,{"className":"text-3xl font-semibold my-6","children":"这个页面还没有收录"}],["$","p",null,{"className":"mb-6","children":"请返回首页，或使用搜索查找相关概念。"}],["$","$Ld",null,{"className":"primary-link","href":"/","children":"返回首页 →"}]]}],[]],"forbidden":"$undefined","unauthorized":"$undefined"}]}]}]}]]}],"p":false,"v":null},"c":"$Qe"},"h":{"r":["$","$1","h",{"children":[null,["$","$L1d",null,{"children":"$L1e"}],["$","$L20",null,{"children":[["$","div",null,{"hidden":true,"children":["$","$1a",null,{"name":"Next.Metadata","children":"$L21"}]}],null]}],null]}],"p":false,"v":null}},"m":"$undefined","G":["$22",[]],"S":true,"r":"$undefined","s":"$undefined","a":"$undefined","l":"$undefined","p":"$undefined","d":"$undefined","b":"xTXGvPq_O0CQiLbxU58EV"}
+f:C
+1e:[["$","meta","0",{"charSet":"utf-8"}],["$","meta","1",{"name":"viewport","content":"width=device-width, initial-scale=1"}]]
+1b:null
+21:[["$","title","0",{"children":"反馈与改进 · 三张活地图"}],["$","meta","1",{"name":"description","content":"提交三张地图的具体问题，查看小组回复与处理进展。"}]]

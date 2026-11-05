@@ -1,12 +1,14 @@
 import { z } from 'zod';
 import { feedbackInputSchema, feedbackPageSchema, publicFeedbackSchema, feedbackFiltersSchema, feedbackIdPattern, type FeedbackFilters, type FeedbackInput } from './feedback-contract.ts';
 import { findFeedbackTarget } from './feedback-targets.ts';
+import { cloudFeedbackConfig, createCloudFeedbackFetcher } from './feedback-cloud.ts';
 
 export class FeedbackApiError extends Error {
   code: string; status: number; retryAfter?: number;
   constructor(code: string, message: string, status = 0, retryAfter?: number) { super(message); this.name = 'FeedbackApiError'; this.code = code; this.status = status; this.retryAfter = retryAfter; }
 }
-export function feedbackServiceConfig(value: string | undefined, verified: string | undefined) {
+export type FeedbackService = { configured: boolean; baseUrl: string; message: string };
+export function feedbackServiceConfig(value: string | undefined, verified: string | undefined): FeedbackService {
   if (!value) return { configured: false, baseUrl: '', message: '反馈服务尚未接通，当前无法提交或查看反馈。' };
   try {
     const url = new URL(value);
@@ -16,7 +18,13 @@ export function feedbackServiceConfig(value: string | undefined, verified: strin
     return { configured: true, baseUrl: url.toString().replace(/\/$/, ''), message: '' };
   } catch { return { configured: false, baseUrl: '', message: '共享反馈服务配置无效，暂时无法提交或读取反馈。' }; }
 }
-export const feedbackService = feedbackServiceConfig(process.env.NEXT_PUBLIC_FEEDBACK_API_BASE_URL, process.env.NEXT_PUBLIC_FEEDBACK_SERVICE_VERIFIED);
+// 传输层二选一：优先使用 WorkBuddy 云数据库（当前接入方式）；未配置时退回
+// 原有的自建 HTTP 接口配置，两者都未配置则整体关闭，绝不发请求。
+const cloudService = cloudFeedbackConfig();
+export const feedbackService: FeedbackService = cloudService.configured
+  ? cloudService
+  : feedbackServiceConfig(process.env.NEXT_PUBLIC_FEEDBACK_API_BASE_URL, process.env.NEXT_PUBLIC_FEEDBACK_SERVICE_VERIFIED);
+export const { listFeedback, getFeedback, submitFeedback } = createFeedbackClient(feedbackService, cloudService.configured ? createCloudFeedbackFetcher() : undefined);
 
 export function createFeedbackClient(config = feedbackService, fetcher: typeof fetch = globalThis.fetch, timeoutMs = 12000) {
 async function request<T>(path: string, schema: z.ZodType<T>, options: RequestInit = {}, signal?: AbortSignal): Promise<T> {
@@ -81,4 +89,3 @@ async function submitFeedback(input: FeedbackInput, idempotencyKey: string, sign
 }
 return { listFeedback, getFeedback, submitFeedback };
 }
-export const { listFeedback, getFeedback, submitFeedback } = createFeedbackClient();

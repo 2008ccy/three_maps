@@ -1,0 +1,61 @@
+1:"$Sreact.fragment"
+2:"static/chunks/500-fc3b64d9ff4a32a7.js"
+3:"static/chunks/827-6098173449bf4d51.js"
+4:"static/chunks/324-8041ecfdc37e504f.js"
+5:"static/chunks/495-d563e43d75ae1658.js"
+6:"static/chunks/454-61757abd5747d2ed.js"
+7:"static/chunks/845-6d37c696114a905f.js"
+8:"static/chunks/app/layout-933414f3fc16cb3e.js"
+9:I[66,["500","$2","827","$3","324","$4","495","$5","454","$6","845","$7","177","$8"],"Provider"]
+a:I[7121,[],""]
+b:I[4581,[],""]
+c:"static/chunks/625-22f474f64e9ccdfa.js"
+d:"static/chunks/app/(content)/docs/%5B%5B...slug%5D%5D/page-c9a05e40f3872f75.js"
+e:I[8500,["500","$2","827","$3","625","$c","395","$d"],""]
+15:"static/chunks/728-b60a167d76a90afd.js"
+16:"static/chunks/app/(content)/docs/layout-3f1e62a46d677617.js"
+17:I[1728,["827","$3","324","$4","625","$c","728","$15","530","$16"],"HomeLayout"]
+18:I[8637,["500","$2","827","$3","625","$c","395","$d"],"default"]
+1d:I[8518,["500","$2","827","$3","625","$c","395","$d"],"Heading"]
+2c:"ViewportBoundary"
+2d:I[484,[],"$2c"]
+2e:"MetadataBoundary"
+2f:I[484,[],"$2e"]
+30:"$Sreact.suspense"
+:HL["/_next/static/css/e62837cc23197924.css","style"]
+:HL["/_next/static/css/c870aacaa3af08eb.css","style"]
+10:X
+13:X
+13:C
+1c:[["children",{"s":"__PAGE__","h":160,"d":{"r":["$","$1","c",{"children":[["$","div",null,{"className":"reading-shell","children":[["$","nav",null,{"className":"reading-breadcrumb","aria-label":"正文所属路径","children":[["$","$Le",null,{"href":"/","children":"首页"}],["$","span",null,{"children":"/"}],["$","span",null,{"children":"项目进度与边界"}]]}],["$","div",null,{"className":"reading-grid","children":[["$","article",null,{"className":"reading-article ","children":[["$","header",null,{"className":"reading-header","children":[["$","p",null,{"className":"reading-eyebrow","children":[["$","$L18",null,{"icon":{"name":"book-open","size":24,"node":[["path",{"d":"M12 5v16","key":"1f6ucr"}],["path",{"d":"M20.001 19A2 2 0 0022 17V5a2 2 0 00-1.999-2L16 3.002A5 5 0 0012 5a5 5 0 00-4-2H4a2 2 0 00-2 2v12a2 2 0 001.999 2H8a5 5 0 014 2 5 5 0 014-2z","key":"1fyvmf"}]]},"size":14}],"资料与项目",["$","span",null,{"children":[" / ","主题阅读"]}]]}],["$","h1",null,{"children":"项目进度与边界"}],["$","p",null,{"className":"reading-description","children":"内容浏览已实现，共享反馈正在准备云服务接入与权限验收。"}],["$","div",null,{"className":"content-meta","children":[["$","span",null,{"children":"反馈接入准备 · 云服务待核验"}],["$","span",null,{"children":["更新于 ","2026-11-04"]}],["$","a",null,{"target":"_blank","rel":"noreferrer","href":"https://github.com/2008ccy/three_maps/edit/main/website/content/docs/project/status.mdx","children":["编辑本页 ",["$","$L18",null,{"icon":{"name":"arrow-up-right","size":24,"node":[["path",{"d":"M7 7h10v10","key":"1tivn9"}],["path",{"d":"M7 17 17 7","key":"1vkiza"}]]},"size":12}]]}]]}]]}],"$undefined",["$","div",null,{"className":"article-content prose","children":[["$","$L1d",null,{"as":"h2","id":"第一版提供什么","children":"第一版提供什么"}],"\n",["$","p",null,{"children":"三张地图的分层页面、核心条目详情、来源目录、跨图链接、中文搜索、更新记录和待核实清单。浏览无需登录。"}],"\n",["$","$L1d",null,{"as":"h2","id":"下一阶段","children":"下一阶段"}],"\n",["$","div",null,{"className":"relative overflow-auto prose-no-margin my-6","tabIndex":0,"children":["$","table",null,{"children":[["$","thead",null,{"children":["$","tr",null,{"children":[["$","th",null,{"children":"项目"}],["$","th",null,{"children":"当前状态"}],["$","th",null,{"children":"后续条件"}]]}]}],["$","tbody",null,{"children":[["$","tr",null,{"children":[["$","td",null,{"children":"共享反馈"}],["$","td",null,{"children":"表单、预览、公开处理流程和两种数据库接入代码已准备，当前未接通"}],["$","td",null,{"children":"复用 WorkBuddy 应用，按交接说明配置数据库与云函数，完成真实跨设备及权限验收"}]]}],["$","tr",null,{"children":[["$","td",null,{"children":"地图 AI 问答"}],["$","td",null,{"children":"尚未接入"}],["$","td",null,{"children":"需要服务端保管模型密钥、预算限制与可回溯引用"}]]}],["$","tr",null,{"children":[["$","td",null,{"children":"Open 风格首页"}],["$","td",null,{"children":"留到后续视觉阶段"}],["$","td",null,{"children":"在保留文档结构的基础上单独设计"}]]}],["$","tr",null,{"children":["$L1e","$L1f","$L20"]}],"$L21"]}]]}]}],"\n","$L22","\n","$L23","\n","$L24","\n","$L25"]}],"$L26","$L27","$L28"]}],"$L29"]}]]}],null,"$L2a"]}],"p":"$@2b","v":null,"s":"$10"}}]]
+1a:[["children",{"s":{"n":"slug","t":"oc","k":"project/status","s":["cognition","domain","ecosystem"]},"h":96,"d":{"r":["$","$1","c",{"children":[null,["$","$La",null,{"parallelRouterKey":"children","template":["$","$Lb",null,{}]}]]}],"p":"$@1b","v":"$13","s":"$10"},"c":"$Q1c"}]]
+14:[["children",{"s":"docs","h":96,"d":{"r":["$","$1","c",{"children":[null,["$","$L17",null,{"themeSwitch":{"enabled":false},"nav":{"title":[["$","$L18",null,{"icon":{"name":"network","size":24,"node":[["rect",{"x":"16","y":"16","width":"6","height":"6","rx":"1","key":"4q2zg0"}],["rect",{"x":"2","y":"16","width":"6","height":"6","rx":"1","key":"8cvhb9"}],["rect",{"x":"9","y":"2","width":"6","height":"6","rx":"1","key":"1egb70"}],["path",{"d":"M5 16v-3a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v3","key":"1jsf9p"}],["path",{"d":"M12 12V8","key":"2874zd"}]]},"className":"text-fd-primary","size":22}],["$","span",null,{"children":"三张活地图"}],["$","span",null,{"className":"brand-note","children":"模型构建"}]]},"links":[{"text":"领域","url":"/docs/domain","active":"nested-url"},{"text":"生态","url":"/docs/ecosystem","active":"nested-url"},{"text":"认知","url":"/docs/cognition","active":"nested-url"},{"text":"更新记录","url":"/docs/project/updates"},{"text":"反馈","url":"/feedback"}],"githubUrl":"https://github.com/2008ccy/three_maps","children":["$","$La",null,{"parallelRouterKey":"children","template":["$","$Lb",null,{}]}]}]]}],"p":"$@19","v":null,"s":"$10"},"c":"$Q1a"}]]
+11:[["children",{"s":"(content)","h":96,"d":{"r":["$","$1","c",{"children":[null,["$","$La",null,{"parallelRouterKey":"children","template":["$","$Lb",null,{}]}]]}],"p":"$@12","v":"$13","s":"$10"},"c":"$Q14"}]]
+0:{"t":{"t":{"s":"","h":80,"d":{"r":["$","$1","c",{"children":[[["$","link","0",{"rel":"stylesheet","href":"/_next/static/css/e62837cc23197924.css","precedence":"next"}],["$","link","1",{"rel":"stylesheet","href":"/_next/static/css/c870aacaa3af08eb.css","precedence":"next"}]],["$","html",null,{"lang":"zh-CN","className":"dark","style":{"colorScheme":"dark"},"suppressHydrationWarning":true,"children":["$","body",null,{"className":"flex flex-col min-h-screen","children":["$","$L9",null,{"children":["$","$La",null,{"parallelRouterKey":"children","template":["$","$Lb",null,{}],"notFound":[["$","main",null,{"className":"home-shell py-24","children":[["$","p",null,{"className":"eyebrow","children":"404"}],["$","h1",null,{"className":"text-3xl font-semibold my-6","children":"这个页面还没有收录"}],["$","p",null,{"className":"mb-6","children":"请返回首页，或使用搜索查找相关概念。"}],["$","$Le",null,{"className":"primary-link","href":"/","children":"返回首页 →"}]]}],[]]}]}]}]}]]}],"p":"$@f","v":null,"s":"$10"},"c":"$Q11"},"h":{"r":["$","$1","h",{"children":[null,["$","$L2d",null,{"children":[["$","meta","0",{"charSet":"utf-8"}],["$","meta","1",{"name":"viewport","content":"width=device-width, initial-scale=1"}]]}],["$","$L2f",null,{"children":[["$","div",null,{"hidden":true,"children":["$","$30",null,{"name":"Next.Metadata","children":[["$","title","0",{"children":"项目进度与边界 · 三张活地图"}],["$","meta","1",{"name":"description","content":"内容浏览已实现，共享反馈正在准备云服务接入与权限验收。"}]]}]}],null]}],null]}],"p":"$@31","v":null,"s":"$10"}},"a":"$@32","u":"$@33","b":"xTXGvPq_O0CQiLbxU58EV"}
+34:"DocumentReturnLink"
+35:I[877,["500","$2","827","$3","625","$c","395","$d"],"$34"]
+36:I[484,[],"OutletBoundary"]
+1e:["$","td",null,{"children":"学校课程、课堂原文、实验记录"}]
+1f:["$","td",null,{"children":"待补证"}]
+20:["$","td",null,{"children":"由成员补真实材料，不能用示例代替"}]
+21:["$","tr",null,{"children":[["$","td",null,{"children":"公开上线与国内网络访问"}],["$","td",null,{"children":"待实际部署与验证"}],["$","td",null,{"children":"本地可访问或构建通过不等于公开上线"}]]}]
+22:["$","p",null,{"children":["GitHub Pages 可以托管本版静态页面与浏览器交互，不能独立运行需要服务端密钥的 AI 接口。",["$","$Le",null,{"href":"/docs/sources/#s15","children":"S15"}],"、",["$","$Le",null,{"href":"/docs/sources/#s16","children":"S16"}],"。"]}]
+23:["$","p",null,{"children":"反馈不使用浏览器本地存储或演示记录代替共享数据库。平台接口未配置时不能提交或读取真实反馈；数据库规则、管理员回复和跨设备持久化必须在实际环境分别验收。下一发布版本预留v1.5，当前不表示已发布。"}]
+24:["$","$L1d",null,{"as":"h2","id":"与课程作业的关系","children":"与课程作业的关系"}]
+25:["$","p",null,{"children":"作业仍要求至少一项可用的地图 AI、真实分析记录、持续更新以及至少三名非组员反馈。第一版只是阶段交付，不能将这些未完成项勾选为完成。"}]
+26:["$","nav",null,{"className":"reading-feedback","aria-label":"内容反馈","children":["$","$Le",null,{"href":"/feedback/","children":["反馈与改进 ",["$","$L18",null,{"icon":"$1c:0:1:d:r:props:children:0:props:children:1:props:children:0:props:children:0:props:children:3:props:children:2:props:children:1:props:icon","size":14,"aria-hidden":"true"}]]}]}]
+27:["$","section",null,{"className":"reading-next","aria-label":"关联阅读","children":[["$","h2",null,{"children":"继续阅读"}],["$","div",null,{"children":[["$","$Le","/docs/project/gaps/",{"href":"/docs/project/gaps/","children":[["$","span",null,{"children":"待核实与下一步"}],["$","$L18",null,{"icon":{"name":"arrow-right","size":24,"node":[["path",{"d":"M5 12h14","key":"1ays0h"}],["path",{"d":"m12 5 7 7-7 7","key":"xquz4c"}]]},"size":15}]]}],["$","$Le","/docs/project/coverage/",{"href":"/docs/project/coverage/","children":[["$","span",null,{"children":"作业问题覆盖清单"}],["$","$L18",null,{"icon":"$27:props:children:1:props:children:0:props:children:1:props:icon","size":15}]]}],["$","$Le","/docs/project/updates/",{"href":"/docs/project/updates/","children":[["$","span",null,{"children":"更新记录"}],["$","$L18",null,{"icon":"$27:props:children:1:props:children:0:props:children:1:props:icon","size":15}]]}]]}]]}]
+28:["$","nav",null,{"className":"document-return","aria-label":"正文返回导航","children":["$","$L35",null,{"href":"/","title":"返回首页"}]}]
+29:["$","aside",null,{"className":"reading-aside","aria-label":"阅读辅助导航","children":[["$","nav",null,{"className":"reading-toc","aria-label":"本页目录","children":[["$","h2",null,{"children":"本页目录"}],[["$","a","#第一版提供什么",{"href":"#第一版提供什么","data-depth":2,"children":"第一版提供什么"}],["$","a","#下一阶段",{"href":"#下一阶段","data-depth":2,"children":"下一阶段"}],["$","a","#与课程作业的关系",{"href":"#与课程作业的关系","data-depth":2,"children":"与课程作业的关系"}]]]}],["$","nav",null,{"className":"reading-relations","aria-label":"相关知识","children":[["$","h2",null,{"children":"知识之间的联系"}],[["$","$Le","/docs/project/gaps/:0",{"href":"/docs/project/gaps/","children":[["$","span",null,{"children":"关联阅读"}],["$","strong",null,{"children":["待核实与下一步",["$","$L18",null,{"icon":"$1c:0:1:d:r:props:children:0:props:children:1:props:children:0:props:children:0:props:children:3:props:children:2:props:children:1:props:icon","size":12}]]}]]}],["$","$Le","/docs/project/coverage/:1",{"href":"/docs/project/coverage/","children":[["$","span",null,{"children":"关联阅读"}],["$","strong",null,{"children":["作业问题覆盖清单",["$","$L18",null,{"icon":"$1c:0:1:d:r:props:children:0:props:children:1:props:children:0:props:children:0:props:children:3:props:children:2:props:children:1:props:icon","size":12}]]}]]}],["$","$Le","/docs/project/updates/:2",{"href":"/docs/project/updates/","children":[["$","span",null,{"children":"关联阅读"}],["$","strong",null,{"children":["更新记录",["$","$L18",null,{"icon":"$1c:0:1:d:r:props:children:0:props:children:1:props:children:0:props:children:0:props:children:3:props:children:2:props:children:1:props:icon","size":12}]]}]]}]]]}],["$","div",null,{"className":"reading-aside-foot","children":["$","$L35",null,{"href":"/","title":"返回首页"}]}]]}]
+2a:["$","$L36",null,{"children":["$","$30",null,{"name":"Next.MetadataOutlet","children":"$@37"}]}]
+10:300
+37:null
+33:true
+10:C
+32:0
+1b:"$undefined"
+19:"$undefined"
+12:"$undefined"
+f:"$undefined"
+31:"$undefined"
+2b:"$undefined"

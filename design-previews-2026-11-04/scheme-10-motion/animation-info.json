@@ -1,0 +1,12 @@
+{
+  "concept": 10,
+  "dimensions": [
+    1100,
+    782
+  ],
+  "frames": 128,
+  "duration_seconds": 7.68,
+  "loop": "infinite",
+  "motion": "三组银白粒子波纹缓慢形变与聚散，文字固定",
+  "method": "procedural particle rendering; no website source changed"
+}
