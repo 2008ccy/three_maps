@@ -100,8 +100,6 @@ html > body[data-scroll-locked] {
 .reading-breadcrumb a:hover { color: #c9d7e1; }
 .reading-grid { display: grid; grid-template-columns: minmax(0,740px) 240px; gap: 32px; justify-content: center; align-items: start; }
 .reading-article { min-width: 0; }
-.reading-eyebrow { display: flex; align-items: center; gap: 7px; color: #ccd9e2; font-size: 11px; }
-.reading-eyebrow span { color: #7b848b; }
 .reading-header h1 { margin: 14px 0; font-size: 34px; font-weight: 650; line-height: 1.4; letter-spacing: -.03em; }
 .reading-description { font-size: 17px; line-height: 1.85; color: #b9c0c5; }
 .reading-header .content-meta { padding-bottom: 18px; margin-top: 22px; font-size: 11px; line-height: 1.8; gap: 8px 18px; }

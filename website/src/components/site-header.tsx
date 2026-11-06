@@ -12,6 +12,7 @@ const links = [
   { href: '/docs/ecosystem', label: '生态' },
   { href: '/docs/cognition', label: '认知' },
   { href: '/docs/project/updates', label: '更新记录' },
+  { href: '/docs/sources', label: '资料来源' },
 ];
 
 export function SiteHeader() {

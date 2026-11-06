@@ -57,7 +57,7 @@ test('search omits the original docs introduction including its section results'
   for (const href of ['/', '/docs/domain/', '/docs/cognition/#node-system-view', '/docs/project/updates/', '/docs/sources/#l1']) assert.ok(!isLegacyMapArticle(href), href);
 });
 test('search retains current updates and sources as public destinations', async () => {
-  for (const [query, target] of [['更新记录', '/docs/project/updates'], ['来源与依据', '/docs/sources']]) {
+  for (const [query, target] of [['更新记录', '/docs/project/updates'], ['资料来源', '/docs/sources'], ['来源与依据', '/docs/sources']]) {
     const results = await client.search(query);
     assert.ok(results.some((entry) => entry.url.split('#')[0].replace(/\/$/, '') === target), query);
   }
@@ -66,6 +66,33 @@ test('unknown search returns no fabricated result', async () => {
   assert.deepEqual(await client.search('zzzxnonexistent999'), []);
 });
 function html(route) { return load(readFileSync(`out${route}/index.html`, 'utf8')); }
+test('top navigation keeps sources immediately after updates as a peer destination', () => {
+  const expected = [
+    ['领域', '/docs/domain/'], ['生态', '/docs/ecosystem/'], ['认知', '/docs/cognition/'],
+    ['更新记录', '/docs/project/updates/'], ['资料来源', '/docs/sources/'],
+  ];
+  for (const route of ['', '/docs/domain', '/docs/ecosystem', '/docs/cognition', '/docs/project/updates', '/docs/sources', '/feedback']) {
+    const $ = html(route);
+    const nav = $('#nd-nav nav[aria-label="网站主导航"]');
+    assert.equal(nav.length, 1, route || '/');
+    assert.deepEqual(nav.find('a').toArray().map((item) => [$(item).text().trim(), $(item).attr('href')?.slice(basePath.length)]), expected, route || '/');
+    assert.equal($('#nd-sidebar').length, 0, route || '/');
+  }
+});
+
+test('renamed sources preserve their stable identity, article layout and every source anchor', () => {
+  const page = readPages().find((item) => item.data.id === 'P-SOURCES');
+  assert.equal(page?.url, '/docs/sources');
+  assert.equal(page?.data.title, '资料来源');
+  const $ = html('/docs/sources');
+  assert.equal($('article.reading-article .reading-header h1').text(), '资料来源');
+  assert.equal($('.reading-grid').length, 1);
+  assert.equal($('aside[aria-label="阅读辅助导航"]').length, 1);
+  for (const id of [...Array.from({ length: 8 }, (_, index) => `l${index + 1}`), ...Array.from({ length: 30 }, (_, index) => `s${String(index + 1).padStart(2, '0')}`)]) {
+    assert.equal($(`[id="${id}"]`).length, 1, id);
+  }
+});
+
 for (const chain of [
   ['/docs/domain/#node-rag', '/docs/ecosystem/#node-research-origins', '/docs/domain/#node-rag', '/docs/cognition/#node-system-view'],
   ['/docs/domain/#node-lora', '/docs/ecosystem/#node-research-origins', '/docs/domain/#node-lora', '/docs/domain/#node-finetuning', '/docs/cognition/#node-loss-test'],
@@ -86,6 +113,7 @@ test('document pages offer owning-node navigation and keep pagination absent', (
     if (overviewRoutes.has(url)) continue;
     const $ = html(url);
     const article = $('article');
+    assert.equal($('.reading-eyebrow').length, 0, url);
     const map = url.split('/')[2];
     const link = article.find('nav[aria-label="正文返回导航"] a');
     assert.equal(link.length, 1, url);
