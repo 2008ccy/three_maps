@@ -1,0 +1,5 @@
+
+> three-maps-website@1.0.0 check:export
+> node scripts/check-export.mjs
+
+Export OK: 74 HTML files, 3237 links/assets checked, basePath=/.

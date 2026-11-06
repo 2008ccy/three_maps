@@ -1,0 +1,166 @@
+
+> three-maps-website@1.0.0 test
+> node --test scripts/test-static.mjs scripts/test-maps.mjs scripts/test-catalog.mjs scripts/test-home.mjs scripts/test-feedback.mjs && npm --prefix ../feedback-cloud test
+
+(node:79737) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///Users/changyichen/Developer/projects/three_maps/website/src/lib/maps/content.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to /Users/changyichen/Developer/projects/three_maps/website/package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ mobile graph zoom-out keeps its fitted overview instead of enlarging it (0.972333ms)
+✔ graph zoom preserves the viewport center and existing desktop zoom bounds (0.121375ms)
+✔ domain: catalog preserves every node, path and evidence boundary (0.407542ms)
+✔ domain: all edges resolve and directional statistics count unique facts once (2.367375ms)
+✔ ecosystem: catalog preserves every node, path and evidence boundary (0.113917ms)
+✔ ecosystem: all edges resolve and directional statistics count unique facts once (1.0305ms)
+✔ cognition: catalog preserves every node, path and evidence boundary (0.074417ms)
+✔ cognition: all edges resolve and directional statistics count unique facts once (1.102542ms)
+✔ filters use intersection, trim case-insensitive search and return a genuine empty state (0.45075ms)
+✔ only explicit understanding labels migrate; trying a tool is not inferred from narrative (0.239459ms)
+✔ query state round trips Chinese filters and leaves legacy node hashes independent (0.250583ms)
+✔ topic overview collapses the three maps to 5, 5 and 4 groups without losing members (0.42875ms)
+✔ a deep search match keeps its containing topic and direct-child navigation (0.45825ms)
+✔ domain lessons cover 18 points, preserve legacy IDs, and keep demonstration inputs explicit (0.4475ms)
+✔ domain concepts distinguish 12 core, 10 extended and 3 non-causal comparisons from 18 memberships (0.270417ms)
+✔ lesson examples are searchable, intersection still applies, and relation scope round trips (0.207ms)
+✔ ecosystem has 5 themes, 15 complete lessons, 15 memberships and 10 independent legacy collections (0.339625ms)
+✔ ecosystem curation preserves the entire original map and maps every retired address to a current topic (1.52525ms)
+✔ ecosystem overview is exactly 5 themes and 5 bounded handoffs; detail adds only direct neighbors (1.383708ms)
+✔ ecosystem search finds core responsibilities while historical metrics stay outside active results (0.50225ms)
+✔ cognition keeps four themes with three direct points each and independent short summaries (0.1695ms)
+✔ cognition archive preserves every original lesson and retired address while reducing core text by at least half (0.74325ms)
+✔ cognition remaps relations without loops or parallel duplicates and preserves five feedback directions (0.677208ms)
+✔ cognition graph keeps four theme columns, direct cases and filtered neighbors (1.088125ms)
+✔ cognition search indexes concise lessons and keeps historical personal accounts at the topic only (0.547791ms)
+(node:79738) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///Users/changyichen/Developer/projects/three_maps/website/src/lib/feedback-contract.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to /Users/changyichen/Developer/projects/three_maps/website/package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ feedback input is a strict visitor whitelist with Unicode and URL limits (2.95775ms)
+✔ feedback targets omit retired aliases and links only reach current maps and logs (0.293125ms)
+✔ visitor reference links cannot reintroduce original article navigation on this site (0.398125ms)
+✔ unconfigured or unverified feedback never fetches or manufactures records (1.272125ms)
+✔ feedback client serializes the public contract and strips unexpected response fields (3.520375ms)
+✔ feedback client handles rate limits, invalid responses, timeout and cancellation (6.003417ms)
+✔ static feedback page follows its build configuration without manufacturing records (11.9655ms)
+✔ feedback client rejects invalid and mismatched records before reporting success (3.912625ms)
+✔ invalid filters and cancelled requests never reach the server (0.2715ms)
+✔ rate-limit delay supports seconds and HTTP dates, and errors never echo server content (0.971084ms)
+✔ timeouts and cancellation while reading the response body retain their error classification (5.539833ms)
+✔ map feedback entries carry the canonical map target for root and subpath builds (34.087583ms)
+✔ active WorkBuddy transport maps list/detail/submit to their RPC contracts without a network (1.81925ms)
+✔ active WorkBuddy transport maps SQL errors and missing records without exposing internals (0.547417ms)
+✔ active WorkBuddy transport honors cancellation and rejects unsupported methods before RPC (0.376917ms)
+(node:79739) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///Users/changyichen/Developer/projects/three_maps/website/src/lib/home-scene.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to /Users/changyichen/Developer/projects/three_maps/website/package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ home activation persists within its session without accepting unrelated stored values (0.598667ms)
+✔ blocked storage neither prevents a first visit nor throws during activation (0.1485ms)
+✔ home scene route checks do not suppress navigation or search on documents (0.081792ms)
+✔ exported first visit immediately exposes navigation and usable map links without JavaScript (9.443042ms)
+✔ stored home exploration routes only target current map nodes (0.332333ms)
+✔ every exported page omits navigation to the original map articles (120.202708ms)
+✔ map transitions preserve native modified, new-tab, middle-button and download link actions (0.181292ms)
+✔ curtain only accepts the selected same-origin map and preserves GitHub Pages base paths (0.618625ms)
+✔ map destinations declare readiness without adding a visible overlay to the static/no-script page (38.569875ms)
+✔ route commits keep transitions alive for Next pathnames with the deployment prefix stripped (0.277875ms)
+✔ return-home targets preserve base paths and only exact map overview routes initiate the return curtain (0.165541ms)
+✔ title continuity lands exactly on the destination and gives returning home a lighter motion budget (0.297917ms)
+✔ shared title stays present while complementary content blending prevents a blank route seam (0.157792ms)
+✔ homepage header and card links resolve to the same map without intercepting other destinations (0.115875ms)
+(node:79740) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///Users/changyichen/Developer/projects/three_maps/website/src/lib/maps/content.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to /Users/changyichen/Developer/projects/three_maps/website/package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ domain expands the five teaching groups without renaming legacy node addresses (0.869083ms)
+✔ domain: stable unique node IDs, document anchors, sources and cross-map destinations (5.47425ms)
+✔ domain: static full-width route and usable no-JavaScript outline (26.981958ms)
+✔ domain: hash restores every branch and leaf without opening siblings (0.276542ms)
+✔ ecosystem: stable unique node IDs, document anchors, sources and cross-map destinations (2.472708ms)
+✔ ecosystem: static full-width route and usable no-JavaScript outline (16.866167ms)
+✔ ecosystem: hash restores every branch and leaf without opening siblings (0.132583ms)
+✔ cognition: stable unique node IDs, document anchors, sources and cross-map destinations (6.108208ms)
+✔ cognition: static full-width route and usable no-JavaScript outline (15.404458ms)
+✔ cognition: hash restores every branch and leaf without opening siblings (0.155084ms)
+✔ cognition hierarchy and feedback directions match the supplied HTML relationship graph (8.097625ms)
+✔ domain static export includes all lessons, native answer disclosures and source evidence without article entrances (21.225625ms)
+✔ nested branches switch, collapse and reset without keeping stale leaf selection (0.145333ms)
+✔ reading panels follow the root branch side, including nested nodes and restored hashes (0.271959ms)
+✔ updated curriculum and its derivative-source boundary reach the site (2.105417ms)
+✔ directed graph selection and hash recovery open both branch explanations and extra detail nodes (0.179417ms)
+✔ directed diagram panels follow the visible column, including cases in the right column (0.239291ms)
+✔ ecosystem static export preserves 15 core lessons and all historical address migrations (33.05125ms)
+✔ cognition static export exposes all lessons, checks, feedback meanings and evidence boundaries without scripts (38.944958ms)
+(node:79741) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///Users/changyichen/Developer/projects/three_maps/website/src/lib/document-navigation.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to /Users/changyichen/Developer/projects/three_maps/website/package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ exported browser search: 微调 (12.902625ms)
+✔ exported browser search: 检索增强 (0.219208ms)
+✔ exported browser search: LoRA (0.291458ms)
+✔ exported browser search: RAG (0.117584ms)
+✔ exported browser search: 独立反馈 (0.150583ms)
+✔ search indexes every active node directly without retired addresses or duplicate fragments (1.344ms)
+✔ search omits the original docs introduction including its section results (0.598291ms)
+✔ search retains current updates and sources as public destinations (0.38675ms)
+✔ unknown search returns no fabricated result (0.185958ms)
+✔ cross-map path: /docs/domain/#node-rag (48.351583ms)
+✔ cross-map path: /docs/domain/#node-lora (32.312167ms)
+✔ cross-map path: /docs/domain/#node-deployment (32.736709ms)
+✔ document pages offer owning-node navigation and keep pagination absent (91.566917ms)
+✔ back navigation rejects blank, external and different-deployment history entries (0.22225ms)
+✔ direct-entry back fallback resolves the owning map rather than a blank page (0.110542ms)
+✔ formulas render and sources remain navigable (3.877125ms)
+✔ edited RAG title and description reach body and static concept cards (4.151042ms)
+✔ article bodies keep knowledge labels, citations and old anchors without old article links (1.993ms)
+✔ deep pages use top navigation without a site-wide left sidebar (1.010833ms)
+✔ updates are collapsed native version cards with no templates or old reading entrances (1.809959ms)
+✔ all knowledge cards and reading relations omit old map article destinations (86.679458ms)
+✔ retired ecosystem articles remain accessible but do not re-enter the search index (4.066458ms)
+ℹ tests 95
+ℹ suites 0
+ℹ pass 95
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 511.737416
+
+> three-maps-feedback-cloud@0.1.0 test
+> node --test test/*.test.mjs
+
+✔ PostgreSQL configuration requires valid server URL and verified TLS, before opening a connection (0.749584ms)
+✔ migration runs in PostgreSQL, is repeatable, and creates the eight keyset indexes (754.666333ms)
+✔ PostgreSQL create, concurrent retries, payload conflict and rate limit preserve atomic state (548.281459ms)
+✔ failed PostgreSQL feedback write rolls back the claimed key and rate slot (544.168458ms)
+✔ PostgreSQL public reads, hidden idempotent replay, admin reply and equal-time pagination match the HTTP contract (524.469458ms)
+✔ PostgreSQL schema denies visitor read/write and grants backend only the required operations (516.988333ms)
+✔ locked real SDK preserves transaction, document and query serialization with fixed dependencies (13.137917ms)
+✔ production entry fails closed before SDK load without cloud configuration (0.8195ms)
+✔ current manifest contains the three maps and 59 active nodes, not historical aliases (0.215375ms)
+✔ whitelist rejects injected management fields, target extras and retired nodes (0.86625ms)
+✔ Unicode length, optional fields and HTTP(S) links are checked server-side (0.372459ms)
+✔ normal create generates ID, UTC time and initial state and projects public fields (1.968875ms)
+✔ parallel retries across handler instances return one stable record and consume one slot (1.445ms)
+✔ shared per-source rate counter caps concurrent new submissions at five per minute (0.995791ms)
+✔ a failed database write rolls back the feedback, rate slot and idempotency record together (0.228ms)
+✔ untrusted headers cannot supply source IP and absent trusted context closes writes (0.144125ms)
+✔ public reads omit private fields and nonpublic records, and cannot mutate records (1.476333ms)
+✔ retiring a target blocks new submissions but preserves its historical public feedback (0.432083ms)
+✔ signed cursor returns pages of 20, handles equal timestamps and binds filters (0.856917ms)
+✔ unsupported routes, content types, CORS, bodies and query keys are rejected (0.255292ms)
+✔ unexpected database errors are sanitized without exposing credentials or raw headers (0.115208ms)
+✔ hosted RPC creates a stable public record and denies direct visitor table operations (761.004125ms)
+✔ hosted RPC preserves idempotency, payload conflicts and hidden-record privacy (528.90475ms)
+✔ hosted RPC enforces enums, Unicode lengths and URL protocol (520.53375ms)
+✔ hosted RPC paginates equal timestamps, filters, and projects public admin replies (523.130459ms)
+✔ hosted target migration matches active maps, rejects retired and wrong-map nodes, and preserves history (529.718333ms)
+✔ hosted submission guard rejects credential and whitespace URLs while retaining encoded public links (503.855625ms)
+ℹ tests 27
+ℹ suites 0
+ℹ pass 27
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3453.233417

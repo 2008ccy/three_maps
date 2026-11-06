@@ -2,7 +2,7 @@
 
 import { createContext, useCallback, useContext, useEffect, useRef, useState, type ReactNode } from 'react';
 import { usePathname } from 'next/navigation';
-import { HOME_REVEAL_MS, isHomeRoute, rememberHomeExpanded, restoreHomePhase, type HomePhase } from '@/lib/home-scene';
+import { HOME_REVEAL_MS, isHomeRoute, rememberHomeExpanded, type HomePhase } from '@/lib/home-scene';
 
 type HomeSceneState = { phase: HomePhase; ready: boolean; reducedMotion: boolean; activated: boolean; isHome: boolean; activate: () => void; showExpanded: () => void };
 const HomeSceneContext = createContext<HomeSceneState | null>(null);
@@ -10,11 +10,11 @@ const HomeSceneContext = createContext<HomeSceneState | null>(null);
 export function HomeSceneProvider({ children }: { children: ReactNode }) {
   const pathname = usePathname();
   const isHome = isHomeRoute(pathname, process.env.NEXT_PUBLIC_BASE_PATH ?? '');
-  const [phase, setPhase] = useState<HomePhase>('intro');
+  const [phase, setPhase] = useState<HomePhase>('expanded');
   const [ready, setReady] = useState(false);
   const [reducedMotion, setReducedMotion] = useState(false);
   const [activated, setActivated] = useState(false);
-  const phaseRef = useRef<HomePhase>('intro');
+  const phaseRef = useRef<HomePhase>('expanded');
   const timer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   const finish = useCallback(() => {
     clearTimeout(timer.current);
@@ -23,10 +23,7 @@ export function HomeSceneProvider({ children }: { children: ReactNode }) {
   }, []);
 
   useEffect(() => {
-    let restored: HomePhase = 'intro';
-    try { restored = restoreHomePhase(window.sessionStorage); } catch { /* Storage getter may be blocked. */ }
-    phaseRef.current = restored;
-    setPhase(restored);
+    // Navigation is available on the first render; retain the shared API for map transitions.
     const media = window.matchMedia('(prefers-reduced-motion: reduce)');
     const updateMotion = () => {
       setReducedMotion(media.matches);

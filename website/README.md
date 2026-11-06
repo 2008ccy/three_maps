@@ -63,20 +63,16 @@ PowerShell 可先执行 `$env:NEXT_PUBLIC_BASE_PATH="/three_maps"`，再执行 `
 - `MapNode.lesson/topic`、`MapDefinition.learningPath/conceptRelations`均为可选字段，旧地图保持兼容。概念关系逐条记录说明、来源、核心标记、方向及材料关系/编辑建议；依据与核实状态分开，不自动升为已核实。地图不恢复完整文章入口。
 - `domain-lesson.tsx`统一渲染教学内容，检查解析和进阶区采用原生details，静态导出无脚本仍可阅读。`allowImportingTsExtensions`配合现有Node原生TypeScript测试；没有新增运行依赖。
 
-### 整屏像素首页
+### 粒子曲面首页
 
-首页首次访问只有中央介绍框和整屏 Canvas 像素纹理；点击或使用 Enter / 空格，约 900ms 内展开三张地图、顶部导航和页脚。领域、生态、认知分别以淡紫、青绿、冰蓝强调。原探索路线及下滑提示继续暂停展示，原内容仍在代码中。
+首页采用方案 09 的深色粒子曲面设计：左侧保留课程助手的问题与“开始探索”入口，右侧呈现金色、青色、珍珠白三层粒子曲面，下方以三个编号入口进入领域、生态、认知地图。导航、搜索和三张地图首次访问即显示，无需点击激活，也不依赖会话存储。原探索路线及下滑提示继续暂停展示。
 
-- `src/components/home-scene-state.tsx` 统一维护 `intro → revealing → expanded`；同一标签页通过 `sessionStorage` 的 `three-maps:home-expanded:v1` 记录展开状态，返回及刷新不重播。存储被禁用时，展开仍然可用。
-- `src/app/(home)/home-experience.tsx` 处理核心位移、导航显示、焦点和无脚本入口；初始搜索快捷键关闭，地图和正文页不受影响。
-- `src/app/(home)/home-particles.tsx` 的 `DigitalParticleField` 从规则点阵生成2—3px方形像素（桌面间距11px、窄屏10px），分三层向右上缓慢漂移，水平速度约2.2/4.2/7px每秒，窄屏为70%；叠加轻微弯曲流向与连续明暗纹理。像素在屏幕外24px缓冲区循环衔接，文字背后的亮度按移动后的位置平滑降至十分之一，峰值透明度0.56；点击展开后保留90%亮度。使用48级透明度分组绘制，桌面约30fps、窄屏约20fps；动画时间按实际帧间隔累计，后台或场景离开视口时暂停并保留进度，减少动态效果时只绘制静态纹理。Canvas失败仍可操作入口。
-- 鼠标周围110px内叠加轻微避让，各层最大偏移4/7/10px，约0.3秒柔和响应，移开后约1—2秒恢复至持续漂移的原轨迹。仅精细鼠标指针启用；触屏、减少动态效果、窗口失焦或离开视口时清除指针影响。使用被动监听，不拦截卡片点击、滚动与键盘；卸载时清理监听器。
-- `src/app/(home)/home.module.css` 末尾“全息星图”区集中维护新版外观与动效。`--scene-purple/teal/blue` 控制三色，`--home-frame-width` 控制核心宽度；`orbitFloat` 控制6秒/3px的浮动；`mapReveal` 在230/350/470ms开始、分别持续420ms，与`HOME_REVEAL_MS`的900ms保持同步，仅淡入，不切割、模糊或移动卡片。
-- 地图文案、入口与暂存探索路线仍在 `home-content.ts`，主标题在 `page.tsx`。`showExploration = false` 继续保持关闭；暂存路线只使用当前地图节点地址。首页页脚只保留“更新记录”，不再展示“来源目录”和“项目进度”。
-
-系统开启“减少动态效果”后仍需点击激活，但直接显示入口，像素背景保持静态，卡片无淡入或浮动。无 JavaScript 时介绍框下显示三张地图的直接链接。动画使用原生 API 与现有图标，未新增依赖或远程素材。像素场为本项目独立实现；已取消发射、汇聚、径向爆发、光环与扫光。
-
-验证 1366×768、1440×900、1920×1080 和 390px 窄屏，检查激活、返回、刷新、导航、焦点和降级。新增 `scripts/test-home.mjs` 检查会话存储边界、路由隔离及静态无脚本入口。全站继续固定夜间主题。
+- `src/app/(home)/page.tsx` 维护首屏文案、搜索操作、地图入口和页脚；`home-content.ts` 统一维护地图名称、说明与地址。
+- `src/app/(home)/home-experience.tsx` 负责首页布局与返回时的转场就绪标记。`src/components/home-scene-state.tsx` 初始即为 `expanded`，保留减少动态效果检测和地图返回兼容逻辑。
+- `src/app/(home)/home-particles.tsx` 使用原方案的粒子画面作为纹理，以 GPU 局部位移呈现三个曲面错开、不规则的流动，保留原图的点云密度、曲面层次、景深和配色。文字、导航、按钮和标注由独立 HTML 元素呈现，不随纹理扭曲；未新增运行依赖。
+- `src/app/(home)/home.module.css` 维护深墨蓝背景、暖白文字、细分隔线及桌面和手机布局。三张地图的主题卡、关系图和阅读浮层沿用同一套视觉样式，领域以金色、生态以青色、认知以珍珠白区分。
+- 系统开启“减少动态效果”时使用静态粒子画面；GPU 或 Canvas 不可用时保留静态图片。装饰画面不截获点击；无 JavaScript 时，标题、导航和三个地图入口仍能直接阅读与访问。
+- `scripts/test-home.mjs` 检查静态导出首页的立即可见导航、三张地图链接、主入口、搜索操作及未启用的转场层。浏览器验收需覆盖 1366×768、1440×900、1920×1080 和 390px 窄屏，验证搜索、地图进入与返回、无脚本、减少动态效果以及页面无横向溢出。
 
 ### 文档正文
 
@@ -140,19 +136,26 @@ L7 是用户提供的 `认知地图关系图.html`，原件归档于 `map__text`
 
 ## 6. GitHub Pages 部署
 
-### 共享反馈接入准备
+### 共享反馈与发布配置
 
-`/feedback/`提供公开反馈表单、筛选、分页和稳定编号入口；地图总览、主题、知识点和正文均有反馈入口，可带入当前有效对象。表单支持提交前预览、逐字段校验、错误焦点、失败保留内容和限流重试倒计时；成功提交会进入该条详情，不会被之前的列表筛选隐藏。预览在未配置服务时仍可使用，明确标注尚未提交或保存。当前服务未配置，提交保持禁用，不发送请求，也不用浏览器本地存储或演示反馈代替共享数据。
+`/feedback/`提供公开反馈表单、筛选、分页和稳定编号入口；地图总览、主题、知识点和正文均有反馈入口，可带入当前有效对象。表单支持提交前预览、逐字段校验、错误焦点、失败保留内容及限流响应的重试倒计时；成功后进入该条详情。未配置服务时提交禁用，仍可预览，不用浏览器本地存储或演示记录代替共享数据。
 
-云端部署源码、数据库拒绝规则、管理字段说明和真实验收清单位于[后端说明](../feedback-cloud/README.md)。支持 PostgreSQL 与传统 CloudBase 文档数据库两种适配器，前端使用同一 HTTP 协议；[WorkBuddy 交接说明](../feedback-cloud/WORKBUDDY-HANDOFF.md)提供可复制的接入指令，[OpenAPI 契约](../feedback-cloud/openapi.json)定义请求和响应。复用当前 WorkBuddy 应用的数据库、云函数与受保护管理入口，不为复用代码另建云环境。本地测试不等于云端权限或跨设备验收。
+当前本地配置使用 WorkBuddy 托管 PostgreSQL 数据面，网页通过 SDK 调用 `list_feedback`、`get_feedback` 和 `submit_feedback`。接入与受保护管理入口见[当前 WorkBuddy 说明](../feedback-cloud/WORKBUDDY-CLOUD.md)。2026-11-06 的只读检查已从真实服务取得列表与一条已有详情（均 HTTP 200）；这不等于本轮已验证写入、跨设备持久化、管理员回复或云服务额度。
 
-只有云端真实验收后才配置`website/.env.example`中的公开接口基址和已核验标记，重新构建网站。不得在NEXT_PUBLIC变量中放数据库凭据、管理员密码或哈希密钥。未配置或未核验时按钮保持禁用；故障时展示错误，不伪造提交成功。
+GitHub Pages 自动构建不会读取本机未提交的 `.env.local`。在仓库 **Settings → Secrets and variables → Actions → Variables** 添加以下两个 Repository variables，再重新运行工作流：
 
-GitHub Pages 自动构建时，在仓库 Settings → Secrets and variables → Actions → Variables 中设置 `NEXT_PUBLIC_FEEDBACK_API_BASE_URL` 和 `NEXT_PUBLIC_FEEDBACK_SERVICE_VERIFIED`。前者是HTTPS基址（可带网关前缀，不包含末尾 `/feedback`），后者通过真实验收后设为 `true`；重新运行构建才会生效。两者都不是数据库凭据。静态构建元信息只记录是否配置，不包含接口地址；测试可验证开启和关闭两种构建状态。
+| 变量 | 设置内容 |
+| --- | --- |
+| `NEXT_PUBLIC_WORKBUDDY_CLOUD_ENDPOINT` | 当前 WorkBuddy 应用公开 HTTPS endpoint |
+| `NEXT_PUBLIC_WORKBUDDY_CLOUD_KEY` | 同一应用的 publishable key；仅使用可公开的应用标识 |
 
-云端活动对象白名单位于`feedback-cloud/data/targets.json`，与三图目录同步。`npm run check`验证一致性，地图内容变更后需同步该文件。更新日志的`UpdateEntry`支持可选`feedbackIds`数组；只引用真实反馈编号。实际发布后才填写反馈中的`releaseVersion`与“已完成”状态，下一发布版本预留v1.5。
+工作流会把这两项传给 Next.js 构建。不得填写数据库连接串、管理员凭据或服务器密钥。当前客户端优先使用配置完整且有效的 WorkBuddy 数据面；只有未启用此路径时，才回退到旧自建 HTTP 接口的 `NEXT_PUBLIC_FEEDBACK_API_BASE_URL` 与 `NEXT_PUBLIC_FEEDBACK_SERVICE_VERIFIED=true`。静态构建元信息只记录 `feedbackConfigured` 布尔值，不包含地址或凭据。发布后需实测正式域名的反馈列表，不能仅以该布尔值判断服务正常。
 
-网站测试包含反馈协议校验、未接通状态和云端业务/事务测试。首次运行前需执行`npm --prefix ../feedback-cloud ci --ignore-scripts`安装已锁定的云端依赖；CI会自动执行。真实设备A/B共享、平台权限拒绝、管理员回复和云服务额度仍须单独验收。本轮不自动提交、开通收费服务或发布。
+旧事件云函数、PostgreSQL 私有 schema 和传统 CloudBase 文档数据库适配器仍保留在[后端说明](../feedback-cloud/README.md)与[交接说明](../feedback-cloud/WORKBUDDY-HANDOFF.md)，其限频及白名单能力不应直接归于当前 SQL RPC 路径。`sql/003-workbuddy-targets.sql` 是本地准备的活动对象白名单补丁；需经受保护管理端审查并执行后才在真实数据库生效，本轮没有执行云端迁移。可信来源的业务限频仍需结合实际网关或服务器实现与验收。
+
+活动对象清单位于 `feedback-cloud/data/targets.json`，与三图目录同步；`npm run check`核对目录及白名单迁移内容，地图内容变更时需同步。更新日志的 `UpdateEntry` 支持可选 `feedbackIds`；只引用真实反馈编号，实际发布后才填写 `releaseVersion` 和“已完成”。
+
+网站测试包括前端反馈协议、禁用状态、旧适配器事务，以及当前托管 SQL RPC 的权限、幂等、分页、字段校验与本地白名单补丁。首次运行前执行 `npm --prefix ../feedback-cloud ci --ignore-scripts`；CI 也会安装锁定依赖。本地测试不代替真实设备 A/B、管理权限、平台来源限制及额度验收。本轮不自动提交、开通服务或发布。
 
 默认仓库为 `2008ccy/three_maps`，目标地址为 `https://2008ccy.github.io/three_maps/`。该地址仅是配置目标，不表示已经上线。
 
@@ -163,7 +166,7 @@ GitHub Pages 自动构建时，在仓库 Settings → Secrets and variables → 
 
 Pull Request 只检查和构建，不部署。构建或测试失败时不会触发发布，已上线版本保持不变。可恢复上一条已知可用提交再重新运行工作流回滚。若更换仓库名或使用根域名，调整工作流中的 `NEXT_PUBLIC_BASE_PATH`，并同步 `src/lib/shared.ts` 的 GitHub 编辑入口。
 
-GitHub Pages 只负责静态页面。共享反馈由独立云函数和数据库处理；后续 AI 接入同样需要服务端，密钥不能写入正文、浏览器代码或 `NEXT_PUBLIC_*` 变量。本版不增加用户登录或独立评论系统。
+GitHub Pages 只负责静态页面。共享反馈当前由 WorkBuddy 托管数据库 RPC 处理，旧云函数适配器仍保留；后续 AI 接入需要服务端，密钥不能写入正文、浏览器代码或 `NEXT_PUBLIC_*` 变量。本版不增加用户登录或独立评论系统。
 
 ## 7. 检查项与已知边界
 

@@ -2,7 +2,7 @@ export type TransitionMap = 'domain' | 'ecosystem' | 'cognition';
 export type TransitionDestination = TransitionMap | 'home';
 export type MapTransitionPhase = 'departing' | 'waiting' | 'arriving';
 export const TRANSITION_TIMEOUT_MS = 1500;
-export const mapTransitionColors: Record<TransitionMap, string> = { domain: '181,169,255', ecosystem: '139,216,195', cognition: '148,202,250' };
+export const mapTransitionColors: Record<TransitionMap, string> = { domain: '216,184,139', ecosystem: '110,214,223', cognition: '220,230,239' };
 export const mapTransitionNames: Record<TransitionMap, string> = { domain: '领域地图', ecosystem: '生态地图', cognition: '认知地图' };
 
 export function transitionTiming(destination: TransitionDestination) {

@@ -71,4 +71,14 @@ WHERE id = 'FB-xxxxxxxx-xxxx-4xxx-xxxx-xxxxxxxxxxxx';
 
 ## 建表脚本
 
-`feedback-cloud/sql/002-workbuddy-cloud.sql` 是可重放的完整脚本（建表、注释、索引、RLS、三个函数、授权），已在云端执行。
+`feedback-cloud/sql/002-workbuddy-cloud.sql` 是完整初始化脚本（建表、注释、索引、RLS、三个函数、授权），接入时记录为已在云端执行。它包含不带 IF NOT EXISTS 的建表与建索引语句，不应在已有表上直接重放。
+
+2026-11-06 的只读检查确认：真实 `list_feedback` 和 `get_feedback` 均返回 HTTP 200。此次没有提交、修改或删除反馈，不把只读可达性等同于写入或跨设备验收。
+
+`sql/003-workbuddy-targets.sql` 是本地准备、尚未执行到云端的后续补丁：
+
+- 通过活动目标表和 INSERT trigger 拒绝不存在、退役或属于其他地图的节点；历史公开反馈仍可读取。
+- 新提交的参考链接拒绝 authority 中的用户名密码和未编码空白，保留 HTTP/HTTPS、编码空格和路径中的 @。
+- 目标清单与 `data/targets.json` 一起维护，`website` 的 `npm run check` 校验两者与当前地图一致。补丁本身可重复执行。
+
+应用补丁需由管理员在受保护 SQL 管理端审阅并执行；本轮没有连接管理凭据或执行迁移。来源限频仍未在此 RPC 源码中实现，不能把旧云函数适配器的“每来源每分钟 5 条”测试结果当作当前 RPC 的已上线能力；需要实际可信网关或服务端补充并验收。

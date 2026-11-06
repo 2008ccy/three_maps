@@ -33,21 +33,36 @@ test('home scene route checks do not suppress navigation or search on documents'
   for (const route of ['/docs/domain/', '/three_maps/docs/cognition/', '/three_maps-copy/', '/other/']) assert.equal(isHomeRoute(route, '/three_maps'), false);
 });
 
-test('exported first visit has an activation target and usable no-script map links', () => {
+test('exported first visit immediately exposes navigation and usable map links without JavaScript', () => {
   const html = readFileSync('out/index.html', 'utf8');
   const $ = load(html, { scriptingEnabled: false });
-  assert.equal($('[data-home-phase="intro"]').length, 1);
-  assert.equal($('button[aria-label="展开三张地图"]').length, 1);
-  assert.equal($('#nd-nav').length, 0);
-  assert.equal($('footer[hidden]').length, 1);
+  const unavailable = '[hidden], [inert], [aria-hidden="true"]';
+  assert.equal($('[data-home-phase="expanded"]').length, 1);
+  assert.equal($('h1#home-title').length, 1);
+  assert.equal($('h1').length, 1);
+  assert.equal($('#nd-nav').length, 1);
+  assert.equal($('#nd-nav').closest(unavailable).length, 0);
+  assert.equal($('footer').length, 1);
+  assert.equal($('footer').closest(unavailable).length, 0);
   assert.equal($('#explore, a[href="#explore"]').length, 0);
   for (const map of ['domain', 'ecosystem', 'cognition']) {
-    assert.equal($(`noscript a[href="${basePath}/docs/${map}/"]`).length, 1, map);
-    assert.equal($(`[data-home-map="${map}"]`).closest('[inert][aria-hidden="true"]').length, 1, map);
+    const link = $(`a[data-home-map="${map}"]`);
+    assert.equal(link.length, 1, map);
+    assert.equal(link.attr('href'), `${basePath}/docs/${map}/`, map);
+    assert.equal(link.find('h2').text().trim(), maps.find((item) => item.id === map).title, map);
+    assert.equal(link.closest(unavailable).length, 0, `${map} remains available without activation`);
   }
+  const hero = $('[data-home-hero]');
+  assert.equal(hero.length, 1);
+  const start = hero.find(`a[href="${basePath}/docs/domain/"]`).filter((_, item) => /开始探索/.test($(item).text()));
+  assert.equal(start.length, 1, 'primary action enters the domain map');
+  const search = hero.find('button').filter((_, item) => /搜索/.test($(item).attr('aria-label') ?? $(item).text()));
+  assert.equal(search.length, 1, 'homepage offers an identifiable search action');
+  assert.equal(search.closest(unavailable).length, 0);
   assert.equal($('canvas[aria-hidden="true"]').length, 1);
   assert.equal($('[data-map-transition="idle"][hidden]').length, 1, 'transition layer is inactive in static/no-script output');
-  assert.deepEqual($('footer nav a').map((_, item) => $(item).text().trim()).get(), ['更新记录']);
+  assert.equal($(`footer nav a[href="${basePath}/docs/project/updates/"]`).length, 1);
+  assert.equal($(`footer nav a[href="${basePath}/feedback/"]`).length, 1);
   assert.equal($(`footer a[href^="${basePath}/docs/sources"], footer a[href^="${basePath}/docs/project/status"]`).length, 0);
 });
 

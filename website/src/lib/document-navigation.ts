@@ -14,6 +14,7 @@ export function documentReturnTarget(pathname: string) {
 }
 
 export const previousAppUrlKey = 'threeMapsPreviousUrl';
+export const appLocationChangeEvent = 'three-maps:location-change';
 
 export function isAppUrl(value: unknown, origin: string, basePath: string) {
   if (typeof value !== 'string') return false;

@@ -73,7 +73,7 @@ const abortError = () => new DOMException('Aborted', 'AbortError');
 
 // 与 fetch 同签名的适配器：让 feedback-client 的契约校验、错误文案与幂等键
 // 逻辑完全复用，只替换传输层。
-export function createCloudFeedbackFetcher(): typeof fetch {
+export function createCloudFeedbackFetcher(rpc: typeof call = call): typeof fetch {
   return async (input, init) => {
     const request = new Request(input as RequestInfo, init);
     const signal = request.signal;
@@ -84,7 +84,7 @@ export function createCloudFeedbackFetcher(): typeof fetch {
     const run = async (): Promise<Response> => {
       try {
         if (request.method === 'GET' && route === '/feedback') {
-          const { data, error } = await call<{ items: unknown[]; nextCursor: string | null }>('list_feedback', {
+          const { data, error } = await rpc<{ items: unknown[]; nextCursor: string | null }>('list_feedback', {
             p_map: searchParams.get('map'), p_type: searchParams.get('type'), p_status: searchParams.get('status'),
             p_cursor: searchParams.get('cursor'), p_limit: 20,
           });
@@ -93,7 +93,7 @@ export function createCloudFeedbackFetcher(): typeof fetch {
         }
 
         if (request.method === 'GET' && route.startsWith('/feedback/')) {
-          const { data, error } = await call<unknown>('get_feedback', { p_id: decodeURIComponent(route.slice('/feedback/'.length)) });
+          const { data, error } = await rpc<unknown>('get_feedback', { p_id: decodeURIComponent(route.slice('/feedback/'.length)) });
           if (error) return failure(statusForError(error.code), '反馈信息无效，请检查内容与链接。');
           if (!data) return json({ error: { code: 'NOT_FOUND', message: '这条反馈不存在或暂未公开。' } }, 404);
           return json({ item: data });
@@ -101,7 +101,7 @@ export function createCloudFeedbackFetcher(): typeof fetch {
 
         if (request.method === 'POST' && route === '/feedback') {
           const body = JSON.parse(await request.text()) as { target?: { mapId?: string; nodeId?: string }; type?: string; content?: string; nickname?: string; referenceUrl?: string };
-          const { data, error } = await call<unknown>('submit_feedback', {
+          const { data, error } = await rpc<unknown>('submit_feedback', {
             p_request_key: request.headers.get('Idempotency-Key') ?? '',
             p_map_id: body.target?.mapId ?? null,
             p_node_id: body.target?.nodeId ?? null,

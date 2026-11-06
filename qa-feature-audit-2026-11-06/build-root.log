@@ -1,0 +1,71 @@
+
+> three-maps-website@1.0.0 build
+> next build --webpack && node scripts/write-build-info.mjs
+
+▲ Next.js 16.4.2 (webpack)
+- Environments: .env.local
+✓ Running next.config.mjs took 35ms
+
+  Creating an optimized production build ...
+<w> [webpack.cache.PackFileCacheStrategy/webpack.FileSystemInfo] Parsing of /Users/changyichen/Developer/projects/three_maps/website/node_modules/fumadocs-mdx/dist/eval-Cnxpyc4j.js for build dependencies failed at 'import(pathToFileURL(outfile).href)'.
+<w> Build dependencies behind this expression are ignored and might cause incorrect cache invalidation.
+<w> [webpack.cache.PackFileCacheStrategy/webpack.FileSystemInfo] Parsing of /Users/changyichen/Developer/projects/three_maps/website/node_modules/fumadocs-mdx/dist/load-from-file-DGFWQ0eg.js for build dependencies failed at 'import(url.href)'.
+<w> Build dependencies behind this expression are ignored and might cause incorrect cache invalidation.
+<w> [webpack.cache.PackFileCacheStrategy/webpack.FileSystemInfo] Parsing of /Users/changyichen/Developer/projects/three_maps/website/node_modules/fumadocs-mdx/dist/load-from-file-DGFWQ0eg.js for build dependencies failed at 'import(url.href)'.
+<w> Build dependencies behind this expression are ignored and might cause incorrect cache invalidation.
+Found 2 warnings while optimizing generated CSS:
+
+Issue #1:
+[2m│     }[22m
+[2m│   }[22m
+[2m│[22m   .\[\&_\:\:highlight\(fd-search\)\]\:text-fd-primary ::highlight(fd-search) {
+[2m┆[22m                                                                   [33m[2m^--[22m 'highlight' is not recognized as a valid pseudo-element. Did you mean ':highlight' (pseudo-class) or is this a typo?[39m
+[2m┆[22m
+[2m│     color: var(--color-fd-primary);[22m
+[2m│   }[22m
+
+Issue #2:
+[2m│     color: var(--color-fd-primary);[22m
+[2m│   }[22m
+[2m│[22m   .\[\&_\:\:highlight\(fd-search\)\]\:underline ::highlight(fd-search) {
+[2m┆[22m                                                             [33m[2m^--[22m 'highlight' is not recognized as a valid pseudo-element. Did you mean ':highlight' (pseudo-class) or is this a typo?[39m
+[2m┆[22m
+[2m│     text-decoration-line: underline;[22m
+[2m│   }[22m
+
+<w> [webpack.cache.PackFileCacheStrategy/webpack.FileSystemInfo] Parsing of /Users/changyichen/Developer/projects/three_maps/website/node_modules/fumadocs-mdx/dist/load-from-file-DGFWQ0eg.js for build dependencies failed at 'import(url.href)'.
+<w> Build dependencies behind this expression are ignored and might cause incorrect cache invalidation.
+✓ Compiled successfully in 9.6s
+  Running TypeScript ...
+  Finished TypeScript in 284ms ...
+  Collecting page data using 10 workers ...
+  Generating static pages using 10 workers (0/74) ...
+  Generating static pages using 10 workers (18/74) 
+  Generating static pages using 10 workers (36/74) 
+  Generating static pages using 10 workers (55/74) 
+✓ Generating static pages using 10 workers (74/74) in 514ms
+  Finalizing page optimization ...
+  Collecting build traces ...
+
+Route (app)
+┌ ○ /
+├ ○ /_not-found
+├ ○ /api/search
+├   /docs/[[...slug]]
+│ ├ ● /docs/cognition/habits
+│ ├ ● /docs/cognition/loss
+│ ├ ● /docs/cognition/perspectives
+│ └ ● [+63 more paths]
+├ ○ /docs/cognition
+├ ○ /docs/domain
+├ ○ /docs/ecosystem
+└ ○ /feedback
+
+
+○  (Static)  prerendered as static content
+●  (SSG)     prerendered as static HTML (uses generateStaticParams)
+
+(node:79566) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///Users/changyichen/Developer/projects/three_maps/website/src/lib/feedback-client.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to /Users/changyichen/Developer/projects/three_maps/website/package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)

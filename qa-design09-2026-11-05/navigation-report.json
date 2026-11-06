@@ -1,0 +1,38 @@
+{
+  "routes": [
+    {
+      "map": "domain",
+      "focus": "H1",
+      "returned": "domain"
+    },
+    {
+      "map": "ecosystem",
+      "focus": "H1",
+      "returned": "ecosystem"
+    },
+    {
+      "map": "cognition",
+      "focus": "H1",
+      "returned": "cognition"
+    }
+  ],
+  "wideMobile": {
+    "width": 650,
+    "scroll": 650
+  },
+  "fallbackSnapshot": {
+    "ids": [
+      "transition-695-particle-mask-_R_aluiuqlb_-blur",
+      "transition-695-particle-mask-_R_aluiuqlb_"
+    ],
+    "refs": [
+      "transition-695-particle-mask-_R_aluiuqlb_-blur",
+      "transition-695-particle-mask-_R_aluiuqlb_-blur",
+      "transition-695-particle-mask-_R_aluiuqlb_",
+      "transition-695-particle-mask-_R_aluiuqlb_"
+    ],
+    "allLocal": true
+  },
+  "noScriptNavigation": true,
+  "errors": []
+}

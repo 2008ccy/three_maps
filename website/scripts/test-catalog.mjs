@@ -3,6 +3,32 @@ import { readFileSync } from 'node:fs';
 import assert from 'node:assert/strict';
 import { maps, flattenNodes } from '../src/lib/maps/content.ts';
 import { buildCatalog, buildEdges, resolveCatalogNode, filterCatalog, emptyFilters, catalogQuery, readCatalogQuery } from '../src/lib/maps/catalog.ts';
+import { zoomGraphCamera } from '../src/lib/maps/graph-camera.ts';
+
+test('mobile graph zoom-out keeps its fitted overview instead of enlarging it', () => {
+  const viewport = { width: 350, height: 520 }, graph = { width: 1204, height: 600 };
+  const scale = Math.min(1, viewport.width / graph.width, viewport.height / graph.height);
+  const fitted = { scale, x: (viewport.width - graph.width * scale) / 2, y: (viewport.height - graph.height * scale) / 2 };
+  const out = zoomGraphCamera(fitted, 1 / 1.2, viewport, graph);
+  assert.ok(out.scale <= fitted.scale, 'minus must never enlarge the mobile overview');
+  assert.deepEqual(out, fitted, 'the full fitted overview remains the lower zoom boundary');
+  const enlarged = zoomGraphCamera(fitted, 1.2, viewport, graph);
+  assert.ok(enlarged.scale > fitted.scale);
+  const restored = zoomGraphCamera(enlarged, 1 / 1.2, viewport, graph);
+  assert.ok(Math.abs(restored.scale - fitted.scale) < 1e-10);
+});
+
+test('graph zoom preserves the viewport center and existing desktop zoom bounds', () => {
+  const viewport = { width: 1204, height: 560 }, graph = { width: 1204, height: 600 };
+  const camera = { x: -130, y: 45, scale: 1 };
+  const pointAtCenter = (value) => [(viewport.width / 2 - value.x) / value.scale, (viewport.height / 2 - value.y) / value.scale];
+  for (const factor of [1 / 1.2, 1.2, 100, .001]) {
+    const result = zoomGraphCamera(camera, factor, viewport, graph);
+    const before = pointAtCenter(camera), after = pointAtCenter(result);
+    before.forEach((coordinate, index) => assert.ok(Math.abs(coordinate - after[index]) < 1e-10));
+    assert.ok(result.scale >= .4 && result.scale <= 1.8);
+  }
+});
 
 for (const map of maps) {
   test(`${map.id}: catalog preserves every node, path and evidence boundary`, () => {

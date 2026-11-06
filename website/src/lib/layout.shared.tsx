@@ -1,11 +1,13 @@
 import type { BaseLayoutProps } from 'fumadocs-ui/layouts/shared';
 import { appName, gitConfig } from './shared';
 import { Network } from 'lucide-react';
+import { SiteHeader } from '@/components/site-header';
 
 export function baseOptions(): BaseLayoutProps {
   return {
     themeSwitch: { enabled: false },
     nav: {
+      component: <SiteHeader />,
       // JSX supported
       title: <><Network size={22} className="text-fd-primary" /><span>{appName}</span><span className="brand-note">模型构建</span></>,
     },

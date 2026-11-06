@@ -3,6 +3,7 @@
 import { useEffect, useId, useMemo, useRef, useState } from 'react';
 import { Focus, Minus, Plus, RotateCcw } from 'lucide-react';
 import type { CatalogNode, MapEdge } from '@/lib/maps/catalog';
+import { zoomGraphCamera } from '@/lib/maps/graph-camera';
 import styles from './maps.module.css';
 
 type Props = { nodes: CatalogNode[]; allNodes: CatalogNode[]; edges: MapEdge[]; selected: string | null; scope: 'core' | 'all'; onScope: (scope: 'core' | 'all') => void; onSelect: (id: string) => void };
@@ -34,7 +35,7 @@ export function DomainGraph({ nodes, allNodes, edges, selected, scope, onScope, 
     if (node) setCamera({ x: size.width / 2 - (node.x + 100), y: size.height / 2 - (node.y + 30), scale: 1 });
   };
   useEffect(() => { if (selected) focus(); }, [selected]); // eslint-disable-line react-hooks/exhaustive-deps
-  const zoom = (factor: number) => setCamera((current) => { const scale = Math.min(1.8, Math.max(.4, current.scale * factor)), ratio = scale / current.scale; return { scale, x: size.width / 2 - (size.width / 2 - current.x) * ratio, y: size.height / 2 - (size.height / 2 - current.y) * ratio }; });
+  const zoom = (factor: number) => setCamera((current) => zoomGraphCamera(current, factor, size, layout));
   return <section className={`${styles.graph} ${styles.domainGraph}`} aria-label="知识关系图">
     <header className={styles.graphHeader}><div><strong>看见知识之间的联系</strong><span>箭头：有向联系 · 无箭头：比较或互补 · 主题分区表示归属</span></div><div className={styles.graphControls}>
       <button type="button" aria-label="缩小关系图" onClick={() => zoom(1 / 1.2)}><Minus size={16} /></button><output>{Math.round(camera.scale * 100)}%</output><button type="button" aria-label="放大关系图" onClick={() => zoom(1.2)}><Plus size={16} /></button><button type="button" aria-label="聚焦所选节点" disabled={!selected} onClick={focus}><Focus size={16} /></button><button type="button" aria-label="恢复关系图总览" onClick={reset}><RotateCcw size={16} /></button>

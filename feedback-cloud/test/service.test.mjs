@@ -55,7 +55,7 @@ test('Unicode length, optional fields and HTTP(S) links are checked server-side'
   for (const content of ['1234', '😀'.repeat(1001)]) assert.throws(() => validateInput({ ...input, content }, current));
   assert.equal(validateInput({ ...input, content: '😀'.repeat(1000) }, current).content.length, 2000);
   assert.throws(() => validateInput({ ...input, nickname: '😀'.repeat(21) }, current));
-  for (const referenceUrl of ['javascript:alert(1)', '/relative', 'https://user:pass@example.test', 'data:text/html,test', 'https://example.test/' + 'x'.repeat(2048)]) {
+  for (const referenceUrl of ['javascript:alert(1)', '/relative', 'https://user:pass@example.test', 'https://example.test/with space', 'https://exa mple.test/path', 'data:text/html,test', 'https://example.test/' + 'x'.repeat(2048)]) {
     assert.throws(() => validateInput({ ...input, referenceUrl }, current));
   }
   assert.equal(validateInput({ ...input, nickname: '', referenceUrl: ' https://example.test/ ' }, current).referenceUrl, 'https://example.test/');

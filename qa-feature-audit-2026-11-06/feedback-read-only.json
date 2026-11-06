@@ -1,0 +1,44 @@
+{
+  "configured": true,
+  "transport": "WorkBuddy SDK read-only GET RPC",
+  "requests": [
+    {
+      "method": "GET",
+      "status": 200,
+      "milliseconds": 2620
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "milliseconds": 2071
+    },
+    {
+      "method": "GET",
+      "status": 401,
+      "milliseconds": 482
+    }
+  ],
+  "list": {
+    "errorCode": null,
+    "validShape": true,
+    "count": 1,
+    "hasNextCursor": true
+  },
+  "detail": {
+    "errorCode": null,
+    "sameId": true,
+    "publicFields": [
+      "id",
+      "type",
+      "status",
+      "target",
+      "content",
+      "nickname",
+      "createdAt"
+    ]
+  },
+  "directTableRead": {
+    "errorCode": "DATABASE_42501",
+    "denied": true
+  }
+}

@@ -15,6 +15,7 @@ const object = (value) => value !== null && typeof value === 'object' && !Array.
 function strictKeys(value, allowed) { if (!object(value) || Object.keys(value).some((key) => !allowed.includes(key))) throw invalid(); }
 function validDate(value) { return typeof value === 'string' && datePattern.test(value) && new Date(value).toISOString() === value; }
 export function referenceUrl(value) {
+  if (/\s/.test(value)) return false;
   try { const url = new URL(value); return ['https:', 'http:'].includes(url.protocol) && !!url.hostname && !url.username && !url.password; } catch { return false; }
 }
 export function allowedOrigin(value) {

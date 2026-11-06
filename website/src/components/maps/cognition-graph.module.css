@@ -9,26 +9,26 @@
   padding: 24px 24px 26px;
   min-height: 0;
 }
-.root { grid-column: 1 / -1; grid-row: 1; justify-self: center; width: min(360px, 100%); text-align: center; border: 1px solid var(--map-border); border-radius: 20px; background: #19171f; padding: 16px 24px; box-shadow: var(--map-glow); margin-bottom: 28px; }
-.root > span { color: #a79abb; font-size: 9px; letter-spacing: .1em; }
+.root { grid-column: 1 / -1; grid-row: 1; justify-self: center; width: min(360px, 100%); text-align: center; border: 1px solid var(--map-border); border-radius: 4px; background: #0b1621; padding: 16px 24px; box-shadow: none; margin-bottom: 28px; }
+.root > span { color: #a8b3bb; font-size: 9px; letter-spacing: .1em; }
 .root h1 { font-size: 30px; line-height: 1.4; font-weight: 600; margin: 10px 0 8px; outline: none; }
-.root p { color: #bdb4cb; font-size: 12px; line-height: 1.6; }
-.node { position: relative; grid-column: var(--column); grid-row: var(--row); border: 1px solid #84749e60; border-radius: 13px; background: #19171f; text-align: left; padding: 16px; min-width: 0; display: flex; flex-direction: column; justify-content: center; gap: 9px; transition: border-color 250ms, background 250ms, box-shadow 250ms; }
-.node strong { color: #e8e3f1; font-size: 14px; line-height: 1.7; font-weight: 500; overflow-wrap: anywhere; }
-.node > span { color: #a59bb4; font-size: 10px; line-height: 1.8; display: flex; justify-content: space-between; gap: 6px; }
-.node > span svg { flex-shrink: 0; margin-top: 3px; color: #b9acda; }
-.node[data-diagram-kind=branch] { border-color: #a18dc67a; background: #211c2c; }
+.root p { color: #b7c2cb; font-size: 12px; line-height: 1.6; }
+.node { position: relative; grid-column: var(--column); grid-row: var(--row); border: 1px solid #8e979e60; border-radius: 4px; background: #0b1621; text-align: left; padding: 16px; min-width: 0; display: flex; flex-direction: column; justify-content: center; gap: 9px; transition: border-color 250ms, background 250ms; }
+.node strong { color: #e9edf1; font-size: 14px; line-height: 1.7; font-weight: 500; overflow-wrap: anywhere; }
+.node > span { color: #a2acb4; font-size: 10px; line-height: 1.8; display: flex; justify-content: space-between; gap: 6px; }
+.node > span svg { flex-shrink: 0; margin-top: 3px; color: #c4d0da; }
+.node[data-diagram-kind=branch] { border-color: #b2bdc67a; background: #15212c; }
 .node[data-diagram-kind=branch] strong { font-size: 18px; }
-.node[data-diagram-kind=case] { background: #1c1922; }
-.node:is(:hover, :focus-visible), .node[aria-pressed=true] { border-color: #b9acda; background: #292235; box-shadow: 0 0 20px -10px #b9acda55; }
+.node[data-diagram-kind=case] { background: #101922; }
+.node:is(:hover, :focus-visible), .node[aria-pressed=true] { border-color: #c4d0da; background: #192735; box-shadow: none; }
 .edges { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; overflow: visible; z-index: -1; }
-.edges path { fill: none; stroke: #9d8ebc80; stroke-width: 1.2; transition: stroke 250ms; }
-.edges marker path { stroke: #b9acda; }
-.edges g[data-edge-kind=feedback] > path { stroke-dasharray: 5 5; stroke: #b9acda; }
-.edges g[data-active=true] > path { stroke: #e0d3ff; stroke-width: 1.8; }
+.edges path { fill: none; stroke: #a9b4bc80; stroke-width: 1.2; transition: stroke 250ms; }
+.edges marker path { stroke: #c4d0da; }
+.edges g[data-edge-kind=feedback] > path { stroke-dasharray: 5 5; stroke: #c4d0da; }
+.edges g[data-active=true] > path { stroke: #f6fbff; stroke-width: 1.8; }
 .edgeLabel rect { fill: #111; }
-.edgeLabel text { fill: #b9acda; font: 10px system-ui, sans-serif; }
-.note { grid-row: 6; grid-column: 1 / -1; color: #aca1b8; font-size: 11px; line-height: 2; padding-top: 2px; }
+.edgeLabel text { fill: #c4d0da; font: 10px system-ui, sans-serif; }
+.note { grid-row: 6; grid-column: 1 / -1; color: #a6b0b8; font-size: 11px; line-height: 2; padding-top: 2px; }
 @media (min-width: 761px) and (max-width: 1000px) {
   .canvas.canvas { column-gap: 30px; padding-inline: 20px; }
   .node { padding: 12px; }

@@ -1,0 +1,23 @@
+.header { position: sticky; top: 0; z-index: 40; background: #060f18f2; backdrop-filter: blur(16px); }
+.inner { width: min(1440px,calc(100% - 96px)); min-height: 76px; margin: 0 auto; display: flex; align-items: center; gap: 28px; border-bottom: 1px solid #71879743; }
+.brand { display: inline-flex; align-items: center; gap: 17px; color: #f2f2f0; font-size: 24px; font-weight: 650; letter-spacing: -.035em; white-space: nowrap; }
+.brand > svg { flex-shrink: 0; }
+.note { margin-left: 5px; padding-left: 25px; border-left: 1px solid #71879770; color: #b4bec8; font-size: 15px; font-weight: 400; letter-spacing: .03em; }
+.links { display: flex; align-items: center; gap: 34px; margin-left: auto; }
+.links a { position: relative; display: inline-flex; min-height: 44px; align-items: center; color: #dfe4e8; font-size: 15px; transition: color .2s; }
+.links a:hover,.links a[aria-current=page] { color: #7bd7df; }
+.links a[aria-current=page]::after { content: ''; position: absolute; bottom: -16px; height: 1px; background: #7bd7df; left: 0; right: 0; }
+.search { display: grid; place-items: center; width: 44px; height: 44px; margin-right: -10px; color: #eef2f4; cursor: pointer; border-radius: 4px; }
+.search:hover { background: #ffffff08; color: #7bd7df; }
+.header :is(a,button):focus-visible { outline: 2px solid #7bd7df; outline-offset: 5px; }
+@media (max-width:1000px) { .inner { width: calc(100% - 56px); gap: 18px; } .brand { font-size: 22px; gap: 12px; } .note { font-size: 12px; padding-left: 15px; } .links { gap: 22px; } .links a { font-size: 14px; } }
+@media (max-width:650px) {
+  .inner { width: calc(100% - 40px); min-height: 100px; padding-top: 10px; gap: 0; flex-wrap: wrap; }
+  .brand { font-size: 20px; gap: 10px; }
+  .brand > svg { width: 25px; height: 25px; }
+  .note { margin-left: 3px; padding-left: 13px; font-size: 11px; }
+  .search { margin-left: auto; }
+  .links { order: 3; width: 100%; justify-content: space-between; gap: 18px; }
+  .links a { min-height: 42px; font-size: 13px; }
+  .links a[aria-current=page]::after { bottom: 0; }
+}

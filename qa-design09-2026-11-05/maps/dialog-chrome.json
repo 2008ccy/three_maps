@@ -1,0 +1,92 @@
+[
+  {
+    "map": "domain",
+    "level": "topic",
+    "box": {
+      "x": 336,
+      "y": 11,
+      "width": 38,
+      "height": 36
+    },
+    "styles": {
+      "visibility": "visible",
+      "opacity": "1",
+      "offsetParent": "ASIDE"
+    }
+  },
+  {
+    "map": "domain",
+    "level": "reading",
+    "box": {
+      "x": 336,
+      "y": 11,
+      "width": 38,
+      "height": 36
+    },
+    "styles": {
+      "visibility": "visible",
+      "opacity": "1",
+      "offsetParent": "ASIDE"
+    }
+  },
+  {
+    "map": "ecosystem",
+    "level": "topic",
+    "box": {
+      "x": 336,
+      "y": 11,
+      "width": 38,
+      "height": 36
+    },
+    "styles": {
+      "visibility": "visible",
+      "opacity": "1",
+      "offsetParent": "ASIDE"
+    }
+  },
+  {
+    "map": "ecosystem",
+    "level": "reading",
+    "box": {
+      "x": 336,
+      "y": 36,
+      "width": 38,
+      "height": 36
+    },
+    "styles": {
+      "visibility": "visible",
+      "opacity": "1",
+      "offsetParent": "ASIDE"
+    }
+  },
+  {
+    "map": "cognition",
+    "level": "topic",
+    "box": {
+      "x": 336,
+      "y": 11,
+      "width": 38,
+      "height": 36
+    },
+    "styles": {
+      "visibility": "visible",
+      "opacity": "1",
+      "offsetParent": "ASIDE"
+    }
+  },
+  {
+    "map": "cognition",
+    "level": "reading",
+    "box": {
+      "x": 336,
+      "y": 36,
+      "width": 38,
+      "height": 36
+    },
+    "styles": {
+      "visibility": "visible",
+      "opacity": "1",
+      "offsetParent": "ASIDE"
+    }
+  }
+]

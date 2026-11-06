@@ -7,6 +7,7 @@ export const feedbackIdPattern = /^FB-[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab
 export const releaseVersionPattern = /^v\d+\.\d+$/;
 const characterCount = (value: string) => Array.from(value).length;
 export function isPublicReferenceUrl(value: string) {
+  if (/\s/.test(value)) return false;
   try {
     const url = new URL(value);
     return ['http:', 'https:'].includes(url.protocol) && !!url.hostname && !url.username && !url.password;

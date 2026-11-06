@@ -1,0 +1,35 @@
+{
+  "desktop": {
+    "width": 1440,
+    "scroll": 1440,
+    "hero": {
+      "x": 48,
+      "y": 76,
+      "width": 1344,
+      "height": 596.515625,
+      "top": 76,
+      "right": 1392,
+      "bottom": 672.515625,
+      "left": 48
+    },
+    "ready": "true",
+    "heading": "从预训练模型，\n走向有依据的回答。"
+  },
+  "mobile": {
+    "width": 390,
+    "scroll": 390,
+    "hero": {
+      "x": 20,
+      "y": 100,
+      "width": 350,
+      "height": 640,
+      "top": 100,
+      "right": 370,
+      "bottom": 740,
+      "left": 20
+    }
+  },
+  "reducedStatic": true,
+  "search": "ESC\n\n领域地图\n系统\n\nRAG\n\nRAG 是检索增强生成：先按问题从资料中寻找相关片段，再把这些片段交给模型组织回答。这里的“增强”是提供外部上下文，不意味着资料一旦给到模型，回答就自动正确。先保存问题与命中的片段，才能判断后续错误发生在哪里。\n\nRAG 提供回答时的资料，SFT 改善通过示范学习的行为，两者可以组合而非必须二选一。\n\n如果支持片段没有被找到，应先查资料处理和检索；如果资料已经正确返回，却被回答误用，应查提示、生成和证据核对。本网站采用这一应用思路，不声称复现原始 RAG 论文的全部训练设计。\n\n微调一定优于 RAG\n\n认知地图\n三个观\n\n发展观\n\nRAG补入外部资料，参数适配调整模型行为，量化改变资源条件；出现时间不能代替任务比较。\n\n跨图探索\n\nK-RAG → T-RETRIEVAL → E-RAG → 榜单案例。\n\n起点\n关系\n终点\n依据/性质\nK-RAG\n研究来源\nE-RAG / RAG 论文\nS02，资料事实\n课程答疑任务\n采用的第一版候选路线\nK-RAG\n本组执行方案，依据见构建流程与成本案例\n认知地图\n成长习惯\n\n定义问题与记录证据\n\n“使用RAG”是实现选择，还需说明解决什么困难。\n\n领域地图\n训练与适配\n\n监督微调 SFT\n\n微调改变模型参数，RAG 在回答时提供外部资料。资料缺失和输出习惯不合适，需要分别排查。\n\n认知地图\n分析方法\n\n效果与成本取舍\n\n自托管和API是运行路线，RAG和适配改变其他环节。按各自作用组合，不把它们混成同一种商品。\n\n生态地图\n运行与工具\n\n工具协作：Transformers、PEFT、TRL\n\nHugging Face 与社区贡献者提供模型生态中的工具。Transformers 提供模型与分词器的加载、生成接口，PEFT 提供 LoRA 等适配实现，TRL 的 SFTTrainer 组织监督微调流程。\n\n领域地图\n系统\n\n检索与证据片段\n\n保留片段编号与文字，交给 RAG 的回答过程，再核对是否正确使用。\n\n来源与依据\n\nHugging Face，Transformers PEFT 集成；LLM Course\n\nLewis 等，Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks，2020\n\nCreating a GitHub Pages site\n\nHugging Face，Transformers 文档\n\nHugging Face，PEFT LoRA 概念指南\n\nHugging Face，TRL SFT Trainer\n\nStanford CS336，Spring 2026 页面\n\n生态地图\n模型与研究来源\n\n研究贡献：结构、RAG 与 LoRA\n\n研究者通过论文交付方法与实验依据。Transformer 结构、RAG 的检索生成思路、LoRA 的低秩适配，各自解决不同问题。\n\n把外部资料的使用对应到 RAG 思路。\n\nLewis 等 · RAG",
+  "errors": []
+}

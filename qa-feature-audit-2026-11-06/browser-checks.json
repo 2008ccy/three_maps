@@ -1,0 +1,168 @@
+{
+  "date": "2026-11-06",
+  "timezone": "Asia/Shanghai",
+  "method": "CUA browser interaction, source review, static export and automated tests",
+  "automated": {
+    "frontendPassed": 95,
+    "backendPassed": 27,
+    "failed": 0,
+    "htmlPages": 74,
+    "linksAndAssets": 3237,
+    "rootBuild": true,
+    "subpathBuild": "/three_maps"
+  },
+  "browser": [
+    {
+      "feature": "answer disclosure",
+      "result": "pass"
+    },
+    {
+      "feature": "dialog keyboard Tab wraps inside panel",
+      "result": "pass"
+    },
+    {
+      "feature": "first/next knowledge point and history back/forward",
+      "result": "pass"
+    },
+    {
+      "feature": "Escape closes top search while retaining reading panel",
+      "result": "pass"
+    },
+    {
+      "feature": "empty filter and reset",
+      "result": "pass"
+    },
+    {
+      "feature": "type=训练方法 and q=LoRA intersection",
+      "result": "pass",
+      "matchedPoints": 2,
+      "totalPoints": 18
+    },
+    {
+      "feature": "filter URL refresh restoration",
+      "result": "pass"
+    },
+    {
+      "feature": "same-map search Enter opens reader",
+      "result": "fixed and pass",
+      "maps": [
+        "domain",
+        "cognition"
+      ],
+      "testedPrefix": "/three_maps"
+    },
+    {
+      "feature": "cross-map domain→ecosystem→back and domain→cognition",
+      "result": "pass",
+      "restoredRagReadingScroll": 2022.5
+    },
+    {
+      "feature": "locate closes reader and reveals selected graph node",
+      "result": "fixed and pass",
+      "maps": [
+        "domain",
+        "ecosystem",
+        "cognition"
+      ]
+    },
+    {
+      "feature": "explicit locate scrolls graph into viewport",
+      "result": "fixed and pass",
+      "ragTop": 430.3984375,
+      "ragBottom": 490.3984375,
+      "viewportHeight": 900,
+      "canvasScrollTop": 0,
+      "canvasScrollLeft": 0
+    },
+    {
+      "feature": "panned graph focus restore",
+      "result": "pass",
+      "panned": "translate(-449px, 76px) scale(1)",
+      "restored": "translate(-389px, 76px) scale(1)"
+    },
+    {
+      "feature": "close reader retains graph focus target",
+      "result": "pass",
+      "maps": [
+        "ecosystem",
+        "cognition"
+      ]
+    },
+    {
+      "feature": "ecosystem all-chain overview clears previous focus",
+      "result": "pass"
+    },
+    {
+      "feature": "filter excludes previous graph focus",
+      "result": "pass"
+    },
+    {
+      "feature": "mobile domain minus never zooms in from fit",
+      "result": "fixed and pass",
+      "fit": "30%",
+      "minus": "30%",
+      "plus": "35%",
+      "returned": "30%"
+    },
+    {
+      "feature": "relation scope toggle persists relations=all",
+      "result": "pass"
+    },
+    {
+      "feature": "390px reading dialog, close control and located node",
+      "result": "pass",
+      "pageWidth": 390,
+      "scrollWidth": 390,
+      "closeVisible": true,
+      "selectedNodeVisible": true
+    },
+    {
+      "feature": "feedback target inherited from knowledge point",
+      "result": "pass",
+      "target": "cognition:system-view"
+    },
+    {
+      "feature": "feedback empty/invalid-URL validation and preview",
+      "result": "pass",
+      "submitted": false
+    },
+    {
+      "feature": "actual public feedback list and detail in browser",
+      "result": "pass",
+      "listRows": 2,
+      "detailExpanded": true,
+      "readError": false
+    },
+    {
+      "feature": "feedback owning-map link",
+      "result": "pass"
+    },
+    {
+      "feature": "source citation anchor",
+      "result": "pass",
+      "anchor": "#l6",
+      "exists": true
+    },
+    {
+      "feature": "version update disclosure",
+      "result": "pass",
+      "entries": 5
+    },
+    {
+      "feature": "latest document application console errors",
+      "result": "none"
+    }
+  ],
+  "notVerifiedLive": [
+    "new feedback submission",
+    "cross-device new-record persistence",
+    "administrator mutations",
+    "new SQL003 deployment",
+    "business rate limiting",
+    "public production deployment and domestic network reachability"
+  ],
+  "notImplemented": [
+    "login",
+    "map AI assistant"
+  ]
+}

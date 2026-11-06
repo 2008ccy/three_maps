@@ -25,6 +25,8 @@ jobs:
       NEXT_PUBLIC_BASE_PATH: /three_maps
       # Public build-time configuration; unset repository variables keep the
       # service disabled. No database or administrator credentials belong here.
+      NEXT_PUBLIC_WORKBUDDY_CLOUD_ENDPOINT: ${{ vars.NEXT_PUBLIC_WORKBUDDY_CLOUD_ENDPOINT }}
+      NEXT_PUBLIC_WORKBUDDY_CLOUD_KEY: ${{ vars.NEXT_PUBLIC_WORKBUDDY_CLOUD_KEY }}
       NEXT_PUBLIC_FEEDBACK_API_BASE_URL: ${{ vars.NEXT_PUBLIC_FEEDBACK_API_BASE_URL }}
       NEXT_PUBLIC_FEEDBACK_SERVICE_VERIFIED: ${{ vars.NEXT_PUBLIC_FEEDBACK_SERVICE_VERIFIED }}
     steps:

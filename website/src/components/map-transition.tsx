@@ -49,11 +49,22 @@ function frozenCopy(element: HTMLElement): HTMLElement {
   const copy = element.cloneNode(true) as HTMLElement;
   const original = [element, ...element.querySelectorAll<HTMLElement>('*')];
   const cloned = [copy, ...copy.querySelectorAll<HTMLElement>('*')];
+  // Keep SVG masks/filters local to the snapshot after the source route unmounts.
+  const prefix = `transition-${Math.round(performance.now())}-`;
+  const svgIds = new Map(Array.from(copy.querySelectorAll<SVGElement>('svg [id]')).map((item) => [item.id, prefix + item.id]));
   original.forEach((item, index) => {
     const clone = cloned[index], computed = getComputedStyle(item);
     for (let i = 0; i < computed.length; i++) { const property = computed[i]; clone.style.setProperty(property, computed.getPropertyValue(property)); }
     clone.style.setProperty('animation', 'none', 'important'); clone.style.setProperty('transition', 'none', 'important');
-    clone.removeAttribute('id'); clone.removeAttribute('autofocus');
+    const svgId = svgIds.get(clone.id);
+    if (svgId) clone.id = svgId; else clone.removeAttribute('id');
+    clone.removeAttribute('autofocus');
+    for (const attribute of Array.from(clone.attributes)) {
+      if (attribute.name === 'id') continue;
+      let value = attribute.value;
+      for (const [from,to] of svgIds) value = value.replaceAll(`#${from}`,`#${to}`);
+      if (value !== attribute.value) clone.setAttribute(attribute.name,value);
+    }
   });
   copy.inert = true; return copy;
 }
@@ -79,9 +90,9 @@ function snapshotHome(navBottom: number): HTMLDivElement | null {
     snapshot.style.top = `${navBottom}px`; snapshot.inert = true;
     const background = document.querySelector<HTMLCanvasElement>('[data-home-phase] canvas');
     if (background) {
-      const pixels = document.createElement('canvas'); pixels.width = background.width; pixels.height = background.height;
+      const pixels = document.createElement('canvas'), bounds = background.getBoundingClientRect(); pixels.width = background.width; pixels.height = background.height;
       pixels.getContext('2d')?.drawImage(background, 0, 0);
-      Object.assign(pixels.style, { position: 'absolute', top: `${-navBottom}px`, left: '0', width: `${window.innerWidth}px`, height: `${window.innerHeight}px` });
+      Object.assign(pixels.style, { position: 'absolute', top: `${bounds.top - navBottom}px`, left: `${bounds.left}px`, width: `${bounds.width}px`, height: `${bounds.height}px` });
       snapshot.appendChild(pixels);
     }
     const copy = frozenCopy(home);
@@ -135,7 +146,7 @@ export function MapTransitionProvider({ children }: { children: ReactNode }) {
       const flow = forward ? ((seed + (performance.now() - current.created) / 1500) % 1) : seed;
       const x = anchor.x - 14 + flow * (textWidth + 28);
       const y = anchor.y + (side < 0 ? -9 : anchor.lineHeight + 9) + Math.sin((performance.now() - current.created) / 750 + i) * 1.5;
-      const color = forward ? i % 3 === 0 ? '176,168,255' : mapTransitionColors[current.map] : i % 5 === 0 ? mapTransitionColors[current.map] : '176,168,255';
+      const color = forward ? i % 3 === 0 ? '220,230,239' : mapTransitionColors[current.map] : i % 5 === 0 ? mapTransitionColors[current.map] : '220,230,239';
       const size = forward ? seed > .75 ? 3 : 2 : seed > .8 ? 2 : 1.5;
       const opacity = alpha * timing.particleAlpha * (forward ? .65 + seed * .35 : .5 + seed * .5);
       if (forward && i % 3 === 0) { ctx.fillStyle = `rgba(${color},${opacity * .12})`; ctx.fillRect(x - 2, y - 2, size + 4, size + 4); }

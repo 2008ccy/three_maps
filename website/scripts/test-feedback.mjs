@@ -5,6 +5,7 @@ import { load } from 'cheerio';
 import { feedbackInputSchema, feedbackPageSchema, publicFeedbackSchema, feedbackHref, feedbackReferenceHref, feedbackReleaseHref, feedbackComposeHref } from '../src/lib/feedback-contract.ts';
 import { feedbackTargets, findFeedbackTarget } from '../src/lib/feedback-targets.ts';
 import { createFeedbackClient, feedbackServiceConfig } from '../src/lib/feedback-client.ts';
+import { createCloudFeedbackFetcher } from '../src/lib/feedback-cloud.ts';
 
 const input = { target: { mapId: 'domain', nodeId: 'rag' }, type: '内容错误', content: '这是一条用于协议验证的反馈。' };
 const id = 'FB-11111111-1111-4111-8111-111111111111';
@@ -19,7 +20,7 @@ test('feedback input is a strict visitor whitelist with Unicode and URL limits',
   for (const content of ['短', ' '.repeat(8), '字'.repeat(1001)]) assert.ok(!feedbackInputSchema.safeParse({ ...input, content }).success);
   assert.ok(feedbackInputSchema.safeParse({ ...input, content: '😀'.repeat(1000) }).success);
   assert.ok(!feedbackInputSchema.safeParse({ ...input, nickname: '字'.repeat(21) }).success);
-  for (const referenceUrl of ['javascript:alert(1)', 'data:text/html,bad', '/relative', 'https://name:password@example.com/', 'https://example.com/' + 'a'.repeat(2048)]) assert.ok(!feedbackInputSchema.safeParse({ ...input, referenceUrl }).success);
+  for (const referenceUrl of ['javascript:alert(1)', 'data:text/html,bad', '/relative', 'https://name:password@example.com/', 'https://example.test/with space', 'https://exa mple.test/path', 'https://example.com/' + 'a'.repeat(2048)]) assert.ok(!feedbackInputSchema.safeParse({ ...input, referenceUrl }).success);
 });
 
 test('feedback targets omit retired aliases and links only reach current maps and logs', () => {
@@ -90,7 +91,8 @@ test('static feedback page follows its build configuration without manufacturing
   assert.equal($('button[type="submit"][disabled]').length, 1);
   assert.ok(!$.text().includes('还没有公开反馈。欢迎指出第一个具体问题。'));
   assert.equal($('.feedback-record[data-id]').length, 0);
-  assert.ok($(`a[href="${basePath}/feedback/"]`).length);
+  const home = load(readFileSync('out/index.html', 'utf8'));
+  assert.ok(home(`footer a[href="${basePath}/feedback/"]`).length, 'the homepage footer keeps feedback discoverable');
   assert.equal($('button').filter((_, item) => $(item).text() === '预览反馈').length, 1);
 });
 
@@ -147,4 +149,46 @@ test('map feedback entries carry the canonical map target for root and subpath b
     const $ = load(readFileSync(`out/docs/${map}/index.html`, 'utf8'));
     assert.equal($('nav[aria-label="整图反馈"] a').attr('href'), `${basePath}/feedback/?map=${map}`);
   }
+});
+
+test('active WorkBuddy transport maps list/detail/submit to their RPC contracts without a network', async () => {
+  const calls = [];
+  const fetcher = createCloudFeedbackFetcher(async (name, args) => {
+    calls.push({ name, args });
+    return { data: name === 'list_feedback' ? { items: [record], nextCursor: null } : record, error: null };
+  });
+  const client = createFeedbackClient({ configured: true, baseUrl: 'https://cloud.example.test/.cloud/database/rest', message: '' }, fetcher);
+  assert.equal((await client.listFeedback({ map: 'domain', type: '内容错误', cursor: 'next-page' })).items[0].id, id);
+  assert.deepEqual(calls[0], { name: 'list_feedback', args: { p_map: 'domain', p_type: '内容错误', p_status: null, p_cursor: 'next-page', p_limit: 20 } });
+  assert.equal((await client.getFeedback(id)).id, id);
+  assert.deepEqual(calls[1], { name: 'get_feedback', args: { p_id: id } });
+  const key = '11111111-1111-4111-8111-111111111111';
+  assert.equal((await client.submitFeedback(input, key)).id, id);
+  assert.deepEqual(calls[2], { name: 'submit_feedback', args: { p_request_key: key, p_map_id: 'domain', p_node_id: 'rag', p_type: input.type, p_content: input.content, p_nickname: null, p_reference_url: null } });
+});
+
+test('active WorkBuddy transport maps SQL errors and missing records without exposing internals', async () => {
+  const url = 'https://cloud.example.test/.cloud/database/rest/feedback/' + id;
+  for (const [code, status] of [['DATABASE_22023', 400], ['DATABASE_23505', 409], ['DATABASE_P0002', 404], ['DATABASE_XX000', 503]]) {
+    const fetcher = createCloudFeedbackFetcher(async () => ({ data: null, error: { code, message: 'private SQL details must stay private' } }));
+    const result = await fetcher(url);
+    assert.equal(result.status, status);
+    assert.equal((await result.text()).includes('private'), false);
+  }
+  const missing = await createCloudFeedbackFetcher(async () => ({ data: null, error: null }))(url);
+  assert.equal(missing.status, 404);
+});
+
+test('active WorkBuddy transport honors cancellation and rejects unsupported methods before RPC', async () => {
+  let count = 0;
+  const fetcher = createCloudFeedbackFetcher(async () => { count++; return { data: null, error: null }; });
+  const url = 'https://cloud.example.test/.cloud/database/rest/feedback';
+  const cancelled = new AbortController(); cancelled.abort();
+  await assert.rejects(fetcher(url, { signal: cancelled.signal }), { name: 'AbortError' });
+  assert.equal((await fetcher(url, { method: 'DELETE' })).status, 405);
+  assert.equal(count, 0);
+  const pending = createCloudFeedbackFetcher(() => new Promise(() => {}));
+  const controller = new AbortController();
+  const request = pending(url, { signal: controller.signal }); controller.abort();
+  await assert.rejects(request, { name: 'AbortError' });
 });

@@ -1,0 +1,45 @@
+import {chromium} from '/Users/changyichen/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright/index.mjs';
+import fs from 'node:fs/promises';
+import assert from 'node:assert/strict';
+const folder='/Users/changyichen/Developer/projects/three_maps/qa-design09-2026-11-05';
+const browser=await chromium.launch({headless:true,executablePath:'/Users/changyichen/Library/Caches/ms-playwright/chromium_headless_shell-1248/chrome-headless-shell-mac-arm64/chrome-headless-shell',args:['--enable-unsafe-swiftshader']});
+const page=await browser.newPage({viewport:{width:1440,height:1000}});
+const errors=[];page.on('pageerror',e=>errors.push(e.message));
+const routes=[];
+for(const [map,title] of [['domain','领域地图'],['ecosystem','生态地图'],['cognition','认知地图']]){
+ await page.goto('http://127.0.0.1:3000/',{waitUntil:'networkidle'});
+ await page.locator(`[data-home-map="${map}"]`).click();
+ await page.waitForURL(`**/docs/${map}/`);
+ await page.locator('[data-map-transition="idle"]').waitFor({state:'attached'});
+ assert.equal(await page.locator('h1').innerText(),title);
+ const focus=await page.evaluate(()=>document.activeElement?.tagName);assert.equal(focus,'H1');
+ await page.getByRole('link',{name:'三张活地图首页'}).click();
+ await page.waitForURL('http://127.0.0.1:3000/');
+ await page.locator('[data-map-transition="idle"]').waitFor({state:'attached'});
+ const returned=await page.evaluate(()=>document.activeElement?.getAttribute('data-home-map'));assert.equal(returned,map);
+ routes.push({map,focus,returned});
+}
+await page.setViewportSize({width:650,height:900});await page.waitForTimeout(100);
+const wideMobile=await page.evaluate(()=>({width:innerWidth,scroll:document.documentElement.scrollWidth}));assert.equal(wideMobile.width,wideMobile.scroll);
+const fallback=await browser.newPage({viewport:{width:1440,height:1000}});
+fallback.on('pageerror',e=>errors.push(e.message));
+await fallback.addInitScript(()=>{const original=HTMLCanvasElement.prototype.getContext;HTMLCanvasElement.prototype.getContext=function(type,...args){return type==='webgl'||type==='webgl2'?null:original.call(this,type,...args);};});
+await fallback.goto('http://127.0.0.1:3000/',{waitUntil:'networkidle'});
+await fallback.screenshot({path:folder+'/home-no-webgl.png',fullPage:true});
+const references=await fallback.evaluate(()=>{
+ document.querySelector('[data-home-map="domain"]').click();
+ const snapshot=document.querySelector('[data-transition-snapshot]');
+ const ids=Array.from(snapshot.querySelectorAll('[id]'),e=>e.id),refs=[];
+ for(const e of snapshot.querySelectorAll('svg *'))for(const a of e.attributes)for(const m of a.value.matchAll(/url\([^)]*#([^)'"\s]+)/g))refs.push(m[1]);
+ return {ids,refs,allLocal:refs.every(id=>ids.includes(id))};
+});
+assert.ok(references.ids.length>=2);assert.ok(references.refs.length>=2);assert.equal(references.allLocal,true);
+await fallback.waitForURL('**/docs/domain/');await fallback.locator('[data-map-transition="idle"]').waitFor({state:'attached'});
+const nojs=await browser.newPage({javaScriptEnabled:false,viewport:{width:1440,height:900}});
+await nojs.goto('http://127.0.0.1:3000/',{waitUntil:'networkidle'});await nojs.screenshot({path:folder+'/home-no-js.png',fullPage:true});
+assert.equal(await nojs.locator('[data-home-map]').count(),3);
+await nojs.locator('[data-home-map="ecosystem"]').click();await nojs.waitForURL('**/docs/ecosystem/');assert.equal(await nojs.locator('h1').innerText(),'生态地图');
+await page.goto('http://127.0.0.1:3000/docs/project/updates/',{waitUntil:'networkidle'});await page.screenshot({path:folder+'/updates-unified.png',fullPage:true});
+assert.deepEqual(errors,[]);
+const report={routes,wideMobile,fallbackSnapshot:references,noScriptNavigation:true,errors};await fs.writeFile(folder+'/navigation-report.json',JSON.stringify(report,null,2));console.log(JSON.stringify(report));
+await browser.close();

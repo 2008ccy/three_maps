@@ -11,6 +11,7 @@ import { EcosystemGraph } from './ecosystem-graph';
 import { CognitionLearningGraph } from './cognition-learning-graph';
 import { teachingCase } from '@/lib/maps/teaching-case';
 import { feedbackComposeHref } from '@/lib/feedback-contract';
+import { appLocationChangeEvent } from '@/lib/document-navigation';
 import styles from './maps.module.css';
 
 type Props = { map: MapDefinition; links: MapLinks; statuses: Record<string, string>; sourceTitles: Record<string, string> };
@@ -32,11 +33,15 @@ export function LearningExplorer({ map, links, statuses, sourceTitles }: Props) 
   const [scope, setScope] = useState<'core' | 'all'>('core');
   const [filters, setFilters] = useState<CatalogFilters>(emptyFilters), [advanced, setAdvanced] = useState(false);
   const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [graphFocus, setGraphFocus] = useState<{ map: MapDefinition['id']; id: string } | null>(null);
   const [mergedFrom, setMergedFrom] = useState<string | null>(null);
   const background = useRef<HTMLDivElement>(null), panel = useRef<HTMLElement>(null), body = useRef<HTMLDivElement>(null), heading = useRef<HTMLHeadingElement>(null);
   const scrolls = useRef<Record<string, number>>({});
+  const handledUrl = useRef('');
   const selected = resolveCatalogNode(map, nodes, selectedId ?? '');
-  const matches = filterCatalog(nodes, filters, ecosystem || cognition ? edges : []), filtersActive = Object.values(filters).some(Boolean);
+  const matches = useMemo(() => filterCatalog(nodes, filters, ecosystem || cognition ? edges : []), [nodes, filters, edges, ecosystem, cognition]);
+  const filtersActive = Object.values(filters).some(Boolean);
+  const graphSelectedId = selected ? selected.collection ? null : selected.id : graphFocus?.map === map.id && matches.some((node) => node.id === graphFocus.id) ? graphFocus.id : null;
   const outside = !!selected && !selected.collection && !matches.some((node) => node.id === selected.id);
   const visible = outside ? [selected, ...matches] : matches;
   const groups = groupCatalog(nodes, matches);
@@ -49,7 +54,12 @@ export function LearningExplorer({ map, links, statuses, sourceTitles }: Props) 
   const storageKey = 'three-maps-browse:' + map.id;
 
   useEffect(() => {
+    if (graphFocus && (graphFocus.map !== map.id || graphFocus.id !== selected?.id && !matches.some((node) => node.id === graphFocus.id))) setGraphFocus(null);
+  }, [graphFocus, map.id, matches, selected?.id]);
+
+  useEffect(() => {
     const read = () => {
+      handledUrl.current = window.location.pathname + window.location.search + window.location.hash;
       const query = readCatalogQuery(window.location.search);
       setView(query.view); setScope(query.relations); setFilters(query.filters);
       const stageId = map.nodeAliases?.[query.stage ?? ''] ?? query.stage;
@@ -59,15 +69,19 @@ export function LearningExplorer({ map, links, statuses, sourceTitles }: Props) 
       const resolved = resolveCatalogNode(map, nodes, id);
       if (resolved && resolved.id !== id) scrolls.current[resolved.id] = 0;
       setSelectedId(resolved?.id ?? null);
+      setGraphFocus(resolved && !resolved.collection ? { map: map.id, id: resolved.id } : null);
       setMergedFrom(resolved && resolved.id !== id ? id : null);
     };
+    const onThisMap = () => window.location.pathname.replace(/\/$/, '') === `${process.env.NEXT_PUBLIC_BASE_PATH ?? ''}/docs/${map.id}`;
+    const synchronize = () => {
+      if (onThisMap() && handledUrl.current !== window.location.pathname + window.location.search + window.location.hash) read();
+    };
     const readHash = () => {
-      const mapPath = `${process.env.NEXT_PUBLIC_BASE_PATH ?? ''}/docs/${map.id}`;
-      if (window.location.pathname.replace(/\/$/, '') !== mapPath) return;
+      if (!onThisMap()) return;
       // Native fragment navigation does not pass through Next's link handler.
       // Synchronize its canonical URL before a later cross-map navigation.
       window.history.replaceState(null, '', window.location.href);
-      read();
+      synchronize();
     };
     try {
       const saved = JSON.parse(sessionStorage.getItem(storageKey) ?? 'null');
@@ -75,8 +89,8 @@ export function LearningExplorer({ map, links, statuses, sourceTitles }: Props) 
       if (saved?.url === window.location.pathname + window.location.search + window.location.hash && Number.isFinite(saved.scroll)) requestAnimationFrame(() => window.scrollTo(0, saved.scroll));
     } catch { /* Reading remains usable without storage. */ }
     read(); setReady(true);
-    window.addEventListener('popstate', read); window.addEventListener('hashchange', readHash);
-    return () => { window.removeEventListener('popstate', read); window.removeEventListener('hashchange', readHash); };
+    window.addEventListener('popstate', synchronize); window.addEventListener('hashchange', readHash); window.addEventListener(appLocationChangeEvent, synchronize);
+    return () => { window.removeEventListener('popstate', synchronize); window.removeEventListener('hashchange', readHash); window.removeEventListener(appLocationChangeEvent, synchronize); };
   }, [nodes, map, ecosystem, storageKey]);
 
   const navigate = useCallback((nextView: typeof view, nextFilters: CatalogFilters, id: string | null, nextScope = scope, replace = false, nextStage = stage) => {
@@ -86,7 +100,10 @@ export function LearningExplorer({ map, links, statuses, sourceTitles }: Props) 
     const graphStage = ecosystem ? nextView === 'graph' && target?.parent ? target.groupId : resolvedStage : '';
     setMergedFrom(null);
     setView(nextView); setFilters(nextFilters); setSelectedId(id); setScope(nextScope); setStage(graphStage);
+    if (target && !target.collection) setGraphFocus({ map: map.id, id: target.id });
     const url = `${window.location.pathname}${catalogQuery(nextView, nextFilters, nextScope, graphStage)}${id ? `#node-${id}` : ''}`;
+    // Local actions already updated the reader and its temporary graph focus.
+    handledUrl.current = url;
     // Let Next preserve its own router metadata and synchronize the canonical
     // URL; copying its private history state bypasses that synchronization.
     if (url !== window.location.pathname + window.location.search + window.location.hash) window.history[replace ? 'replaceState' : 'pushState'](null, '', url);
@@ -105,9 +122,24 @@ export function LearningExplorer({ map, links, statuses, sourceTitles }: Props) 
   };
   const close = useCallback(() => {
     const targetId = view === 'cards' ? selected?.groupId : selected?.id;
-    navigate(view, filters, null);
+    const nextStage = ecosystem && selected && !selected.collection ? selected.parent ? selected.groupId : '' : stage;
+    navigate(view, filters, null, scope, false, nextStage);
     requestAnimationFrame(() => (document.getElementById(`node-${targetId}`) ?? document.querySelector<HTMLElement>('input[type="search"]'))?.focus({ preventScroll: true }));
-  }, [navigate, view, filters, selected]);
+  }, [navigate, view, filters, selected, ecosystem, stage, scope]);
+  const switchReadingView = () => {
+    if (!selected) return;
+    const nextView = selected.collection || view === 'cards' ? 'graph' : 'cards';
+    const nextFilters = nextView === 'graph' && !selected.collection && !matches.some((node) => node.id === selected.id) ? emptyFilters : filters;
+    const nextStage = ecosystem ? selected.collection || !selected.parent ? '' : selected.groupId : stage;
+    if (selected.collection) setGraphFocus(null);
+    else setGraphFocus({ map: map.id, id: selected.id });
+    navigate(nextView, nextFilters, null, scope, false, nextStage);
+    const targetId = selected.collection ? undefined : nextView === 'graph' ? selected.id : selected.groupId;
+    requestAnimationFrame(() => {
+      (document.getElementById(`node-${targetId}`) ?? document.querySelector<HTMLElement>('input[type="search"]'))?.focus({ preventScroll: true });
+      if (nextView === 'graph') background.current?.querySelector<HTMLElement>(`.${styles.graphViewport}`)?.scrollIntoView({ block: 'center', inline: 'nearest', behavior: 'instant' });
+    });
+  };
   useEffect(() => {
     if (!selected) return;
     heading.current?.focus({ preventScroll: true });
@@ -173,7 +205,7 @@ export function LearningExplorer({ map, links, statuses, sourceTitles }: Props) 
 
   return <div className={styles.map} data-map={map.id} data-learning=""><div ref={background}>
     <nav className={styles.breadcrumb} aria-label="面包屑"><Link href="/">首页</Link><span>/</span><span>{map.title}</span></nav>
-    <header className={styles.domainIntro}><div><p className={styles.eyebrow}>THREE LIVING MAPS / {map.number}</p><h1 id="map-title">{map.title}</h1><p>{map.question} {map.description}</p></div>{ready && <button type="button" className={styles.startLearning} onClick={() => open(map.branches[0].id)}>从{map.branches[0].title}开始<ArrowRight size={17} /></button>}</header>
+    <header className={styles.domainIntro}><div><p className={styles.eyebrow}>模型构建 / 学习地图 <span>{map.number}</span></p><h1 id="map-title">{map.title}</h1><p>{map.question} {map.description}</p></div>{ready && <button type="button" className={styles.startLearning} onClick={() => open(map.branches[0].id)}>从{map.branches[0].title}开始<ArrowRight size={17} /></button>}</header>
     <div className={styles.compactStats} aria-label="地图统计"><span><strong>{map.branches.length}</strong> 个主题</span><span><strong>{points.length}</strong> 个知识点</span><span><strong>{concepts.length}</strong> 条{ecosystem ? '生态' : cognition ? '知识与反馈' : '概念'}联系</span><details><summary>分类与跨图说明</summary><p>{edges.filter((edge) => edge.kind === 'hierarchy').length} 条归属关系 · {edges.filter((edge) => edge.targetMap !== map.id).length} 条跨图关系。{ecosystem ? '五主题保留课程助手的核心协作链：成果、运行、资料、验收与维护。适配按需、评测贯穿；旧地址定位到合并后的内容。' : cognition ? '四主题各保留三个核心条目，方法已融入案例；原有5条指导反馈保留，旧地址进入合并内容。求真观课堂正式名称仍待课件核验。' : '五主题为本网站的学习组织方式，新增节点不冒充原讲解稿的原始知识树。'}建议学习顺序不等于技术依赖。</p></details></div>
     <nav className={styles.mapFeedback} aria-label="整图反馈"><Link href={feedbackComposeHref({ mapId: map.id })} onClick={remember}>反馈这张地图<ArrowUpRight size={14} aria-hidden="true" /></Link></nav>
     {ready ? <>
@@ -185,11 +217,11 @@ export function LearningExplorer({ map, links, statuses, sourceTitles }: Props) 
       <div className={styles.viewBar}><div className={styles.viewTabs} role="group" aria-label="地图视图"><button type="button" aria-pressed={view === 'cards'} onClick={() => navigate('cards', filters, selectedId)}><Grid2X2 size={16} />主题卡片</button><button type="button" aria-pressed={view === 'graph'} onClick={() => navigate('graph', filters, selectedId)}><Network size={16} />关系图</button></div><p aria-live="polite">{groups.length} 个主题 · 匹配 {matches.filter((node) => node.parent).length} / {points.length} 个知识点</p></div>
       {!visible.length ? <div className={styles.empty}><Search size={28} /><h2>没有找到匹配的知识点</h2><p>换个关键词，或清除筛选继续探索。</p><button type="button" onClick={() => navigate(view, emptyFilters, null)}>清除筛选</button></div> : view === 'cards' ? <div className={styles.groupGrid}>{groups.map(({ root, members }) => <button key={root.id} id={`node-${root.id}`} type="button" className={styles.groupCard} data-tone={tone(root)} onClick={() => open(root.id)} aria-haspopup="dialog" aria-label={`展开主题：${root.title}`}>
         <span className={styles.groupCardTop}><span>主题 {String(tone(root) + 1).padStart(2, '0')}</span><span>{members.length} 个知识点</span></span><strong className={styles.groupTitle}>{root.title}</strong><span className={styles.groupSummary}>{root.topic?.question}</span><span className={styles.topicPreview}>{root.topic?.overview[0]}</span><span className={styles.groupCardBottom}><span>{ecosystem && root.boundary && <span className={styles.groupHandoff}>{root.boundary}</span>}{root.topic?.outcome}</span><ArrowUpRight size={18} /></span>
-      </button>)}</div> : ecosystem ? <EcosystemGraph nodes={visible} allNodes={nodes} edges={concepts} selected={selected?.collection ? null : selectedId} stage={stage} scope={scope} onStage={(value) => navigate(view, filters, null, scope, false, value)} onScope={(value) => navigate(view, filters, selectedId, value)} onSelect={open} /> : cognition ? <CognitionLearningGraph nodes={visible} allNodes={nodes} edges={concepts} selected={selectedId} scope={scope} onScope={(value) => navigate(view, filters, selectedId, value)} onSelect={open} /> : <DomainGraph nodes={visible} allNodes={nodes} edges={concepts} selected={selectedId} scope={scope} onScope={(value) => navigate(view, filters, selectedId, value)} onSelect={open} />}
+      </button>)}</div> : ecosystem ? <EcosystemGraph nodes={visible} allNodes={nodes} edges={concepts} selected={graphSelectedId} stage={stage} scope={scope} onStage={(value) => { setGraphFocus(null); navigate(view, filters, null, scope, false, value); }} onScope={(value) => navigate(view, filters, selectedId, value)} onSelect={open} /> : cognition ? <CognitionLearningGraph nodes={visible} allNodes={nodes} edges={concepts} selected={graphSelectedId} scope={scope} onScope={(value) => navigate(view, filters, selectedId, value)} onSelect={open} /> : <DomainGraph nodes={visible} allNodes={nodes} edges={concepts} selected={graphSelectedId} scope={scope} onScope={(value) => navigate(view, filters, selectedId, value)} onSelect={open} />}
     </> : <section aria-label="地图层级内容"><p className={styles.notice}>展开主题和知识点，阅读解释、教学示例、关系与来源。</p>{outline(map.branches)}{!!map.legacyCollections?.length && <section className={styles.legacyOutline} aria-label="旧分类专题"><h2>旧分类专题</h2>{map.legacyCollections.map((collection) => <details id={`node-${collection.id}`} key={collection.id}><summary>{collection.title}</summary><p>旧分类内容已并入核心主题，本入口不计入统计。</p><ul>{collection.members.map((id) => <li key={id}><Link href={`/docs/${map.id}/#node-${id}`}>{nodes.find((node) => node.id === id)?.title}</Link></li>)}</ul></details>)}</section>}{!!map.nodeAliases && <details className={styles.legacyOutline}><summary>旧条目与合并位置</summary><ul>{Object.entries(map.nodeAliases).map(([oldId, targetId]) => <li id={`node-${oldId}`} key={oldId}><Link href={`/docs/${map.id}/#node-${targetId}`}>{oldId} → {nodes.find((node) => node.id === targetId)?.title}</Link></li>)}</ul></details>}</section>}
   </div>
     {selected && <><div className={styles.scrim} onClick={close} aria-hidden="true" /><aside ref={panel} id="map-reading-panel" className={`${styles.floating} ${styles.domainDialog}`} data-tone={tone(selected)} data-topic={!!selected.topic || !!selected.collection} role="dialog" aria-modal="true" aria-labelledby="reading-title">
-      <header className={styles.domainPanelTop}><div>{selected.parent && <button type="button" onClick={() => open(selected.parent!)} aria-label="返回上一层"><ArrowLeft size={16} />返回{nodes.find((node) => node.id === selected.parent)?.title}</button>}<span>{map.title}{selected.path.length > 0 && ` / ${selected.path.join(' / ')}`}</span><button type="button" className={styles.lessonViewSwitch} onClick={() => navigate(view === 'cards' ? 'graph' : 'cards', filters, selected.collection ? null : selectedId, scope, false, selected.collection ? '' : stage)}>{selected.collection ? '查看新协作链' : view === 'cards' ? '在关系图定位' : '切回主题卡片'}</button></div><button type="button" aria-label="关闭阅读面板" onClick={close}><X size={22} /></button></header>
+      <header className={styles.domainPanelTop}><div>{selected.parent && <button type="button" onClick={() => open(selected.parent!)} aria-label="返回上一层"><ArrowLeft size={16} />返回{nodes.find((node) => node.id === selected.parent)?.title}</button>}<span>{map.title}{selected.path.length > 0 && ` / ${selected.path.join(' / ')}`}</span><button type="button" className={styles.lessonViewSwitch} onClick={switchReadingView}>{selected.collection ? '查看新协作链' : view === 'cards' ? '在关系图定位' : '切回主题卡片'}</button></div><button type="button" aria-label="关闭阅读面板" onClick={close}><X size={22} /></button></header>
       <div ref={body} className={styles.domainPanelBody} onScroll={(event) => { scrolls.current[selected.id] = event.currentTarget.scrollTop; }}><div className={styles.domainReadingColumn}><p className={styles.lessonRole}>{ecosystem && selected.parent && selected.type + ' · '}{selected.lesson?.role ?? '主题导读'}{position >= 0 && ` · 学习路线 ${position + 1} / ${path.length}`}</p><h2 ref={heading} id="reading-title" tabIndex={-1}>{selected.title}</h2>
         {outside && <p className={styles.notice}>当前节点不在筛选结果内，已临时显示。<button type="button" onClick={() => navigate(view, emptyFilters, selectedId)}>清除筛选查看全部</button></p>}
         {mergedFrom && <p className={styles.notice}>此旧条目已精简或合并，以下为当前保留的主题。扩展原稿已存入后续更新储备。</p>}
