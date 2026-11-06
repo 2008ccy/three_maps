@@ -13,6 +13,7 @@ const links = [
   { href: '/docs/cognition', label: '认知' },
   { href: '/docs/project/updates', label: '更新记录' },
   { href: '/docs/sources', label: '资料来源' },
+  { href: '/feedback', label: '反馈' },
 ];
 
 export function SiteHeader() {

@@ -70,6 +70,7 @@ test('top navigation keeps sources immediately after updates as a peer destinati
   const expected = [
     ['领域', '/docs/domain/'], ['生态', '/docs/ecosystem/'], ['认知', '/docs/cognition/'],
     ['更新记录', '/docs/project/updates/'], ['资料来源', '/docs/sources/'],
+    ['反馈', '/feedback/'],
   ];
   for (const route of ['', '/docs/domain', '/docs/ecosystem', '/docs/cognition', '/docs/project/updates', '/docs/sources', '/feedback']) {
     const $ = html(route);
