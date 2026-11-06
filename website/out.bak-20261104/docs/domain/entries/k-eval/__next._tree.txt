@@ -1,7 +1,0 @@
-:HL["/_next/static/css/e62837cc23197924.css","style"]
-:HL["/_next/static/css/c870aacaa3af08eb.css","style"]
-4:[["children",{"s":"__PAGE__","h":160}]]
-3:[["children",{"s":{"n":"slug","t":"oc","k":"domain/entries/k-eval","s":["cognition","domain","ecosystem"]},"h":96,"c":"$Q4"}]]
-2:[["children",{"s":"docs","h":96,"c":"$Q3"}]]
-1:[["children",{"s":"(content)","h":96,"c":"$Q2"}]]
-0:{"b":"xTXGvPq_O0CQiLbxU58EV","t":{"t":{"s":"","h":80,"c":"$Q1"}}}
