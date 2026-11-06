@@ -10,17 +10,9 @@
 .scene[data-ready=true] .particles { opacity: 1; }
 .scene[data-ready=true] .fallback { visibility: hidden; }
 .copy { position: relative; z-index: 1; width: 57%; padding-block: 24px; pointer-events: none; }
-.copy :is(a,button) { pointer-events: auto; }
 .eyebrow { color: #c5cfd6; font-size: 15px; letter-spacing: .05em; margin-bottom: 24px; }
 .copy h1 { color: #f4f3f0; font-size: clamp(36px,min(4.25vw,7svh),65px); font-weight: 650; line-height: 1.32; letter-spacing: -.045em; white-space: nowrap; }
 .description { color: #c1c9d0; font-size: clamp(14px,1.35vw,18px); line-height: 1.9; margin-top: 23px; }
-.actions { display: flex; align-items: center; gap: 32px; margin-top: 35px; }
-.primary { display: inline-flex; align-items: center; justify-content: space-between; gap: 26px; min-height: 52px; padding: 10px 21px; border: 1px solid #eeefeb; border-radius: 4px; color: #f4f3f0; font-size: 19px; font-weight: 550; letter-spacing: .04em; transition: background .2s,border-color .2s; }
-.primary:hover { background: #f4f3f00b; border-color: #83d3db; }
-.primary svg { transition: transform .2s; }
-.primary:hover svg { transform: translateX(3px); }
-.secondary { color: #bfcad3; min-height: 48px; padding: 8px 0; font-size: 16px; cursor: pointer; }
-.secondary:hover { color: #f4f3f0; }
 .mapGrid { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); padding: clamp(14px,2.5svh,27px) 0; border-top: 1px solid #71879769; border-bottom: 1px solid #7187974d; }
 .mapLink { --orbit-color: #d9b788; position: relative; display: flex; flex-direction: column; padding: 0 35px; color: #edf0ef; }
 .mapLink:first-child { padding-left: 25px; }
@@ -46,7 +38,6 @@
   .copy h1 { font-size: clamp(34px,min(4.2vw,7svh),49px); }
   .eyebrow { font-size: 12px; margin-bottom: 20px; }
   .description { font-size: 14px; }
-  .primary { font-size: 16px; min-height: 48px; }
   .mapLink { padding-inline: 24px; }
   .question { font-size: 13px; }
   .summary { font-size: 11px; }
@@ -56,9 +47,6 @@
   .copy { padding-block: 16px; }
   .eyebrow { font-size: 12px; margin-bottom: 16px; }
   .description { font-size: 14px; line-height: 1.75; margin-top: 16px; }
-  .actions { margin-top: 22px; }
-  .primary { min-height: 44px; font-size: 16px; padding-block: 8px; }
-  .secondary { min-height: 44px; font-size: 14px; }
   .mapGrid { padding-block: 14px; }
   .mapTitle h2 { font-size: 24px; }
   .question { font-size: 13px; }
@@ -75,9 +63,6 @@
   .eyebrow { font-size: 11px; margin-bottom: 12px; }
   .description { font-size: 12px; line-height: 1.7; max-width: 390px; margin-top: 12px; }
   .desktopBreak { display: none; }
-  .actions { margin-top: 18px; gap: 24px; }
-  .primary { min-height: 40px; padding: 8px 14px; font-size: 14px; }
-  .secondary { min-height: 40px; font-size: 12px; }
   .scene { position: relative; order: 2; inset: auto; transform: none; justify-self: end; align-self: center; width: auto; min-width: 0; min-height: 0; max-width: 700px; height: 100%; max-height: 311px; margin-left: 0; margin-right: -8px; }
   .mapGrid { padding-block: 13px; }
   .mapLink,.mapLink:first-child,.mapLink:last-child { padding: 0 10px; }
@@ -97,6 +82,5 @@
   .copy { padding-top: 12px; }
   .eyebrow { margin-bottom: 8px; }
   .description { font-size: 11px; line-height: 1.65; margin-top: 10px; }
-  .actions { margin-top: 12px; }
 }
 @media (prefers-reduced-motion:reduce) { .home * { transition: none !important; } }

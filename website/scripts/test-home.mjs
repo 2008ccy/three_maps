@@ -54,10 +54,9 @@ test('exported first visit immediately exposes navigation and usable map links w
   }
   const hero = $('[data-home-hero]');
   assert.equal(hero.length, 1);
-  const start = hero.find(`a[href="${basePath}/docs/domain/"]`).filter((_, item) => /开始探索/.test($(item).text()));
-  assert.equal(start.length, 1, 'primary action enters the domain map');
-  const search = hero.find('button').filter((_, item) => /搜索/.test($(item).attr('aria-label') ?? $(item).text()));
-  assert.equal(search.length, 1, 'homepage offers an identifiable search action');
+  assert.equal(hero.find('a, button').length, 0, 'hero has no duplicate exploration or search actions');
+  const search = $('#nd-nav button[aria-label="搜索地图"]');
+  assert.equal(search.length, 1, 'search remains available in the shared header');
   assert.equal(search.closest(unavailable).length, 0);
   assert.equal($('canvas[aria-hidden="true"]').length, 1);
   assert.equal($('[data-map-transition="idle"][hidden]').length, 1, 'transition layer is inactive in static/no-script output');

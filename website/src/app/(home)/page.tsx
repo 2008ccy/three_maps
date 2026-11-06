@@ -2,7 +2,6 @@
 
 import Link from 'next/link';
 import { ArrowRight, ArrowUpRight } from 'lucide-react';
-import { useSearchContext } from 'fumadocs-ui/contexts/search';
 import { HomeExperience } from './home-experience';
 import { ParticleSurface } from './home-particles';
 import { useMapTransition } from '@/components/map-transition';
@@ -12,7 +11,6 @@ import styles from './home.module.css';
 const summaries = ['任务、概念与工具', '研究者、团队与开源社区', '证据、判断与修正'];
 
 export default function HomePage() {
-  const { setOpenSearch } = useSearchContext();
   const transition = useMapTransition();
   return <HomeExperience>
     <section className={styles.hero} aria-labelledby="home-title" data-home-hero>
@@ -21,10 +19,6 @@ export default function HomePage() {
         <p className={styles.eyebrow}>模型构建 / 学习地图</p>
         <h1 id="home-title">从预训练模型，<br />走向有依据的回答。</h1>
         <p className={styles.description}>一个课程答疑助手怎样构建？沿着三张相互关联的地图，<br className={styles.desktopBreak} />找到答案与下一步。</p>
-        <div className={styles.actions}>
-          <Link href="/docs/domain" className={styles.primary} onPointerEnter={() => transition.prefetch('/docs/domain')}>开始探索 <ArrowRight size={23} strokeWidth={1.6} aria-hidden="true" /></Link>
-          <button type="button" className={styles.secondary} onClick={() => setOpenSearch(true)}>搜索地图</button>
-        </div>
       </div>
     </section>
     <nav className={styles.mapGrid} aria-label="探索三张地图">
