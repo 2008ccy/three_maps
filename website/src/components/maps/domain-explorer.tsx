@@ -6,9 +6,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { MapDefinition, MapLinks } from '@/lib/maps/types';
 import { buildCatalog, buildEdges, resolveCatalogNode, catalogChildren, catalogQuery, emptyFilters, filterCatalog, groupCatalog, readCatalogQuery, understandingOptions, verificationOptions, type CatalogFilters, type CatalogNode } from '@/lib/maps/catalog';
 import { DomainLesson, DomainAdvanced } from './domain-lesson';
-import { DomainGraph } from './domain-graph';
-import { EcosystemGraph } from './ecosystem-graph';
-import { CognitionLearningGraph } from './cognition-learning-graph';
+import { RadialGraph } from './radial-graph';
 import { teachingCase } from '@/lib/maps/teaching-case';
 import { feedbackComposeHref } from '@/lib/feedback-contract';
 import { appLocationChangeEvent } from '@/lib/document-navigation';
@@ -64,7 +62,7 @@ export function LearningExplorer({ map, links, statuses, sourceTitles }: Props) 
       const query = readCatalogQuery(window.location.search);
       setView(query.view); setScope(query.relations); setFilters(query.filters);
       const stageId = map.nodeAliases?.[query.stage ?? ''] ?? query.stage;
-      setStage(ecosystem && map.branches.some((node) => node.id === stageId) ? stageId! : '');
+      setStage(nodes.some((node) => node.id === stageId) ? stageId! : '');
       setAdvanced(!!(query.filters.type || query.filters.understanding || query.filters.verification));
       const id = window.location.hash.startsWith('#node-') ? window.location.hash.slice(6) : '';
       const resolved = resolveCatalogNode(map, nodes, id);
@@ -98,7 +96,7 @@ export function LearningExplorer({ map, links, statuses, sourceTitles }: Props) 
     const target = resolveCatalogNode(map, nodes, id ?? '');
     id = target?.id ?? null;
     const resolvedStage = map.nodeAliases?.[nextStage] ?? nextStage;
-    const graphStage = ecosystem ? nextView === 'graph' && target?.parent ? target.groupId : resolvedStage : '';
+    const graphStage = nextView === 'graph' && target && !target.collection ? target.id : resolvedStage;
     setMergedFrom(null);
     setView(nextView); setFilters(nextFilters); setSelectedId(id); setScope(nextScope); setStage(graphStage);
     if (target && !target.collection) setGraphFocus({ map: map.id, id: target.id });
@@ -123,7 +121,7 @@ export function LearningExplorer({ map, links, statuses, sourceTitles }: Props) 
   };
   const close = useCallback(() => {
     const targetId = view === 'cards' ? selected?.groupId : selected?.id;
-    const nextStage = ecosystem && selected && !selected.collection ? selected.parent ? selected.groupId : '' : stage;
+    const nextStage = view === 'graph' && selected && !selected.collection ? selected.id : stage;
     navigate(view, filters, null, scope, false, nextStage);
     requestAnimationFrame(() => (document.getElementById(`node-${targetId}`) ?? document.querySelector<HTMLElement>('input[type="search"]'))?.focus({ preventScroll: true }));
   }, [navigate, view, filters, selected, ecosystem, stage, scope]);
@@ -131,7 +129,7 @@ export function LearningExplorer({ map, links, statuses, sourceTitles }: Props) 
     if (!selected) return;
     const nextView = selected.collection || view === 'cards' ? 'graph' : 'cards';
     const nextFilters = nextView === 'graph' && !selected.collection && !matches.some((node) => node.id === selected.id) ? emptyFilters : filters;
-    const nextStage = ecosystem ? selected.collection || !selected.parent ? '' : selected.groupId : stage;
+    const nextStage = selected.collection ? '' : selected.id;
     if (selected.collection) setGraphFocus(null);
     else setGraphFocus({ map: map.id, id: selected.id });
     navigate(nextView, nextFilters, null, scope, false, nextStage);
@@ -165,7 +163,10 @@ export function LearningExplorer({ map, links, statuses, sourceTitles }: Props) 
     document.addEventListener('keydown', key);
     return () => { document.removeEventListener('keydown', key); document.body.style.overflow = prior; if (element) element.inert = false; };
   }, [selected, close]);
-  const changeFilter = (key: keyof CatalogFilters, value: string) => navigate(view, { ...filters, [key]: value }, selectedId, scope, key === 'q');
+  const changeFilter = (key: keyof CatalogFilters, value: string) => {
+    setGraphFocus(null);
+    navigate(view, { ...filters, [key]: value }, selectedId, scope, key === 'q', '');
+  };
 
   function reading(node: CatalogNode, interactive = true) {
     const children = node.collection ? node.children as CatalogNode[] : catalogChildren(nodes, node.id);
@@ -218,7 +219,9 @@ export function LearningExplorer({ map, links, statuses, sourceTitles }: Props) 
       <div className={styles.viewBar}><div className={styles.viewTabs} role="group" aria-label="地图视图"><button type="button" aria-pressed={view === 'cards'} onClick={() => navigate('cards', filters, selectedId)}><Grid2X2 size={16} />主题卡片</button><button type="button" aria-pressed={view === 'graph'} onClick={() => navigate('graph', filters, selectedId)}><Network size={16} />关系图</button></div><p aria-live="polite">{groups.length} 个主题 · 匹配 {matches.filter((node) => node.parent).length} / {points.length} 个知识点</p></div>
       {!visible.length ? <div className={styles.empty}><Search size={28} /><h2>没有找到匹配的知识点</h2><p>换个关键词，或清除筛选继续探索。</p><button type="button" onClick={() => navigate(view, emptyFilters, null)}>清除筛选</button></div> : view === 'cards' ? <div className={styles.groupGrid}>{groups.map(({ root, members }) => <button key={root.id} id={`node-${root.id}`} type="button" className={styles.groupCard} data-tone={tone(root)} onClick={() => open(root.id)} aria-haspopup="dialog" aria-label={`展开主题：${root.title}`}>
         <span className={styles.groupCardTop}><span>主题 {String(tone(root) + 1).padStart(2, '0')}</span><span>{members.length} 个知识点</span></span><strong className={styles.groupTitle}>{root.title}</strong><KnowledgeStatus node={root} /><span className={styles.groupSummary}>{root.topic?.question}</span><span className={styles.topicPreview}>{root.topic?.overview[0]}</span><span className={styles.groupCardBottom}><span>{ecosystem && root.boundary && <span className={styles.groupHandoff}>{root.boundary}</span>}{root.topic?.outcome}</span><ArrowUpRight size={18} /></span>
-      </button>)}</div> : ecosystem ? <EcosystemGraph nodes={visible} allNodes={nodes} edges={concepts} selected={graphSelectedId} stage={stage} scope={scope} onStage={(value) => { setGraphFocus(null); navigate(view, filters, null, scope, false, value); }} onScope={(value) => navigate(view, filters, selectedId, value)} onSelect={open} /> : cognition ? <CognitionLearningGraph nodes={visible} allNodes={nodes} edges={concepts} selected={graphSelectedId} scope={scope} onScope={(value) => navigate(view, filters, selectedId, value)} onSelect={open} /> : <DomainGraph nodes={visible} allNodes={nodes} edges={concepts} selected={graphSelectedId} scope={scope} onScope={(value) => navigate(view, filters, selectedId, value)} onSelect={open} />}
+      </button>)}</div> : <RadialGraph title={map.title} nodes={visible} allNodes={nodes} edges={concepts}
+        focusId={graphSelectedId ?? stage} scope={scope} onScope={(value) => navigate(view, filters, selectedId, value)} onSelect={open}
+        onExplore={(id) => { setGraphFocus(null); navigate(view, filters, null, scope, false, id); }} />}
     </> : <section aria-label="地图层级内容"><p className={styles.notice}>展开主题和知识点，阅读解释、教学示例、关系与来源。</p>{outline(map.branches)}{!!map.legacyCollections?.length && <section className={styles.legacyOutline} aria-label="旧分类专题"><h2>旧分类专题</h2>{map.legacyCollections.map((collection) => <details id={`node-${collection.id}`} key={collection.id}><summary>{collection.title}</summary><p>旧分类内容已并入核心主题，本入口不计入统计。</p><ul>{collection.members.map((id) => <li key={id}><Link href={`/docs/${map.id}/#node-${id}`}>{nodes.find((node) => node.id === id)?.title}</Link></li>)}</ul></details>)}</section>}{!!map.nodeAliases && <details className={styles.legacyOutline}><summary>旧条目与合并位置</summary><ul>{Object.entries(map.nodeAliases).map(([oldId, targetId]) => <li id={`node-${oldId}`} key={oldId}><Link href={`/docs/${map.id}/#node-${targetId}`}>{oldId} → {nodes.find((node) => node.id === targetId)?.title}</Link></li>)}</ul></details>}</section>}
   </div>
     {selected && <><div className={styles.scrim} onClick={close} aria-hidden="true" /><aside ref={panel} id="map-reading-panel" className={`${styles.floating} ${styles.domainDialog}`} data-tone={tone(selected)} data-topic={!!selected.topic || !!selected.collection} role="dialog" aria-modal="true" aria-labelledby="reading-title">

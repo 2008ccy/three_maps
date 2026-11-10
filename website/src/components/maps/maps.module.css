@@ -307,29 +307,11 @@
 .lessonNavigation button:last-child { text-align: right; }
 .lessonNavigation button small { display: block; color: #e3e7eb; font-size: 14px; line-height: 1.6; }
 .lessonNavigation button:disabled { opacity: .35; cursor: default; }
-.domainGraph .graphViewport { height: 560px; }
-.domainGraph .graphHeader span { font-size: 13px; line-height: 1.8; }
-.relationScope { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; padding: 12px 20px; border-bottom: 1px solid #ffffff12; font-size: 13px; }
-.relationScope button { padding: 7px 12px; border: 1px solid #ffffff20; border-radius: 7px; color: #b9c5ce; }
-.relationScope button[aria-pressed=true] { background: rgb(var(--accent-rgb)/0.102); border-color: rgb(var(--accent-rgb)/0.376); color: #ebf0f4; }
-.relationScope > span { color: #a6b1b9; margin-left: auto; line-height: 1.8; }
-.domainGraph .graphNode { width: 200px; height: 60px; padding: 10px 12px; }
-.domainGraph .graphNode[data-root=true] { height: 50px; }
-.domainGraph .graphNode strong { font-size: 15px; }
-.domainGraph .graphNode small { font-size: 13px; }
-.domainGraphLines g { pointer-events: stroke; }
-.domainGraphLines g > path { stroke-width: 1.6; stroke: rgb(var(--accent-rgb)/.6); }
-.domainGraphLines g[data-comparison=true] > path { stroke-dasharray: 5 4; }
-.domainGraphLines g[data-active=false] { opacity: .18; }
-.domainGraphLines text { opacity: 0; font-size: 14px; fill: #f1f6fa; }
-.domainGraphLines g:is(:hover,:focus-visible) > path { stroke-width: 3; stroke: var(--accent); }
-.domainGraphLines g:is(:hover,:focus-visible) > text { opacity: 1; }
 .graphTextList { padding: 14px 20px; border-top: 1px solid #ffffff15; font-size: 14px; line-height: 1.8; }
 .graphTextList summary { color: #dadee2; }
 .graphTextList p { padding: 12px 0; border-bottom: 1px solid #ffffff12; }
 .graphTextList p > button { color: #eaeef2; text-decoration: underline; text-underline-offset: 4px; }
 .graphTextList p > span { display: block; color: #aab4bd; font-size: 13px; margin-top: 7px; }
-.domainGraph .graphNote { font-size: 13px; }
 @media (prefers-reduced-motion:reduce) { .map[data-learning] .groupCard:hover { transform: none; } }
 @media (max-width:767px) {
   .map[data-learning] { padding: 20px 16px 32px; }
@@ -355,7 +337,6 @@
   .lessonNavigation > span { font-size: 13px; }
   .lessonNavigation button { gap: 5px; }
   .lessonNavigation button small { max-width: 116px; overflow-wrap: anywhere; }
-  .relationScope > span { margin-left: 0; flex-basis: 100%; }
 }
 
 /* Shared teaching reader; additional stages retain the same restrained palette. */
@@ -376,48 +357,13 @@
 .legacyOutline details { border: 1px solid #ffffff20; padding: 16px 20px; margin-top: 12px; border-radius: 9px; }
 .legacyOutline ul { padding-left: 24px; margin-top: 12px; }
 .legacyOutline a { color: #d7dbdf; text-decoration: underline; }
-.ecosystemGraphToolbar { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; padding: 14px 20px; border-bottom: 1px solid #ffffff15; font-size: 14px; }
-.ecosystemGraphToolbar label { display: flex; gap: 12px; align-items: center; flex-shrink: 0; }
-.ecosystemGraphToolbar select { color-scheme: dark; background: #111b24; border: 1px solid rgb(var(--accent-rgb)/0.251); padding: 8px 12px; border-radius: 7px; color: #e6eaee; font: inherit; }
-.ecosystemGraphToolbar p { color: #acb6bf; font-size: 13px; line-height: 1.8; }
-.ecosystemGraph .graphNode,.ecosystemGraph .graphNode[data-root=true] { width: 220px; height: 80px; }
-.ecosystemGraph .graphNode strong { font-size: 15px; line-height: 1.7; }
-.ecosystemGraph .graphNode small { font-size: 13px; line-height: 1.8; }
-.ecosystemGraph .graphViewport { height: 600px; }
-.ecosystemLegend { display: flex; flex-wrap: wrap; gap: 10px 20px; padding: 12px 20px; font-size: 13px; line-height: 1.8; border-bottom: 1px solid #ffffff12; color: #b0bbc4; }
-.ecosystemLegend [data-category="贡献"] { color: #e4e8ec; }
-.ecosystemLegend [data-category="交接"] { color: #9fd0c5; }
-.ecosystemLegend [data-category="资源与成本"] { color: #d7be91; }
-.ecosystemLegend [data-category="证据与修订"] { color: #9fbbdf; }
-.ecosystemLines g[data-category="贡献"] { color: #e4e8ec; }
-.ecosystemLines g[data-category="交接"] { color: #9fd0c5; }
-.ecosystemLines g[data-category="资源与成本"] { color: #d7be91; }
-.ecosystemLines g[data-category="证据与修订"] { color: #9fbbdf; }
-.ecosystemLines g[data-category] > path { stroke: currentColor; opacity: .65; }
-.ecosystemLines g:is(:hover,:focus-visible) > path { opacity: 1; stroke: currentColor; }
-.ecosystemGraph .graphHeader { flex-wrap: wrap; }
 @media (max-width:767px) {
   .teamProfile dl { grid-template-columns: minmax(0,1fr); }
   .teamProfile dt { border-bottom: 0; padding-bottom: 2px; }
   .teamProfile dd { padding-top: 5px; }
-  .ecosystemGraphToolbar label { width: 100%; }
-  .ecosystemGraphToolbar select { flex: 1; min-width: 0; }
-  .ecosystemGraph .graphViewport { height: 560px; }
 }
-.cognitionLearningGraph .graphViewport { height: 720px; }
-.cognitionLearningGraph .graphHeader { flex-wrap: wrap; }
-.cognitionLearningGraph .graphNode,.cognitionLearningGraph .graphNode[data-root=true] { width: 228px; height: 78px; }
-.cognitionLearningGraph .graphNode strong { line-height: 1.5; }
-.cognitionLearningGraph .graphNode small { line-height: 1.5; margin-top: 3px; }
-.cognitionLearningLines g[data-feedback=true] > path { stroke: #9bc6edaa; stroke-dasharray: 7 4; }
-.cognitionLearningLines g[data-comparison=true] > path { stroke: #9bcabb; stroke-dasharray: 2 5; }
-.cognitionLegend { display: flex; flex-wrap: wrap; gap: 8px 20px; padding: 13px 20px; font-size: 13px; line-height: 1.8; color: #b3bec7; border-bottom: 1px solid #ffffff15; }
-.cognitionLegend span:nth-child(2) { color: #9bc6ed; }
-.cognitionLegend span:nth-child(3) { color: #9bcabb; }
-@media (max-width:767px) { .cognitionLearningGraph .graphViewport { height: 560px; } }
 .groupHandoff { display: block; color: #c1cdd4; font-size: 13px; margin-bottom: 6px; }
 .feedbackAction { margin-top: 28px; border-top: 1px solid #ffffff16; padding-top: 18px; }
 .feedbackAction a { display: inline-flex; align-items: center; gap: 8px; color: #f1f6fa; font-size: 14px; padding: 8px 0; }
 .mapFeedback { display: flex; justify-content: flex-end; margin: 0 0 14px; font-size: 13px; color: var(--muted); }
 .mapFeedback a { display: inline-flex; align-items: center; gap: 6px; padding: 6px 0; }
-.ecosystemLines[data-overview=true] text { opacity: 1; font-size: 13px; }

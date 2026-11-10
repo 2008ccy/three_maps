@@ -3,6 +3,8 @@ import { readFileSync } from 'node:fs';
 import assert from 'node:assert/strict';
 import { maps, flattenNodes } from '../src/lib/maps/content.ts';
 import { buildCatalog, buildEdges, resolveCatalogNode, filterCatalog, emptyFilters, catalogQuery, readCatalogQuery } from '../src/lib/maps/catalog.ts';
+import { buildRadialGraph, mapHubId } from '../src/lib/maps/radial-graph.ts';
+import { radialLayout, relationPath } from '../src/lib/maps/radial-layout.ts';
 import { zoomGraphCamera } from '../src/lib/maps/graph-camera.ts';
 
 test('mobile graph zoom-out keeps its fitted overview instead of enlarging it', () => {
@@ -187,22 +189,70 @@ test('ecosystem curation preserves the entire original map and maps every retire
   assert.ok(nodes.find((node) => node.id === 'qwen').lesson.example.output.includes('历史'));
 });
 
-test('ecosystem overview is exactly 5 themes and 5 bounded handoffs; detail adds only direct neighbors', async () => {
-  const { ecosystemGraphSlice } = await import('../src/lib/maps/ecosystem-graph.ts');
-  const map = maps[1], nodes = buildCatalog(map), edges = buildEdges(map).filter((edge) => edge.kind === 'relation' && edge.targetMap === 'ecosystem');
-  const overview = ecosystemGraphSlice(nodes, nodes, edges, '', null, 'core');
-  assert.equal(overview.nodes.length, 5); assert.equal(overview.edges.length, 5);
-  assert.equal(overview.nodes.every((node) => !node.parent), true);
-  assert.equal(Math.max(...overview.nodes.map((node) => node.x + 220)) <= overview.width, true);
-  const selected = ecosystemGraphSlice(nodes, nodes, edges, '', 'huggingface', 'core');
-  assert.equal(selected.stage, 'stage-adapt');
-  for (const edge of edges.filter((edge) => edge.from === 'huggingface' || edge.to === 'huggingface')) assert.ok(selected.edges.some((item) => item.id === edge.id));
-  const nonmember = selected.nodes.filter((node) => node.parent !== 'stage-adapt' && node.id !== 'stage-adapt');
-  assert.ok(nonmember.every((node) => edges.some((edge) => edge.from === 'huggingface' && edge.to === node.id || edge.to === 'huggingface' && edge.from === node.id)));
-  assert.ok(edges.some((edge) => edge.from === 'inference-tools' && edge.to === 'api-platforms' && edge.direction === 'undirected'));
-  assert.equal(ecosystemGraphSlice(nodes.filter((node) => node.id === 'huggingface'), nodes, edges, '', null, 'core').nodes.length, 1);
-  const back = readCatalogQuery(catalogQuery('graph', { ...emptyFilters, q: '接口' }, 'all', 'stage-adapt'));
-  assert.equal(back.stage, 'stage-adapt'); assert.equal(back.filters.q, '接口'); assert.equal(back.relations, 'all');
+for (const map of maps) {
+  test(`${map.id}: map, theme and point centers preserve every original relation`, () => {
+    const nodes = buildCatalog(map), edges = buildEdges(map);
+    const local = edges.filter(edge => edge.kind !== 'hierarchy' && edge.targetMap === map.id);
+    const overview = buildRadialGraph(nodes, nodes, edges, '', 'all');
+    assert.equal(overview.hub, mapHubId);
+    assert.deepEqual(overview.satellites.map(n => n.id), map.branches.map(n => n.id));
+    assert.equal(new Set(overview.lines.map(l => [l.from, l.to].sort().join('/'))).size, overview.lines.length);
+    const reconstructed = overview.lines.flatMap(line => {
+      for (const edge of line.edges) {
+        const groups = [edge.from, edge.to].map(id => overview.byId.get(id).groupId);
+        assert.deepEqual(groups.sort(), [line.from, line.to].sort());
+      }
+      return line.edges.map(edge => edge.id);
+    });
+    for (const theme of map.branches) {
+      const branch = buildRadialGraph(nodes, nodes, edges, theme.id, 'all');
+      assert.deepEqual(branch.satellites.map(n => n.id), theme.children.map(n => n.id));
+      reconstructed.push(...branch.lines.flatMap(line => line.edges.map(edge => edge.id)));
+    }
+    assert.deepEqual(reconstructed.sort(), local.map(edge => edge.id).sort());
+    const core = buildRadialGraph(nodes, nodes, edges, '', 'core');
+    assert.deepEqual(core.displayed, overview.displayed.filter(edge => edge.core));
+    for (const point of nodes.filter(node => node.parent)) {
+      const selected = buildRadialGraph([point], nodes, edges, point.id, 'core');
+      const direct = local.filter(edge => edge.from === point.id || edge.to === point.id);
+      assert.deepEqual(selected.displayed, direct);
+      assert.deepEqual(new Set(selected.satellites.map(n => n.id)), new Set(direct.map(edge => edge.from === point.id ? edge.to : edge.from)));
+      const filtered = buildRadialGraph([point], nodes, edges, '', 'core');
+      assert.deepEqual(filtered.satellites.map(n => n.id), [point.groupId]);
+    }
+    assert.equal(buildRadialGraph([], nodes, edges, '', 'core').satellites.length, 0);
+  });
+
+  test(`${map.id}: radial cards and connecting lines fit phone and desktop views`, () => {
+    const nodes = buildCatalog(map), edges = buildEdges(map);
+    for (const focusId of ['', ...nodes.map(node => node.id)]) {
+      const graph = buildRadialGraph(nodes, nodes, edges, focusId, 'all');
+      for (const size of [{ width: 350, height: 430 }, { width: 1200, height: 500 }]) {
+        const layout = radialLayout(graph.hub, graph.satellites.map(n => n.id), graph.lines, size);
+        const [hub] = layout.boxes;
+        assert.deepEqual([hub.id, hub.x, hub.y], [graph.hub, layout.width / 2, layout.height / 2]);
+        for (const [i, box] of layout.boxes.entries()) {
+          assert.ok(box.x >= box.width / 2 && box.x + box.width / 2 <= layout.width);
+          assert.ok(box.y >= box.height / 2 && box.y + box.height / 2 <= layout.height);
+          for (const other of layout.boxes.slice(i + 1)) {
+            assert.ok(Math.abs(box.x - other.x) >= (box.width + other.width) / 2 || Math.abs(box.y - other.y) >= (box.height + other.height) / 2);
+          }
+        }
+        for (const line of graph.lines) {
+          const path = relationPath(layout.byId.get(line.from), layout.byId.get(line.to), layout);
+          assert.equal(path.penalty, 0, `${focusId}: ${line.from} → ${line.to}`);
+          assert.doesNotMatch(path.d, /NaN|Infinity/);
+        }
+      }
+    }
+  });
+}
+
+test('graph URLs restore the relationship scope, filter and current center', () => {
+  for (const id of ['stage-adapt', 'loss-test', 'rag']) {
+    const back = readCatalogQuery(catalogQuery('graph', { ...emptyFilters, q: '接口' }, 'all', id));
+    assert.equal(back.stage, id); assert.equal(back.filters.q, '接口'); assert.equal(back.relations, 'all');
+  }
 });
 
 test('ecosystem search finds core responsibilities while historical metrics stay outside active results', () => {
@@ -276,22 +326,6 @@ test('cognition remaps relations without loops or parallel duplicates and preser
     assert.ok(merged, `${old.from} → ${old.to}`);
     for (const source of old.sources ?? []) assert.ok(merged.sources.includes(source), `${old.from} → ${old.to}: ${source}`);
   }
-});
-
-test('cognition graph keeps four theme columns, direct cases and filtered neighbors', async () => {
-  const { cognitionLearningGraph } = await import('../src/lib/maps/cognition-learning-graph.ts');
-  const map = maps[2], nodes = buildCatalog(map), edges = buildEdges(map).filter((edge) => edge.targetMap === 'cognition' && edge.kind !== 'hierarchy');
-  const core = cognitionLearningGraph(nodes, nodes, edges, null, 'core'), all = cognitionLearningGraph(nodes, nodes, edges, null, 'all');
-  assert.equal(core.nodes.length, 16); assert.equal(core.edges.length, 16); assert.equal(all.edges.length, 26);
-  assert.equal(new Set(core.nodes.filter((node) => !node.parent).map((node) => node.x)).size, 4);
-  assert.ok(core.width <= 1120);
-  const filtered = cognitionLearningGraph(nodes.filter((node) => node.id === 'loss-test'), nodes, edges, 'loss-test', 'core');
-  for (const edge of edges.filter((edge) => edge.from === 'loss-test' || edge.to === 'loss-test')) assert.ok(filtered.edges.some((item) => item.id === edge.id));
-  assert.ok(filtered.nodes.some((node) => node.id === 'ranking-task'));
-  assert.ok(filtered.edges.some((edge) => edge.direction === 'undirected'));
-  assert.ok(filtered.nodes.some((node) => node.id === 'analysis-methods'));
-  assert.ok(!filtered.nodes.some((node) => node.id === 'system-analysis'));
-  assert.equal(cognitionLearningGraph([], nodes, edges, null, 'core').nodes.length, 0);
 });
 
 test('cognition search indexes concise lessons and keeps historical personal accounts at the topic only', () => {
