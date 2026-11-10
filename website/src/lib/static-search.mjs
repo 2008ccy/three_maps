@@ -23,14 +23,21 @@ export function createStaticSearch(from) {
     return database;
   }
   return {
-    /** @param {string} query @returns {Promise<import('fumadocs-core/search').SortedResult[]>} */
-    async search(query) {
+    /** @param {string} query @param {string[]} tags @returns {Promise<import('fumadocs-core/search').SortedResult[]>} */
+    async search(query, tags = []) {
       const index = await load();
-      const hits = await index.searchAsync(query, { index: 'content', limit: 80 });
+      const term = query.trim();
+      if (!term && !tags.length) return [];
+      // Filter each selected map before the hit limit so quieter maps still surface.
+      const scopes = tags.length ? tags : [null];
+      const hits = await Promise.all(scopes.map((tag) => index.searchAsync(term, {
+        index: 'content', limit: term ? 80 : Number.MAX_SAFE_INTEGER,
+        ...(tag ? { tag: { tags: tag } } : {}),
+      })));
       const groups = new Map();
-      for (const id of hits[0]?.result ?? []) {
+      for (const id of hits.flatMap((scope) => scope[0]?.result ?? [])) {
         const doc = index.get(id);
-        if (!doc) continue;
+        if (!doc || (!term && doc.type !== 'page')) continue;
         if (!groups.has(doc.page_id)) groups.set(doc.page_id, []);
         if (doc.type !== 'page') groups.get(doc.page_id).push(doc);
       }

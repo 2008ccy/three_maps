@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { ArrowUpRight } from 'lucide-react';
+import { readingContext } from '@/lib/reading-context';
 import { getNode } from '@/lib/source';
 import { withBasePath } from '@/lib/shared';
 import { isLegacyMapArticle } from '@/lib/document-navigation';
@@ -14,7 +15,14 @@ export function NodeGrid({ ids, linked = true }: { ids: string[]; linked?: boole
       <strong>{page.data.title}</strong>
       <span className="node-description">{page.data.description}</span>
     </>;
-    return clickable ? <Link className="node-card" href={page.url} key={id}>{content}</Link> : <div className="node-card node-card-static" key={id}>{content}</div>;
+    const { owner, related } = readingContext(id);
+    const tags = related.filter((item) => item.label !== '关联阅读').slice(0, 2);
+    if (!tags.length && owner) tags.push({ title: owner.node.title, label: '关联节点', href: `/docs/${owner.map.id}/#node-${owner.node.id}` });
+    return <div className="node-card node-card-static" key={id}>
+      {clickable ? <Link href={page.url} className="node-card-body">{content}</Link> : content}
+      {!!tags.length && <nav aria-label={page.data.title+'的关联节点'} className="related-tags"><small>关联节点</small>{tags.map((tag) =>
+        <Link href={tag.href} key={tag.href} data-map={tag.href.split('/')[2]}>{tag.title}<ArrowUpRight size={12} /></Link>)}</nav>}
+    </div>;
   })}</div>;
 }
 

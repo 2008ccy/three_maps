@@ -1,0 +1,59 @@
+:root {
+  color-scheme: light;
+  --color-fd-background: #f6f8fb;
+  --color-fd-card: #ffffff;
+  --color-fd-popover: #ffffff;
+  --color-fd-foreground: #19263b;
+  --color-fd-primary: #254fc1;
+  --color-fd-primary-foreground: #ffffff;
+  --color-fd-muted: #edf1f6;
+  --color-fd-secondary: #e6ecf4;
+  --color-fd-muted-foreground: #546478;
+  --color-fd-border: #cad3df;
+  --color-fd-accent: #e8edf7;
+  --text-body: #34475d;
+  --text-subtle: #606f82;
+  --domain-rgb: 52 85 187;
+  --ecosystem-rgb: 0 113 92;
+  --cognition-rgb: 115 71 160;
+  --warning: #82570d;
+  --danger: #a33a43;
+  --code-bg: #eff3f9;
+}
+.dark {
+  color-scheme: dark;
+  --color-fd-background: #060f18;
+  --color-fd-card: #0d1a28;
+  --color-fd-popover: #122130;
+  --color-fd-foreground: #edf3fa;
+  --color-fd-primary: #a5c2ff;
+  --color-fd-primary-foreground: #091728;
+  --color-fd-muted: #142332;
+  --color-fd-secondary: #1b2c3e;
+  --color-fd-muted-foreground: #b3bfcd;
+  --color-fd-border: #334455;
+  --color-fd-accent: #1a2b40;
+  --text-body: #d4deea;
+  --text-subtle: #9eadbf;
+  --domain-rgb: 151 179 255;
+  --ecosystem-rgb: 106 216 187;
+  --cognition-rgb: 207 169 252;
+  --warning: #edce8f;
+  --danger: #f0a9ab;
+  --code-bg: #0a1420;
+}
+:root, .dark {
+  --color-fd-card-foreground: var(--color-fd-foreground);
+  --color-fd-popover-foreground: var(--color-fd-foreground);
+  --color-fd-accent-foreground: var(--color-fd-foreground);
+  --color-fd-secondary-foreground: var(--text-body);
+  --color-fd-ring: var(--color-fd-primary);
+}
+[data-map=domain] { --map-rgb: var(--domain-rgb); }
+[data-map=ecosystem] { --map-rgb: var(--ecosystem-rgb); }
+[data-map=cognition] { --map-rgb: var(--cognition-rgb); }
+.map-badge { display: inline-flex; align-items: center; gap: .4em; color: rgb(var(--map-rgb)); background: rgb(var(--map-rgb) / .09); border: 1px solid rgb(var(--map-rgb) / .2); border-radius: 5px; padding: 3px 8px; font-size: 12px; line-height: 1.6; }
+::highlight(fd-search) { background: color-mix(in srgb, var(--warning) 26%, transparent); color: var(--color-fd-foreground); }
+:where(button, summary, a, select, input):focus-visible { outline: 2px solid var(--color-fd-ring); outline-offset: 3px; }
+.prose pre { background-color: var(--code-bg); }
+.dark .shiki span { color: var(--shiki-dark, inherit); }

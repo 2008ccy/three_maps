@@ -184,7 +184,7 @@ export function FeedbackBoard({ releasedVersions }: { releasedVersions: string[]
     } finally { if (!controller.signal.aborted) setSubmitting(false); inFlight.current = false; }
   }
 
-  return <main className={styles.page}>
+  return <div className={styles.page}>
     <Suspense fallback={null}><FeedbackLocationSync onChange={syncLocation} /></Suspense>
     <nav className={styles.breadcrumb} aria-label="反馈所属路径"><Link href="/">首页</Link><span>/</span><span>反馈与改进</span></nav>
     <header className={styles.header}><p className={styles.eyebrow}><MessageSquare size={15} aria-hidden="true" />一起改进三张地图</p><h1>反馈与改进</h1><p>指出一个具体问题，查看小组怎样核实、回复和修改。</p></header>
@@ -220,5 +220,5 @@ export function FeedbackBoard({ releasedVersions }: { releasedVersions: string[]
         {feedbackService.configured && !singleId && !loading && !loadError && <nav className={styles.pagination} aria-label="反馈分页"><button type="button" disabled={page === 0} onClick={() => setPage((value) => value - 1)}><ArrowLeft size={15} aria-hidden="true" />上一页</button><span>第{page + 1}页 · 每页最多20条</span><button type="button" disabled={!nextCursor} onClick={() => { if (!nextCursor) return; setCursors((value) => [...value.slice(0, page + 1), nextCursor]); setPage((value) => value + 1); }}>下一页<ArrowRight size={15} aria-hidden="true" /></button></nav>}
       </section>
     </div>
-  </main>;
+  </div>;
 }

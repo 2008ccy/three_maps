@@ -36,5 +36,5 @@ function SiteProvider({ children }: { children: ReactNode }) {
   const { isHome, phase } = useHomeScene();
   const searchEnabled = !isHome || phase === 'expanded';
   // 保持 Provider 树稳定，展开时不卸载场景，也不丢失键盘焦点。
-  return <RootProvider search={{ SearchDialog, hotKey: [{ key: (event) => searchEnabled && (event.metaKey || event.ctrlKey), display: '⌘' }, { key: 'k', display: 'K' }], options: searchEnabled ? undefined : { open: false } }} theme={{ defaultTheme: 'dark', forcedTheme: 'dark', enableSystem: false, hotKey: false }} i18n={{ translations }}><NavigationHistory /><MapTransitionProvider>{children}</MapTransitionProvider></RootProvider>;
+  return <RootProvider search={{ SearchDialog, hotKey: [{ key: (event) => searchEnabled && (event.metaKey || event.ctrlKey), display: '⌘' }, { key: 'k', display: 'K' }], options: searchEnabled ? undefined : { open: false } }} theme={{ defaultTheme: 'system', storageKey: 'three-maps-theme', enableSystem: true, hotKey: false }} i18n={{ translations }}><NavigationHistory /><MapTransitionProvider>{children}</MapTransitionProvider></RootProvider>;
 }

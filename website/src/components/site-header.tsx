@@ -2,8 +2,11 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Network, Search } from 'lucide-react';
+import { Menu, Moon, Network, Search, Sun } from 'lucide-react';
 import { useSearchContext } from 'fumadocs-ui/contexts/search';
+import { useEffect } from 'react';
+import { useTheme } from 'fumadocs-ui/provider/base';
+import { NavigationDrawer } from './navigation-drawer';
 import { appName } from '@/lib/shared';
 import styles from './site-header.module.css';
 
@@ -19,6 +22,19 @@ const links = [
 export function SiteHeader() {
   const pathname = usePathname();
   const { setOpenSearch } = useSearchContext();
+  const { resolvedTheme, setTheme } = useTheme();
+  useEffect(() => {
+    function shortcut(event: KeyboardEvent) {
+      const target = event.target as HTMLElement;
+      if (event.key !== '/' || event.defaultPrevented || event.ctrlKey || event.metaKey || event.altKey ||
+          event.isComposing || target.isContentEditable || target.closest('input,textarea,select,[role="combobox"],dialog[open]')) return;
+      event.preventDefault();
+      setOpenSearch(true);
+    }
+    document.addEventListener('keydown', shortcut);
+    return () => document.removeEventListener('keydown', shortcut);
+  }, [setOpenSearch]);
+  const navigation = links.map(({ href, label }) => <Link key={href} href={href} aria-current={pathname.startsWith(href) ? 'page' : undefined}>{label}</Link>);
   return <header id="nd-nav" className={styles.header}>
     <div className={styles.inner}>
       <Link href="/" className={styles.brand} aria-label={`${appName}首页`}>
@@ -26,9 +42,15 @@ export function SiteHeader() {
         <span>{appName}</span><span className={styles.note}>模型构建</span>
       </Link>
       <nav className={styles.links} aria-label="网站主导航">
-        {links.map(({ href, label }) => <Link key={href} href={href} aria-current={pathname.startsWith(href) ? 'page' : undefined}>{label}</Link>)}
+        {navigation}
       </nav>
-      <button type="button" className={styles.search} onClick={() => setOpenSearch(true)} aria-label="搜索地图"><Search size={23} strokeWidth={1.5} aria-hidden="true" /></button>
+      <div className={styles.actions}>
+        <button type="button" className={styles.search} onClick={() => setOpenSearch(true)} aria-label="搜索地图"><Search size={18} strokeWidth={1.5} aria-hidden="true" /><kbd>/</kbd></button>
+        <button type="button" className={styles.theme} title="切换浅色或深色主题" aria-label="切换深色模式" aria-pressed={resolvedTheme === 'dark'}
+        onClick={() => setTheme(resolvedTheme === 'dark' ? 'light' : 'dark')}><Sun className={styles.sun} size={18} /><Moon className={styles.moon} size={18} /></button>
+        <NavigationDrawer className={styles.menu} label="网站导航" icon={<Menu size={20} />}><nav>{navigation}</nav></NavigationDrawer>
+      </div>
     </div>
+    <noscript><nav className={styles.fallbackNav} aria-label="网站导航">{navigation}</nav></noscript>
   </header>;
 }

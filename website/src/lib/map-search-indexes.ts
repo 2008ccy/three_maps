@@ -7,7 +7,7 @@ import { buildCatalog } from './maps/catalog.ts';
 export function mapSearchIndexes(): Index[] {
   return maps.flatMap((map) => [
     {
-      id: `map:${map.id}`, title: map.title, url: `/docs/${map.id}/`,
+      tag: map.id, id: `map:${map.id}`, title: map.title, url: `/docs/${map.id}/`,
       description: map.description,
       structuredData: { headings: [], contents: [{ heading: undefined, content: map.question }] },
     },
@@ -25,7 +25,7 @@ export function mapSearchIndexes(): Index[] {
         ...(node.records ?? []).map((record) => record.text),
       ].filter((text): text is string => !!text);
       return {
-        id: `map:${map.id}:${node.id}`, title: node.title,
+        tag: map.id, id: `map:${map.id}:${node.id}`, title: node.title,
         url: `/docs/${map.id}/#node-${node.id}`, description: node.summary,
         breadcrumbs: [map.title, ...node.path],
         // All matching snippets keep the canonical node fragment. Extra heading

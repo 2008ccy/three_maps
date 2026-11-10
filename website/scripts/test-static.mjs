@@ -37,6 +37,16 @@ for (const [query, target] of [
     }
   });
 }
+test('combined map filters include every selected page when browsing and restrict keyword hits', async () => {
+  const tags = ['ecosystem', 'cognition'];
+  const browse = await client.search('', tags);
+  const expected = mapSearchIndexes().filter((item) => tags.includes(item.tag));
+  assert.deepEqual(new Set(browse.map((item) => item.url)), new Set(expected.map((item) => item.url)));
+  const hits = await client.search('RAG', tags);
+  assert.ok(hits.length > 0);
+  assert.ok(hits.every((item) => tags.includes(item.url.split('/')[2])));
+});
+
 test('search indexes every active node directly without retired addresses or duplicate fragments', () => {
   const indexes = mapSearchIndexes();
   const expected = maps.flatMap((map) => [`/docs/${map.id}/`, ...buildCatalog(map).map((node) => `/docs/${map.id}/#node-${node.id}`)]);

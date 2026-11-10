@@ -6,12 +6,17 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { MapDefinition, MapLinks } from '@/lib/maps/types';
 import { buildCatalog, buildEdges, resolveCatalogNode, catalogChildren, catalogQuery, emptyFilters, filterCatalog, groupCatalog, readCatalogQuery, understandingOptions, verificationOptions, type CatalogFilters, type CatalogNode } from '@/lib/maps/catalog';
 import { DomainLesson, DomainAdvanced } from './domain-lesson';
-import { RadialGraph } from './radial-graph';
+import dynamic from 'next/dynamic';
+import { MapNavigation, ReadingToc } from '@/components/reading-navigation';
 import { teachingCase } from '@/lib/maps/teaching-case';
 import { feedbackComposeHref } from '@/lib/feedback-contract';
 import { appLocationChangeEvent } from '@/lib/document-navigation';
 import styles from './maps.module.css';
 import learningOverrides from '../../../card-editor/overrides.json';
+
+const RadialGraph = dynamic(() => import('./radial-graph').then((module) => module.RadialGraph), {
+  loading: () => <p role="status">正在加载关系图…</p>,
+});
 
 type Props = { map: MapDefinition; links: MapLinks; statuses: Record<string, string>; sourceTitles: Record<string, string> };
 function KnowledgeStatus({ node }: { node: CatalogNode }) {
@@ -153,6 +158,7 @@ export function LearningExplorer({ map, links, statuses, sourceTitles }: Props) 
     const prior = document.body.style.overflow, element = background.current;
     document.body.style.overflow = 'hidden'; if (element) element.inert = true;
     const key = (event: KeyboardEvent) => {
+      if (document.querySelector('dialog[open], [data-fd-search-dialog-input]')) return;
       if (event.key === 'Escape') { event.preventDefault(); close(); }
       if (event.key !== 'Tab') return;
       const focusable = Array.from(panel.current?.querySelectorAll<HTMLElement>('a[href],button,summary,[tabindex="0"]') ?? []).filter((item) => !item.hasAttribute('disabled') && item.getClientRects().length);
@@ -167,6 +173,28 @@ export function LearningExplorer({ map, links, statuses, sourceTitles }: Props) 
     setGraphFocus(null);
     navigate(view, { ...filters, [key]: value }, selectedId, scope, key === 'q', '');
   };
+
+  function relatedTags(node: CatalogNode) {
+    const neighbors = edges
+      .filter((edge) => edge.from === node.id || edge.targetMap === map.id && edge.to === node.id)
+      .sort((a, b) => Number(a.targetMap === map.id) - Number(b.targetMap === map.id) || Number(a.kind === 'hierarchy') - Number(b.kind === 'hierarchy'));
+    const tags = new Map<string, { title: string; href: string; map: string }>();
+    for (const edge of neighbors) {
+      const id = edge.from === node.id ? edge.to : edge.from;
+      const target = edge.targetMap === map.id ? nodes.find((item) => item.id === id) : undefined;
+      const link = target ? { title: target.title, href: `#node-${id}` } : links[`relation:${edge.targetMap}:${id}`];
+      if (link) tags.set(link.href, { ...link, map: edge.targetMap });
+      if (tags.size === 2) break;
+    }
+    return <nav className="related-tags" aria-label={node.title+'的关联节点'}><small>关联节点</small>
+      {[...tags.values()].map((tag) => <Link data-map={tag.map} key={tag.href} href={tag.href}
+        onClick={(event) => {
+          if (tag.href.startsWith('#') && !event.metaKey && !event.ctrlKey && !event.shiftKey && !event.altKey) {
+            event.preventDefault();
+            open(tag.href.slice(6));
+          } else remember();
+        }}>{tag.title}<ArrowUpRight size={12} /></Link>)}</nav>;
+  }
 
   function reading(node: CatalogNode, interactive = true) {
     const children = node.collection ? node.children as CatalogNode[] : catalogChildren(nodes, node.id);
@@ -192,9 +220,9 @@ export function LearningExplorer({ map, links, statuses, sourceTitles }: Props) 
       {node.collection && <section className={styles.topicTeaching}><p>{node.detail}</p><strong>原分类：{node.title} · {children.length} 个原有条目</strong></section>}
       {node.topic && <section className={styles.topicTeaching}><p className={styles.readingSummary}>{node.topic.question}</p><p>{node.detail}</p>{ecosystem && node.boundary && <p className={styles.topicHandoff}>{node.boundary}</p>}<p className={styles.classification}>{node.topic.classification}</p><strong>学完这个主题：{node.topic.outcome}</strong></section>}
       {node.lesson && <DomainLesson key={node.id} lesson={node.lesson} ecosystem={ecosystem} cognition={cognition} profile={node.teamProfile} />}
-      {interactive && !!node.children?.length && <section className={styles.childrenSection} aria-label="主题下的知识点"><div className={styles.sectionHeading}><h3>从这里继续探索</h3><span>{children.length} 个知识点</span></div><div className={styles.childCards}>{children.map((child) => <button type="button" className={styles.childCard} key={child.id} data-tone={tone(child)} data-outside={filtersActive && !matches.some((item) => item.id === child.id)} onClick={() => open(child.id)} aria-label={`打开知识点：${child.title}`}>
+      {interactive && !!node.children?.length && <section className={styles.childrenSection} aria-label="主题下的知识点"><div className={styles.sectionHeading}><h3>从这里继续探索</h3><span>{children.length} 个知识点</span></div><div className={styles.childCards}>{children.map((child) => <article className={styles.knowledgeCard} key={child.id}><button type="button" className={styles.childCard} data-tone={tone(child)} data-outside={filtersActive && !matches.some((item) => item.id === child.id)} onClick={() => open(child.id)} aria-label={`打开知识点：${child.title}`}>
         <span className={styles.childCardMeta}>{ecosystem && child.type + ' · '}{child.lesson?.role}</span><strong>{child.title}</strong><KnowledgeStatus node={child} /><span className={styles.childCardSummary}>{child.summary}</span><span className={styles.childGoal}>学完能：{child.lesson?.goal}</span><span className={styles.childCardFooter}>{filtersActive && !matches.some((item) => item.id === child.id) ? '筛选范围外 · 仍可阅读' : '阅读示例与知识联系'}<ArrowRight size={16} /></span>
-      </button>)}</div></section>}
+      </button>{relatedTags(child)}</article>)}</div></section>}
       {ecosystem && node.lesson && node.boundary && <div className={styles.boundary}><span>理解与使用边界</span><p>{node.boundary}</p></div>}
       {renderRelations(local, ecosystem ? '本图生态联系' : '本图知识联系')}{renderRelations(cross, '跨图背景')}
       <details key={`sources-${node.id}`} className={styles.lessonSources}><summary>资料状态、使用边界与来源（{sourceIds.length}）</summary><p>项目维护者记录的学习状态：{node.understanding}。核实状态：{node.verification}。</p><p>节点 ID：<code>{node.id}</code>。本页包含教学编排与自编示例，不将学习建议写成已完成的实践成果。</p>{cognition && node.boundary && <p>{node.boundary}</p>}<nav aria-label="内容来源">{sourceIds.map((id) => <Link key={id} href={`/docs/sources/#${id.toLowerCase()}`} onClick={remember}><span>{sourceTitles[id] ?? id}</span><small>{id}<ArrowUpRight size={13} /></small></Link>)}</nav></details>
@@ -206,7 +234,7 @@ export function LearningExplorer({ map, links, statuses, sourceTitles }: Props) 
   function outline(items: MapDefinition['branches']) { return <div className={styles.outline}>{items.map((item) => <details id={`node-${item.id}`} key={item.id}><summary>{item.title}<span>{item.summary}</span></summary>{reading(nodes.find((node) => node.id === item.id)!, false)}{item.children && outline(item.children)}</details>)}</div>; }
 
   return <div className={styles.map} data-map={map.id} data-learning=""><div ref={background}>
-    <nav className={styles.breadcrumb} aria-label="面包屑"><Link href="/">首页</Link><span>/</span><span>{map.title}</span></nav>
+    <nav className={styles.breadcrumb} aria-label="面包屑"><Link href="/">首页</Link><span>/</span><span data-map={map.id} className="map-badge">{map.title}</span></nav>
     <header className={styles.domainIntro}><div><p className={styles.eyebrow}>模型构建 / 学习地图 <span>{map.number}</span></p><h1 id="map-title">{map.title}</h1><p>{map.question} {map.description}</p></div>{ready && <button type="button" className={styles.startLearning} onClick={() => open(map.branches[0].id)}>从{map.branches[0].title}开始<ArrowRight size={17} /></button>}</header>
     <div className={styles.compactStats} aria-label="地图统计"><span><strong>{map.branches.length}</strong> 个主题</span><span><strong>{points.length}</strong> 个知识点</span><span><strong>{concepts.length}</strong> 条{ecosystem ? '生态' : cognition ? '知识与反馈' : '概念'}联系</span><details><summary>分类与跨图说明</summary><p>{edges.filter((edge) => edge.kind === 'hierarchy').length} 条归属关系 · {edges.filter((edge) => edge.targetMap !== map.id).length} 条跨图关系。{ecosystem ? '五主题保留课程助手的核心协作链：成果、运行、资料、验收与维护。适配按需、评测贯穿；旧地址定位到合并后的内容。' : cognition ? '四主题各保留三个核心条目，方法已融入案例；原有5条指导反馈保留，旧地址进入合并内容。求真观课堂正式名称仍待课件核验。' : '五主题为本网站的学习组织方式，新增节点不冒充原讲解稿的原始知识树。'}建议学习顺序不等于技术依赖。</p></details></div>
     <nav className={styles.mapFeedback} aria-label="整图反馈"><Link href={feedbackComposeHref({ mapId: map.id })} onClick={remember}>反馈这张地图<ArrowUpRight size={14} aria-hidden="true" /></Link></nav>
@@ -226,11 +254,11 @@ export function LearningExplorer({ map, links, statuses, sourceTitles }: Props) 
   </div>
     {selected && <><div className={styles.scrim} onClick={close} aria-hidden="true" /><aside ref={panel} id="map-reading-panel" className={`${styles.floating} ${styles.domainDialog}`} data-tone={tone(selected)} data-topic={!!selected.topic || !!selected.collection} role="dialog" aria-modal="true" aria-labelledby="reading-title">
       <header className={styles.domainPanelTop}><div>{selected.parent && <button type="button" onClick={() => open(selected.parent!)} aria-label="返回上一层"><ArrowLeft size={16} />返回{nodes.find((node) => node.id === selected.parent)?.title}</button>}<span>{map.title}{selected.path.length > 0 && ` / ${selected.path.join(' / ')}`}</span><button type="button" className={styles.lessonViewSwitch} onClick={switchReadingView}>{selected.collection ? '查看新协作链' : view === 'cards' ? '在关系图定位' : '切回主题卡片'}</button></div><button type="button" aria-label="关闭阅读面板" onClick={close}><X size={22} /></button></header>
-      <div ref={body} className={styles.domainPanelBody} onScroll={(event) => { scrolls.current[selected.id] = event.currentTarget.scrollTop; }}><div className={styles.domainReadingColumn}><p className={styles.lessonRole}>{ecosystem && selected.parent && selected.type + ' · '}{selected.lesson?.role ?? '主题导读'}{position >= 0 && ` · 学习路线 ${position + 1} / ${path.length}`}</p><h2 ref={heading} id="reading-title" tabIndex={-1}>{selected.title}</h2>
+      <div ref={body} data-reader-scroll="" data-columns={!!selected.lesson} className={styles.domainPanelBody} onScroll={(event) => { scrolls.current[selected.id] = event.currentTarget.scrollTop; }}>{selected.lesson && <MapNavigation current={map.id} topics={map.branches.map((n) => ({ title: n.title, href: '#node-'+n.id }))} />}<div data-reader-copy="" className={styles.domainReadingColumn}><p className={styles.lessonRole}>{ecosystem && selected.parent && selected.type + ' · '}{selected.lesson?.role ?? '主题导读'}{position >= 0 && ` · 学习路线 ${position + 1} / ${path.length}`}</p><h2 ref={heading} id="reading-title" tabIndex={-1}>{selected.title}</h2>
         {outside && <p className={styles.notice}>当前节点不在筛选结果内，已临时显示。<button type="button" onClick={() => navigate(view, emptyFilters, selectedId)}>清除筛选查看全部</button></p>}
         {mergedFrom && <p className={styles.notice}>此旧条目已精简或合并，以下为当前保留的主题。扩展原稿已存入后续更新储备。</p>}
         {reading(selected)}
-      </div></div>
+      </div>{selected.lesson && <ReadingToc key={selected.id} panelId={selected.id} />}</div>
       <footer className={styles.lessonNavigation}>{position >= 0 ? <><button type="button" disabled={position === 0} onClick={() => open(path[position - 1])}><ArrowLeft size={16} /><span>上一知识点<small>{nodes.find((node) => node.id === path[position - 1])?.title ?? '学习起点'}</small></span></button><span>{position + 1} / {path.length}</span><button type="button" disabled={position === path.length - 1} onClick={() => open(path[position + 1])}><span>下一知识点<small>{nodes.find((node) => node.id === path[position + 1])?.title ?? '路线结束'}</small></span><ArrowRight size={16} /></button></> : <><span>{ecosystem ? selected.collection ? '旧分类专题 · 可继续进入所属协作环节' : '条目按角色排列，阅读顺序不等于技术依赖。' : '建议顺序 · ' + selected.children?.map((node) => node.title).join(' → ')}</span><button type="button" onClick={() => open(selected.children![0].id)}>从{selected.children?.[0].title}开始<ArrowRight size={16} /></button></>}</footer>
     </aside></>}
   </div>;
