@@ -6,13 +6,12 @@
 .particles { opacity: 0; }
 .scene[data-ready=true] .particles { opacity: 1; }
 .scene[data-ready=true] .fallback { visibility: hidden; }
-:global(html:not(.dark)) .scene { filter: invert(1) hue-rotate(174deg) saturate(.85); mix-blend-mode: multiply; }
 .copy { position: relative; z-index: 1; padding: 35px 0; pointer-events: none; }
 .eyebrow { display: flex; align-items: center; gap: 10px; color: var(--text-subtle); font-size: 13px; letter-spacing: .1em; margin-bottom: 18px; }
 .eyebrow::before { content: ''; width: 25px; height: 2px; background: var(--color-fd-primary); }
 .copy h1 { font-size: clamp(32px, 4vw, 64px); font-weight: 650; line-height: 1.3; letter-spacing: -.055em; color: var(--color-fd-foreground); }
 .description { color: var(--color-fd-muted-foreground); font-size: clamp(13px, 1.13vw, 17px); line-height: 1.85; margin-top: 19px; }
-.mapGrid { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 14px; }
+.mapGrid { margin-top: 24px; display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 14px; }
 .mapLink { --orbit-color: rgb(var(--map-rgb)); display: flex; flex-direction: column; align-items: start; padding: 18px 22px; border: 1px solid var(--color-fd-border); border-top: 2px solid var(--orbit-color); background: var(--color-fd-card); border-radius: 7px; }
 .mapLink:hover { border-color: var(--orbit-color); }
 .number { display: inline-flex; align-items: center; gap: 7px; color: var(--orbit-color); font: 12px/1.6 ui-monospace, monospace; padding: 3px 7px; background: rgb(var(--map-rgb) / .09); border-radius: 4px; }
@@ -33,7 +32,7 @@
   .copy h1 { font-size: clamp(28px,7.6vw,44px); } .description { margin-top: 12px; } .desktopBreak { display: none; }
   .scene { position: relative; width: 100%; height: clamp(116px,33vw,200px); }
   .particles,.fallback { width: 155%; left: -53%; }
-  .mapGrid { gap: 6px; } .mapLink { padding: 10px 8px; } .mapTitle { margin-top: 6px; }
+  .mapGrid { margin-top: 16px; gap: 6px; } .mapLink { padding: 10px 8px; } .mapTitle { margin-top: 6px; }
   .mapTitle h2 { font-size: clamp(15px,4vw,21px); } .mapTitle svg { display: none; } .number { font-size: 10px; gap: 4px; padding: 2px 5px; }
   .question,.summary { font-size: 11px; line-height: 1.6; }
 }

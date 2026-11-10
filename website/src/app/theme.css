@@ -1,26 +1,4 @@
-:root {
-  color-scheme: light;
-  --color-fd-background: #f6f8fb;
-  --color-fd-card: #ffffff;
-  --color-fd-popover: #ffffff;
-  --color-fd-foreground: #19263b;
-  --color-fd-primary: #254fc1;
-  --color-fd-primary-foreground: #ffffff;
-  --color-fd-muted: #edf1f6;
-  --color-fd-secondary: #e6ecf4;
-  --color-fd-muted-foreground: #546478;
-  --color-fd-border: #cad3df;
-  --color-fd-accent: #e8edf7;
-  --text-body: #34475d;
-  --text-subtle: #606f82;
-  --domain-rgb: 52 85 187;
-  --ecosystem-rgb: 0 113 92;
-  --cognition-rgb: 115 71 160;
-  --warning: #82570d;
-  --danger: #a33a43;
-  --code-bg: #eff3f9;
-}
-.dark {
+:root.dark {
   color-scheme: dark;
   --color-fd-background: #060f18;
   --color-fd-card: #0d1a28;
@@ -41,8 +19,6 @@
   --warning: #edce8f;
   --danger: #f0a9ab;
   --code-bg: #0a1420;
-}
-:root, .dark {
   --color-fd-card-foreground: var(--color-fd-foreground);
   --color-fd-popover-foreground: var(--color-fd-foreground);
   --color-fd-accent-foreground: var(--color-fd-foreground);

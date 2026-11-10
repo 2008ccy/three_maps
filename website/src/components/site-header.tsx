@@ -2,10 +2,9 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Menu, Moon, Network, Search, Sun } from 'lucide-react';
+import { Menu, Network, Search } from 'lucide-react';
 import { useSearchContext } from 'fumadocs-ui/contexts/search';
 import { useEffect } from 'react';
-import { useTheme } from 'fumadocs-ui/provider/base';
 import { NavigationDrawer } from './navigation-drawer';
 import { appName } from '@/lib/shared';
 import styles from './site-header.module.css';
@@ -22,7 +21,6 @@ const links = [
 export function SiteHeader() {
   const pathname = usePathname();
   const { setOpenSearch } = useSearchContext();
-  const { resolvedTheme, setTheme } = useTheme();
   useEffect(() => {
     function shortcut(event: KeyboardEvent) {
       const target = event.target as HTMLElement;
@@ -46,8 +44,6 @@ export function SiteHeader() {
       </nav>
       <div className={styles.actions}>
         <button type="button" className={styles.search} onClick={() => setOpenSearch(true)} aria-label="搜索地图"><Search size={18} strokeWidth={1.5} aria-hidden="true" /><kbd>/</kbd></button>
-        <button type="button" className={styles.theme} title="切换浅色或深色主题" aria-label="切换深色模式" aria-pressed={resolvedTheme === 'dark'}
-        onClick={() => setTheme(resolvedTheme === 'dark' ? 'light' : 'dark')}><Sun className={styles.sun} size={18} /><Moon className={styles.moon} size={18} /></button>
         <NavigationDrawer className={styles.menu} label="网站导航" icon={<Menu size={20} />}><nav>{navigation}</nav></NavigationDrawer>
       </div>
     </div>

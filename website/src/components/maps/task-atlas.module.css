@@ -15,7 +15,8 @@
 .diagram > svg path[data-active=true] { stroke: var(--color-fd-primary); stroke-width: 2.5; opacity: 1; }
 .diagram [data-muted=true] { opacity: .28; }
 .hub,.node,.lane { position: absolute; transform: translate(-50%,-50%); }
-.hub { left: 9.6%; top: 53.87%; width: 14.5%; padding: 14px 4px; gap: 6px; flex-direction: column; border-radius: 9px; background: var(--color-fd-foreground); color: var(--color-fd-background); font-size: 15px; }
+.hub { left: 9.6%; top: 53.87%; width: 14.5%; padding: 14px 4px; gap: 6px; flex-direction: column; color: var(--color-fd-foreground); font-size: 15px; }
+.hub:is(:hover,:focus-visible) strong { text-decoration: underline; text-underline-offset: 4px; }
 .lane { top: 7%; color: rgb(var(--map-rgb)); font-size: 12px; font-weight: 600; }
 .node { gap: 8px; width: 17.1%; min-height: 45px; padding: 6px 10px; justify-content: center; border: 1px solid rgb(var(--map-rgb) / .48); background: color-mix(in srgb,rgb(var(--map-rgb)) 6%,var(--color-fd-card)); color: rgb(var(--map-rgb)); border-radius: 7px; transition: opacity .15s; }
 .node strong { color: var(--color-fd-foreground); font-size: clamp(12px,1vw,15px); font-weight: 550; }
