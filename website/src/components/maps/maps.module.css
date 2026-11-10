@@ -253,6 +253,25 @@
 .map[data-learning] .childCardSummary { font-size: 16px; line-height: 1.8; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; overflow: hidden; }
 .knowledgeStatus { display: flex; flex-wrap: wrap; gap: 8px; margin-block: 12px 18px; }
 .knowledgeStatus > span { display: inline-flex; align-items: center; padding: 4px 9px; border-radius: 3px; border: 1px solid var(--color-fd-border); background: color-mix(in srgb, var(--color-fd-muted-foreground) 1%, transparent); color: var(--text-body); font-size: 13px; line-height: 1.6; }
+.knowledgeStatus > [data-status="learning"] {
+  border-color: color-mix(in srgb, currentColor 60%, var(--color-fd-border));
+}
+.knowledgeStatus > [data-understanding="已初步理解"] {
+  color: #86EFAC;
+  background-color: #143927;
+}
+.knowledgeStatus > [data-understanding="待深入学习"] {
+  color: #FDE047;
+  background-color: #3B3214;
+}
+.knowledgeStatus > [data-understanding="已经尝试"] {
+  color: #93C5FD;
+  background-color: #182F4A;
+}
+.knowledgeStatus > [data-understanding="待自评"] {
+  color: #CBD5E1;
+  background-color: #263341;
+}
 .knowledgeStatus > span[data-status=verification] { color: var(--color-fd-muted-foreground); background: color-mix(in srgb, var(--color-fd-muted-foreground) 5%, transparent); border-color: var(--color-fd-border); }
 .knowledgeStatus > span[data-verified=true] { color: rgb(var(--ecosystem-rgb)); background: color-mix(in srgb, var(--color-fd-muted-foreground) 7%, transparent); border-color: var(--color-fd-border); }
 .childCard .knowledgeStatus { margin-block: 6px 4px; }

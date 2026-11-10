@@ -21,7 +21,7 @@ const RadialGraph = dynamic(() => import('./radial-graph').then((module) => modu
 type Props = { map: MapDefinition; links: MapLinks; statuses: Record<string, string>; sourceTitles: Record<string, string> };
 function KnowledgeStatus({ node }: { node: CatalogNode }) {
   return <span className={styles.knowledgeStatus}>
-    <span data-status="learning" title="项目维护者记录的学习状态">学习状态：{node.understanding}</span>
+    <span data-status="learning" data-understanding={node.understanding} title="项目维护者记录的学习状态">学习状态：{node.understanding}</span>
     <span data-status="verification" data-verified={node.verification === '已核实'}>核实状态：{node.verification}</span>
   </span>;
 }
