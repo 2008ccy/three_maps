@@ -219,3 +219,18 @@ test('cognition static export exposes all lessons, checks, feedback meanings and
   }
   assert.equal($('[aria-label="完整正文"]').length, 0);
 });
+
+test('exported map cards and details publish the status recorded for each active node', () => {
+  const manifest = JSON.parse(readFileSync('card-editor/manifest.json', 'utf8'));
+  const overrides = JSON.parse(readFileSync('card-editor/overrides.json', 'utf8'));
+  for (const map of maps) {
+    const $ = html('/docs/' + map.id);
+    for (const card of manifest.cards.filter((item) => item.map === map.id)) {
+      const expected = overrides[map.id + ':' + card.node] ?? card.original;
+      const detail = $('#node-' + card.node);
+      assert.equal(detail.find('[data-status="learning"]').first().text(), '学习状态：' + expected, card.node);
+      const buttons = $('button').filter((_, button) => $(button).attr('aria-label') === '打开知识点：' + card.title);
+      if (buttons.length) assert.equal(buttons.find('[data-status="learning"]').first().text(), '学习状态：' + expected);
+    }
+  }
+});

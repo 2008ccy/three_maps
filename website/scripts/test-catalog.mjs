@@ -302,3 +302,14 @@ test('cognition search indexes concise lessons and keeps historical personal acc
   assert.ok(filterCatalog(nodes, { ...emptyFilters, q: '课堂正式名称' }, edges).some((node) => node.id === 'third-view'));
   assert.ok(filterCatalog(nodes, { ...emptyFilters, q: '训练与测试题只是换了措辞' }, edges).some((node) => node.id === 'loss-test'));
 });
+
+test('maintainer status is isolated by map and node and feeds reading and filters', () => {
+  const overrides = { 'domain:lora': '已经尝试', 'cognition:loss-test': '已初步理解', 'ecosystem:token': '已经尝试' };
+  const domain = buildCatalog(maps[0], { 'K-RAG': '资料整理 · 待深入学习' }, overrides);
+  assert.equal(resolveCatalogNode(maps[0], domain, 'lora').understanding, '已经尝试');
+  assert.equal(domain.find((node) => node.id === 'lora').verification, '待核实');
+  assert.equal(domain.find((node) => node.id === 'token').understanding, '待自评');
+  assert.deepEqual(filterCatalog(domain, { ...emptyFilters, understanding: '已经尝试' }).map((node) => node.id), ['lora']);
+  const cognition = buildCatalog(maps[2], {}, overrides);
+  assert.equal(resolveCatalogNode(maps[2], cognition, 'system-analysis').understanding, '已初步理解');
+});

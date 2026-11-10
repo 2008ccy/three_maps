@@ -22,15 +22,16 @@ const types: Record<MapKey, Record<string, string>> = {
 };
 
 // 不从“附有来源”推断已核实，也不从学习建议推断成员已经尝试。
-export function buildCatalog(map: MapDefinition, statuses: Record<string, string> = {}): CatalogNode[] {
+export function buildCatalog(map: MapDefinition, statuses: Record<string, string> = {}, overrides: Record<string, string> = {}): CatalogNode[] {
   const result: CatalogNode[] = [];
   function visit(node: MapNode, root: MapNode, ancestors: MapNode[]) {
     const status = statuses[node.documents[0]?.id] ?? '';
     const explicitUnderstanding = understandingOptions.find((value) => status.split(/[·，；]/).some((part) => part.trim() === value));
     const explicitVerification = verificationOptions.find((value) => status.split(/[·，；]/).some((part) => part.trim() === value));
+    const editedUnderstanding = understandingOptions.find((value) => value === overrides[`${map.id}:${node.id}`]);
     result.push({ ...node, mapId: map.id,
       type: node.type ?? (ancestors.length === 0 ? '主题' : map.id === 'cognition' && ['loss-test', 'ranking-task', 'cost-api'].includes(node.id) ? '分析案例' : types[map.id][root.id] ?? '知识条目'),
-      understanding: node.understanding ?? explicitUnderstanding ?? '待自评',
+      understanding: editedUnderstanding ?? node.understanding ?? explicitUnderstanding ?? '待自评',
       verification: node.verification ?? explicitVerification ?? '待核实',
       group: root.title, groupId: root.id, path: ancestors.map((item) => item.title), parent: ancestors.at(-1)?.id ?? null, depth: ancestors.length,
     });
