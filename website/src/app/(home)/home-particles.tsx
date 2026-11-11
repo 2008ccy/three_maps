@@ -5,6 +5,13 @@ import { withBasePath } from '@/lib/shared';
 import styles from './home.module.css';
 
 const artwork = withBasePath('/images/home/particle-surfaces.png');
+// The source is a full-page mockup. These regions exclude its page copy and
+// buttons even if a browser drops the decorative SVG mask or WebGL context.
+const artworkRegions = [
+  { x: 700, y: 90, width: 787, height: 660 },
+  { x: 430, y: 500, width: 270, height: 250 },
+  { x: 280, y: 600, width: 150, height: 150 },
+];
 const vertexSource = `
 attribute vec2 a_position;
 attribute vec2 a_offset;
@@ -47,7 +54,8 @@ void main() {
   motion *= smoothstep(14.0,32.0,distance(p,vec2(1229.0,357.0)));
   motion *= smoothstep(14.0,32.0,distance(p,vec2(821.0,566.0)));
   vec2 uv = clamp((p + v_offset * motion) / vec2(1487.0,1058.0), vec2(0.0), vec2(1.0));
-  gl_FragColor = vec4(texture2D(u_image,uv).rgb,alpha);
+  vec4 pixel = texture2D(u_image,uv);
+  gl_FragColor = vec4(pixel.rgb,alpha * pixel.a);
 }`;
 
 /** Preserve the selected artwork's point-cloud depth; animate its local currents on a small mesh. */
@@ -169,7 +177,16 @@ export function ParticleSurface() {
     image.onload = () => {
       if (disposed || lost) return;
       try {
-        gpu.bindTexture(gpu.TEXTURE_2D,texture); gpu.texImage2D(gpu.TEXTURE_2D,0,gpu.RGBA,gpu.RGBA,gpu.UNSIGNED_BYTE,image);
+        const textureSource = document.createElement('canvas');
+        textureSource.width = image.naturalWidth;
+        textureSource.height = image.naturalHeight;
+        const context = textureSource.getContext('2d');
+        if (!context) return;
+        for (const { x, y, width, height } of artworkRegions) {
+          context.drawImage(image, x, y, width, height, x, y, width, height);
+        }
+        gpu.bindTexture(gpu.TEXTURE_2D,texture);
+        gpu.texImage2D(gpu.TEXTURE_2D,0,gpu.RGBA,gpu.RGBA,gpu.UNSIGNED_BYTE,textureSource);
         loaded = true; resize(); wrapper.dataset.ready = 'true';
       } catch { wrapper.dataset.ready = 'false'; }
     };
@@ -185,8 +202,22 @@ export function ParticleSurface() {
   }, []);
   return <div ref={host} className={styles.scene} aria-hidden="true" data-ready="false">
     <svg className={styles.fallback} viewBox="0 90 1487 660" preserveAspectRatio="none" focusable="false">
-      <defs><filter id={`${maskId}-blur`}><feGaussianBlur stdDeviation="15" /></filter><mask id={maskId}><path d="M720 90H1510V750H290V665C290 595 650 570 680 500V90Z" fill="white" filter={`url(#${maskId}-blur)`} /><rect x="710" y="475" width="72" height="40" fill="white" /></mask></defs>
-      <image href={artwork} width="1487" height="1058" mask={`url(#${maskId})`} />
+      <defs>
+        <filter id={`${maskId}-blur`} filterUnits="userSpaceOnUse" x="0" y="90" width="1487" height="660">
+          <feGaussianBlur stdDeviation="15" />
+        </filter>
+        <mask id={maskId} maskUnits="userSpaceOnUse" maskContentUnits="userSpaceOnUse" x="0" y="90" width="1487" height="660">
+          <path d="M720 90H1510V750H290V665C290 595 650 570 680 500V90Z" fill="white" filter={`url(#${maskId}-blur)`} />
+          <rect x="710" y="475" width="72" height="40" fill="white" />
+        </mask>
+      </defs>
+      <g mask={`url(#${maskId})`}>
+        {artworkRegions.map(({ x, y, width, height }) => <svg key={x}
+          x={x} y={y} width={width} height={height} viewBox={`${x} ${y} ${width} ${height}`}
+          overflow="hidden" focusable="false">
+          <image href={artwork} width="1487" height="1058" />
+        </svg>)}
+      </g>
     </svg>
     <canvas ref={canvas} className={styles.particles} aria-hidden="true" />
   </div>;

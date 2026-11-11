@@ -73,6 +73,25 @@ test('stored home exploration routes only target current map nodes', () => {
   }
 });
 
+test('home artwork crops embedded mockup text independently of SVG masks', () => {
+  const $ = load(readFileSync('out/index.html', 'utf8'));
+  const hero = $('[data-home-hero]');
+  const images = hero.find('svg image');
+  assert.ok(images.length > 0);
+  for (const image of images.toArray()) {
+    const viewport = $(image).parent('svg');
+    assert.equal(viewport.attr('overflow'), 'hidden');
+    const bounds = ['x', 'y', 'width', 'height'].map((key) => Number(viewport.attr(key)));
+    assert.ok(bounds.every(Number.isFinite));
+    const [x, y, width, height] = bounds;
+    assert.equal(viewport.attr('viewBox'), bounds.join(' '));
+    assert.ok(width > 0 && height > 0 && x + width <= 1487 && y >= 90 && y + height <= 750);
+    assert.ok(x >= 700 || x >= 430 && y >= 500 || x >= 280 && y >= 600,
+      'Every image viewport must exclude the title, description and buttons baked into the source.');
+    assert.equal($(image).attr('href'), `${basePath}/images/home/particle-surfaces.png`);
+  }
+});
+
 test('every exported page omits navigation to the original map articles', () => {
   const origin = 'https://three-maps.test';
   for (const file of filesIn('out').filter((file) => file.endsWith('.html'))) {
