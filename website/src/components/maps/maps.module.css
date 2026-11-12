@@ -122,8 +122,7 @@
 /* 主题收拢：同一主题沿用同一低饱和强调色。 */
 .map { --tone: var(--accent); --tone-rgb: var(--accent-rgb); }
 .groupGrid { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 20px; }
-.groupCard { display: flex; flex-direction: column; text-align: left; min-width: 0; min-height: 292px; padding: 25px 26px 22px; border: 1px solid var(--line); border-radius: 4px; background: var(--color-fd-card); transition: border-color .2s,background .2s; scroll-margin-top: 90px; }
-.groupCard:hover,.groupCard[data-selected=true] { border-color: rgb(var(--tone-rgb)/.7); background: var(--color-fd-card); }
+.groupCard { display: flex; flex-direction: column; text-align: left; min-width: 0; min-height: 292px; padding: 25px 26px 22px; border: 1px solid var(--line); border-radius: 12px; background: var(--color-fd-card); scroll-margin-top: 90px; }
 .groupCard:focus-visible { outline-color: var(--tone); }
 .groupCardTop { display: flex; align-items: center; justify-content: space-between; gap: 12px; color: var(--muted); font-size: 11px; }
 .groupCardTop > span { display: inline-flex; gap: 9px; align-items: center; }
@@ -383,8 +382,26 @@
 .feedbackAction a { display: inline-flex; align-items: center; gap: 8px; color: var(--color-fd-foreground); font-size: 14px; padding: 8px 0; }
 .mapFeedback { display: flex; justify-content: flex-end; margin: 0 0 14px; font-size: 13px; color: var(--muted); }
 .mapFeedback a { display: inline-flex; align-items: center; gap: 6px; padding: 6px 0; }
-.knowledgeCard { min-width: 0; display: flex; flex-direction: column; border: 1px solid var(--line); border-radius: 6px; overflow: clip; background: var(--surface); }
-.knowledgeCard .childCard { border: 0; width: 100%; flex: 1; }
+.knowledgeCard { min-width: 0; display: flex; flex-direction: column; border: 1px solid var(--line); border-radius: 12px; overflow: clip; background: var(--surface); }
+/* 主题卡与知识点卡共用亮边，卡片内部保持原有深色。 */
+.groupCard,.knowledgeCard {
+  border-color: rgb(var(--tone-rgb) / .78);
+  border-top-color: var(--tone);
+  border-bottom-color: rgb(var(--tone-rgb) / .6);
+  box-shadow: inset 0 1px 0 rgb(var(--tone-rgb) / .14), 0 0 0 1px rgb(var(--tone-rgb) / .12), 0 0 18px rgb(var(--tone-rgb) / .13), 0 8px 20px #0002;
+  transition: border-color .2s, box-shadow .2s;
+}
+.groupCard:focus-visible,.groupCard[data-selected=true],.knowledgeCard:focus-within {
+  border-color: var(--tone);
+  box-shadow: inset 0 1px 0 rgb(var(--tone-rgb) / .2), 0 0 0 1px rgb(var(--tone-rgb) / .26), 0 0 24px rgb(var(--tone-rgb) / .24), 0 10px 24px #0003;
+}
+@media (hover:hover) and (pointer:fine) {
+  .groupCard:hover,.knowledgeCard:hover {
+    border-color: var(--tone);
+    box-shadow: inset 0 1px 0 rgb(var(--tone-rgb) / .2), 0 0 0 1px rgb(var(--tone-rgb) / .26), 0 0 24px rgb(var(--tone-rgb) / .24), 0 10px 24px #0003;
+  }
+}
+.knowledgeCard .childCard { border: 0; border-radius: 11px; width: 100%; flex: 1; }
 .knowledgeCard .childCard:focus-visible { outline-offset: -3px; }
 .knowledgeCard > nav { margin: 0 16px 14px; border-top: 1px solid var(--line); padding-top: 10px; }
 .domainPanelBody[data-columns=true] { display: grid; grid-template-columns: minmax(110px,.72fr) minmax(0,3fr) minmax(110px,.8fr); gap: 20px; align-items: start; }
