@@ -272,8 +272,15 @@
   color: #CBD5E1;
   background-color: #263341;
 }
-.knowledgeStatus > span[data-status=verification] { color: var(--color-fd-muted-foreground); background: color-mix(in srgb, var(--color-fd-muted-foreground) 5%, transparent); border-color: var(--color-fd-border); }
-.knowledgeStatus > span[data-verified=true] { color: rgb(var(--ecosystem-rgb)); background: color-mix(in srgb, var(--color-fd-muted-foreground) 7%, transparent); border-color: var(--color-fd-border); }
+.knowledgeStatus > span[data-status=verification] {
+  color: #FDBA74;
+  background-color: #432A17;
+  border-color: color-mix(in srgb, currentColor 60%, var(--color-fd-border));
+}
+.knowledgeStatus > span[data-status=verification][data-verified=true] {
+  color: #5EEAD4;
+  background-color: #123B36;
+}
 .childCard .knowledgeStatus { margin-block: 6px 4px; }
 .childGoal { color: var(--color-fd-foreground); font-size: 14px; line-height: 1.8; margin-top: 12px; }
 .lesson { font-size: 17px; line-height: 1.8; color: var(--color-fd-foreground); }
