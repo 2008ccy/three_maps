@@ -4,18 +4,18 @@ import { useEffect, useId, useMemo, useRef, useState, type CSSProperties } from 
 import { BookOpen, Focus, Minus, Plus, RotateCcw, Scan } from 'lucide-react';
 import { nodeKey, type ExpandedGraph, type NodeRef } from '@/lib/maps/expanded-graph';
 import { expandedLayout, graphBounds } from '@/lib/maps/expanded-layout';
-import { dragThreshold, elasticPan, panInput, stepPanGravity, movingPath, stepGraphMotion, stillMotion, type Motion } from '@/lib/maps/graph-motion';
+import { cameraTransitionDuration, interpolateCamera, dragThreshold, elasticPan, panInput, stepPanGravity, movingPath, stepGraphMotion, stillMotion, type Camera, type Motion } from '@/lib/maps/graph-motion';
 import radial from './radial-graph.module.css';
 
-type Camera = { x: number; y: number; scale: number };
 type Drag = { pointer: number; x: number; y: number; previousX: number; previousY: number; pan: { x: number; y: number }; key?: string; moved: boolean };
 type Props = { graph: ExpandedGraph; pinned: string; selected: NodeRef | null; focus: string; onPin: (key: string) => void; onSelect: (ref: NodeRef) => void; onToggle: (id: string) => void; onCollapse: () => void };
 
 export function RadialCanvas({ graph, pinned, selected, focus, onPin, onSelect, onToggle, onCollapse }: Props) {
   const viewport = useRef<HTMLDivElement>(null), world = useRef<HTMLDivElement>(null);
   const [size, setSize] = useState({ width: 900, height: 650, measured: false });
-  const [camera, setCamera] = useState<Camera>({ x: -1150, y: -1275, scale: 1 });
-  const cameraRef = useRef(camera); cameraRef.current = camera;
+  const cameraRef = useRef<Camera>({ x: -1150, y: -1275, scale: 1 });
+  const cameraFlight = useRef<{ from: Camera; to: Camera; startedAt: number; size: typeof size } | null>(null);
+  const zoomLabel = useRef<HTMLOutputElement>(null);
   const [highlight, setHighlight] = useState('');
   const drag = useRef<Drag | null>(null), suppressClick = useRef(false);
   const pan = useRef(stillMotion()), keyboardPan = useRef(false);
@@ -39,25 +39,40 @@ export function RadialCanvas({ graph, pinned, selected, focus, onPin, onSelect, 
   function paintCamera() {
     const current = cameraRef.current, offset = pan.current;
     if (world.current) world.current.style.transform = `translate(${current.x+offset.x}px, ${current.y+offset.y}px) scale(${current.scale})`;
+    if (zoomLabel.current) zoomLabel.current.textContent = `${Math.round(current.scale*100)}%`;
+  }
+  function stopCameraTransition(finish = false) {
+    if (finish && cameraFlight.current) cameraRef.current = cameraFlight.current.to;
+    cameraFlight.current = null;
+    viewport.current?.setAttribute('data-camera-moving', 'false');
   }
   // Only explicit fit, zoom, focus and resize actions change the resting view.
-  const updateCamera = (value: Camera) => {
-    Object.assign(pan.current, stillMotion()); cameraRef.current = value; setCamera(value); paintCamera();
+  const updateCamera = (value: Camera, smooth = true) => {
+    const current = cameraRef.current;
+    const from = { ...current, x: current.x+pan.current.x, y: current.y+pan.current.y };
+    Object.assign(pan.current, stillMotion());
+    if (!smooth || !size.measured || reduced.current || document.hidden) {
+      stopCameraTransition(); cameraRef.current = value; paintCamera(); return;
+    }
+    cameraRef.current = from;
+    cameraFlight.current = { from, to: value, startedAt: performance.now(), size };
+    viewport.current?.setAttribute('data-camera-moving', 'true');
+    wake();
   };
-  const fitBoxes = (boxes = layout.boxes, minimum = 0) => {
+  const fitBoxes = (boxes = layout.boxes, minimum = 0, smooth = true) => {
     const bounds = graphBounds(boxes);
     const scale = Math.max(minimum, Math.min(1, size.width / (bounds.right-bounds.left), size.height / (bounds.bottom-bounds.top)));
-    updateCamera({ scale, x: size.width/2 - (bounds.left+bounds.right)/2*scale, y: size.height/2 - (bounds.top+bounds.bottom)/2*scale });
+    updateCamera({ scale, x: size.width/2 - (bounds.left+bounds.right)/2*scale, y: size.height/2 - (bounds.top+bounds.bottom)/2*scale }, smooth);
   };
   const fit = () => fitBoxes();
-  const explorationFit = () => {
+  const explorationFit = (smooth = true) => {
     const bounds = graphBounds(layout.boxes);
     const fullScale = Math.min(size.width/(bounds.right-bounds.left),size.height/(bounds.bottom-bounds.top));
     const target = graph.nodes.find(node => node.key === focus);
     if (target && fullScale < .75) {
       const keys = new Set(graph.nodes.filter(node => node.kind === 'map' || node.group === target.group).map(node => node.key));
-      fitBoxes(layout.boxes.filter(box => keys.has(box.id)), .75);
-    } else fitBoxes();
+      fitBoxes(layout.boxes.filter(box => keys.has(box.id)), .75, smooth);
+    } else fitBoxes(layout.boxes, 0, smooth);
   };
   const fitRef = useRef(explorationFit); fitRef.current = explorationFit;
   const focusNode = () => {
@@ -66,7 +81,7 @@ export function RadialCanvas({ graph, pinned, selected, focus, onPin, onSelect, 
     updateCamera({ scale, x: size.width/2-box.x*scale, y: size.height/2-box.y*scale });
   };
   const zoom = (factor: number) => {
-    const current = cameraRef.current, scale = Math.min(2, Math.max(.15, current.scale*factor)), ratio = scale/current.scale;
+    const current = cameraFlight.current?.to ?? cameraRef.current, scale = Math.min(2, Math.max(.15, current.scale*factor)), ratio = scale/current.scale;
     updateCamera({ scale, x: size.width/2-(size.width/2-current.x)*ratio, y: size.height/2-(size.height/2-current.y)*ratio });
   };
   function paintMotion() {
@@ -86,10 +101,16 @@ export function RadialCanvas({ graph, pinned, selected, focus, onPin, onSelect, 
   const animate = (time: number) => {
     const elapsed = previousTime.current ? (time-previousTime.current)/1000 : 1/60;
     previousTime.current = time;
+    const flight = cameraFlight.current;
+    if (flight) {
+      const progress = (time-flight.startedAt)/cameraTransitionDuration;
+      cameraRef.current = interpolateCamera(flight.from, flight.to, progress, flight.size);
+      if (progress >= 1) stopCameraTransition();
+    }
     const nodesMoving = stepGraphMotion(motion.current, neighborRef.current, elapsed, drag.current?.moved ? drag.current.key : undefined);
     const held = keyboardPan.current || !!drag.current;
     const mapMoving = !held && stepPanGravity(pan.current, elapsed);
-    const moving = nodesMoving || mapMoving;
+    const moving = nodesMoving || mapMoving || !!cameraFlight.current;
     paintMotion();
     if (moving && !reduced.current && !document.hidden) frame.current = requestAnimationFrame(animate);
     else { frame.current = 0; previousTime.current = 0; viewport.current?.setAttribute('data-moving', 'false'); }
@@ -100,6 +121,7 @@ export function RadialCanvas({ graph, pinned, selected, focus, onPin, onSelect, 
   };
   const resetMotion = () => {
     cancelAnimationFrame(frame.current); frame.current = 0; previousTime.current = 0;
+    stopCameraTransition();
     Object.assign(pan.current, stillMotion()); keyboardPan.current = false;
     motion.current.forEach(state => Object.assign(state, stillMotion())); paintMotion();
     viewport.current?.setAttribute('data-moving', 'false');
@@ -111,8 +133,8 @@ export function RadialCanvas({ graph, pinned, selected, focus, onPin, onSelect, 
     });
     observer.observe(element);
     const media = matchMedia('(prefers-reduced-motion: reduce)');
-    const preference = () => { reduced.current = media.matches; if (media.matches) resetMotion(); };
-    const visibility = () => { if (document.hidden) { drag.current = null; resetMotion(); } };
+    const preference = () => { reduced.current = media.matches; if (media.matches) { stopCameraTransition(true); resetMotion(); } };
+    const visibility = () => { if (document.hidden) { drag.current = null; stopCameraTransition(true); resetMotion(); } };
     preference(); media.addEventListener('change', preference); document.addEventListener('visibilitychange', visibility);
     return () => { observer.disconnect(); media.removeEventListener('change', preference); document.removeEventListener('visibilitychange', visibility); cancelAnimationFrame(frame.current); };
   }, []);
@@ -124,8 +146,10 @@ export function RadialCanvas({ graph, pinned, selected, focus, onPin, onSelect, 
   const lastSize = useRef(size);
   useEffect(() => {
     const old = lastSize.current; lastSize.current = size;
-    if (!old.measured || (old.width < 600) !== compact) { fitRef.current(); return; }
-    const current = cameraRef.current;
+    if (!old.measured) { fitRef.current(false); return; }
+    if (old.width === size.width && old.height === size.height) return;
+    if ((old.width < 600) !== compact) { fitRef.current(); return; }
+    const current = cameraFlight.current?.to ?? cameraRef.current;
     updateCamera({ ...current, x: current.x+(size.width-old.width)/2, y: current.y+(size.height-old.height)/2 });
   }, [size]);
   useEffect(() => { paintMotion(); }, [layout]);
@@ -137,15 +161,16 @@ export function RadialCanvas({ graph, pinned, selected, focus, onPin, onSelect, 
     viewport.current?.setAttribute('data-dragging', 'false');
     if (cancelled || reduced.current) resetMotion(); else wake();
   }
+  const camera = cameraRef.current;
   return <>
     <div className={radial.canvasBar}><div className={radial.legend}><span><i />主题归属</span><span><i className={radial.localKey} />本图联系</span><span><i className={radial.crossKey} />跨图联系</span></div>
-      <div className={radial.controls}><button type="button" aria-label="缩小关系图" onClick={() => zoom(1/1.2)}><Minus size={15} /></button><output>{Math.round(camera.scale*100)}%</output><button type="button" aria-label="放大关系图" onClick={() => zoom(1.2)}><Plus size={15} /></button><button type="button" aria-label="聚焦所选节点" onClick={focusNode}><Focus size={15} /></button><button type="button" aria-label="适应全部节点" onClick={fit}><Scan size={15} /></button><button type="button" aria-label="恢复关系图总览" onClick={() => { resetMotion(); onCollapse(); fit(); }}><RotateCcw size={15} /></button></div>
+      <div className={radial.controls}><button type="button" aria-label="缩小关系图" onClick={() => zoom(1/1.2)}><Minus size={15} /></button><output ref={zoomLabel}>{Math.round(camera.scale*100)}%</output><button type="button" aria-label="放大关系图" onClick={() => zoom(1.2)}><Plus size={15} /></button><button type="button" aria-label="聚焦所选节点" onClick={focusNode}><Focus size={15} /></button><button type="button" aria-label="适应全部节点" onClick={fit}><Scan size={15} /></button><button type="button" aria-label="恢复关系图总览" onClick={() => { resetMotion(); onCollapse(); fit(); }}><RotateCcw size={15} /></button></div>
     </div>
     <div ref={viewport} className={radial.viewport} data-graph-viewport="" data-moving="false" tabIndex={0} aria-label="关系画布，可拖动节点或空白，也可用方向键平移"
       onKeyDown={event => {
         const moves: Record<string, [number, number]> = { ArrowLeft: [60,0], ArrowRight: [-60,0], ArrowUp: [0,60], ArrowDown: [0,-60] };
         if (event.target !== event.currentTarget || !moves[event.key]) return;
-        event.preventDefault(); const [x,y] = moves[event.key], input = panInput(pan.current, size);
+        event.preventDefault(); stopCameraTransition(); const [x,y] = moves[event.key], input = panInput(pan.current, size);
         keyboardPan.current = true;
         Object.assign(pan.current, elasticPan({ x: input.x+x, y: input.y+y }, size), { vx: 0, vy: 0 });
         wake();
@@ -157,6 +182,7 @@ export function RadialCanvas({ graph, pinned, selected, focus, onPin, onSelect, 
         if (event.button !== 0 || drag.current) return;
         const target = event.target as Element;
         if (target.closest('[data-relation]')) return;
+        stopCameraTransition();
         suppressClick.current = false;
         const key = target.closest<HTMLElement>('[data-graph-node]')?.dataset.graphNode;
         drag.current = { pointer: event.pointerId, x: event.clientX, y: event.clientY, previousX: event.clientX, previousY: event.clientY, pan: panInput(pan.current, size), key: key === graph.hub ? undefined : key, moved: false };

@@ -4,7 +4,7 @@ import { maps } from '../src/lib/maps/content.ts';
 import { buildAtlas, buildExpandedGraph, resolveRef } from '../src/lib/maps/expanded-graph.ts';
 import { expandedLayout } from '../src/lib/maps/expanded-layout.ts';
 import { explorerUrl, readExplorerState, initialExplorerState } from '../src/lib/maps/explorer-state.ts';
-import { stepGraphMotion, stillMotion, movingPath, dragThreshold, elasticPan, panInput, panRadius, stepPanGravity } from '../src/lib/maps/graph-motion.ts';
+import { cameraTransitionDuration, interpolateCamera, stepGraphMotion, stillMotion, movingPath, dragThreshold, elasticPan, panInput, panRadius, stepPanGravity } from '../src/lib/maps/graph-motion.ts';
 const atlas = buildAtlas(maps);
 for (const map of maps) {
   const nodes = atlas.catalogs.get(map.id);
@@ -136,4 +136,40 @@ test('whole-map gravity handles long or paused frames without a jump', () => {
   stepPanGravity(state,30);
   assert.ok(state.x>100&&state.x<120);
   assert.ok(Number.isFinite(state.vx));
+});
+
+test('camera zoom progresses gradually, eases at both ends, and stops at its exact destination', () => {
+  const size={width:900,height:650}, from={x:-1150,y:-1275,scale:1}, to={x:-680,y:-980,scale:.75};
+  const samples=Array.from({length:36},(_,i)=>interpolateCamera(from,to,i/35,size));
+  assert.deepEqual(samples[0],from);
+  assert.deepEqual(samples.at(-1),to);
+  for(let i=1;i<samples.length;i++) {
+    assert.ok(samples[i].scale<samples[i-1].scale);
+    assert.ok(Number.isFinite(samples[i].x)&&Number.isFinite(samples[i].y));
+  }
+  assert.ok(Math.abs(samples[1].scale-from.scale)<Math.abs(samples[18].scale-samples[17].scale)/10);
+  assert.ok(Math.abs(samples.at(-2).scale-to.scale)<Math.abs(samples[18].scale-samples[17].scale)/10);
+  assert.deepEqual(interpolateCamera(from,to,10,size),to);
+  assert.ok(cameraTransitionDuration>=400&&cameraTransitionDuration<=700);
+});
+test('pure camera zoom keeps its focal point centered on desktop and narrow screens', () => {
+  for(const size of [{width:900,height:650},{width:356,height:560}]) {
+    const center={x:1600,y:1600};
+    const camera=scale=>({x:size.width/2-center.x*scale,y:size.height/2-center.y*scale,scale});
+    for(let step=0;step<=20;step++) {
+      const view=interpolateCamera(camera(.75),camera(1.5),step/20,size);
+      assert.ok(Math.abs(center.x*view.scale+view.x-size.width/2)<1e-8);
+      assert.ok(Math.abs(center.y*view.scale+view.y-size.height/2)<1e-8);
+    }
+  }
+});
+test('interrupting a camera transition starts the next move from the visible frame', () => {
+  const size={width:900,height:650}, initial={x:-1150,y:-1275,scale:1};
+  const frame=interpolateCamera(initial,{x:-680,y:-980,scale:.75},.4,size);
+  const next={x:-1800,y:-1500,scale:1.5};
+  assert.deepEqual(interpolateCamera(frame,next,0,size),frame);
+  const after=interpolateCamera(frame,next,.01,size);
+  assert.ok(Math.hypot(after.x-frame.x,after.y-frame.y)<.1);
+  assert.ok(after.scale>frame.scale&&after.scale<next.scale);
+  assert.deepEqual(interpolateCamera(frame,next,1,size),next);
 });

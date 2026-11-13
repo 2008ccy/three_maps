@@ -3,6 +3,22 @@ export const stillMotion = (): Motion => ({ x: 0, y: 0, vx: 0, vy: 0 });
 export const dragThreshold = 6;
 type ViewportSize = { width: number; height: number };
 type Offset = { x: number; y: number };
+export type Camera = Offset & { scale: number };
+export const cameraTransitionDuration = 560;
+
+// Ease the visible center and zoom together, keeping a shared focal point still
+// during a pure zoom. Exact endpoints also make interrupted flights continuous.
+export function interpolateCamera(from: Camera, to: Camera, progress: number, size: ViewportSize): Camera {
+  if (progress <= 0) return { ...from };
+  if (progress >= 1) return { ...to };
+  const t = progress * progress * progress * (10 + progress * (-15 + 6 * progress));
+  const scale = from.scale * Math.pow(to.scale / from.scale, t);
+  const position = (axis: 'x' | 'y', center: number) => {
+    const start = (center-from[axis])/from.scale, end = (center-to[axis])/to.scale;
+    return center - (start+(end-start)*t)*scale;
+  };
+  return { x: position('x', size.width/2), y: position('y', size.height/2), scale };
+}
 
 // Resist a whole-map drag more strongly as it moves away from the current
 // fitted/focused view. Screen-space limits stay the same at every zoom level.
