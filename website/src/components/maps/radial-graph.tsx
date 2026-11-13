@@ -1,73 +1,42 @@
 'use client';
 
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { ArrowLeft, X } from 'lucide-react';
-import type { CatalogNode, MapEdge } from '@/lib/maps/catalog';
-import { buildRadialGraph } from '@/lib/maps/radial-graph';
+import { X } from 'lucide-react';
+import type { CatalogNode } from '@/lib/maps/catalog';
+import type { MapDefinition } from '@/lib/maps/types';
+import { buildExpandedGraph, type Atlas, type AtlasEdge, type NodeRef } from '@/lib/maps/expanded-graph';
 import { RadialCanvas } from './radial-canvas';
-import { GraphRelations, RelationList } from './graph-relations';
 import styles from './maps.module.css';
 import radial from './radial-graph.module.css';
 
-type Scope = 'core' | 'all';
 type Props = {
-  title: string; nodes: CatalogNode[]; allNodes: CatalogNode[]; edges: MapEdge[];
-  focusId: string; scope: Scope; onScope: (scope: Scope) => void;
-  onSelect: (id: string) => void; onExplore: (id: string) => void;
+  atlas: Atlas; map: MapDefinition; matches: CatalogNode[]; expanded: string[]; selected: NodeRef | null; focus: string;
+  scope: 'core' | 'all'; onScope: (scope: 'core' | 'all') => void; onSelect: (ref: NodeRef) => void;
+  onToggle: (id: string) => void; onCollapse: () => void;
 };
-
-export function RadialGraph({ title, nodes, allNodes, edges, focusId, scope, onScope, onSelect, onExplore }: Props) {
-  const graph = useMemo(() => buildRadialGraph(nodes, allNodes, edges, focusId, scope), [nodes, allNodes, edges, focusId, scope]);
+export function RadialGraph({ atlas, map, matches, expanded, selected, focus, scope, onScope, onSelect, onToggle, onCollapse }: Props) {
+  const graph = useMemo(() => buildExpandedGraph(atlas, map, matches, expanded, scope, selected), [atlas, map, matches, expanded, scope, selected]);
   const [pinnedKey, setPinnedKey] = useState('');
-  const keyFor = (from: string, to: string) => JSON.stringify([graph.hub, from, to]);
-  const pinned = graph.lines.find(line => keyFor(line.from, line.to) === pinnedKey);
-  const point = !!graph.focus?.parent;
-  const parent = graph.focus?.parent ? graph.byId.get(graph.focus.parent) : undefined;
-  const section = useRef<HTMLElement>(null), details = useRef<HTMLElement>(null);
-  const moveFocus = useRef(false);
-  const explore = (id: string) => {
-    setPinnedKey('');
-    moveFocus.current = true;
-    onExplore(id);
-  };
-  useEffect(() => {
-    if (moveFocus.current) {
-      section.current?.querySelector<HTMLElement>('[data-graph-hub]')?.focus({ preventScroll: true });
-      moveFocus.current = false;
-    }
-  }, [graph.hub]);
-  useEffect(() => {
-    if (pinnedKey) details.current?.scrollIntoView({ block: 'nearest' });
-  }, [pinnedKey]);
-  return <section ref={section} className={`${styles.graph} ${radial.graph}`} aria-label={title.replace('地图', '关系图')}>
-    <header className={radial.header}>
-      <div className={radial.location}>
-        {graph.focus && <button type="button" onClick={() => explore(parent?.id ?? '')} aria-label={`返回${parent?.title ?? '全图总览'}`}><ArrowLeft size={16} /></button>}
-        <strong>{graph.focus?.title ?? '全图总览'}</strong>
-      </div>
-      <label className={radial.picker}>
-        <span>查看主题</span>
-        <select aria-label="关系图主题" value={graph.focus?.groupId ?? ''} onChange={event => explore(event.target.value)}>
-          <option value="">全图总览</option>
-          {allNodes.filter(node => !node.parent && (graph.themes.includes(node) || node.id === graph.focus?.groupId)).map(node => <option key={node.id} value={node.id}>{node.title}</option>)}
-        </select>
-      </label>
-      {!point && <div className={radial.scopes} role="group" aria-label="关系范围">
-        <button type="button" aria-pressed={scope === 'core'} onClick={() => onScope('core')}>核心联系</button>
-        <button type="button" aria-pressed={scope === 'all'} onClick={() => onScope('all')}>全部联系</button>
-      </div>}
+  const pinned = graph.lines.find(line => line.id === pinnedKey);
+  const details = useRef<HTMLElement>(null);
+  useEffect(() => { if (pinnedKey) details.current?.scrollIntoView({ block: 'nearest', behavior: 'instant' }); }, [pinnedKey]);
+  function relations(edges: AtlasEdge[]) {
+    return edges.map(edge => {
+      const from = atlas.byId.get(edge.from)!, to = atlas.byId.get(edge.to)!;
+      return <div key={edge.id} className={radial.relationText}>
+        <p><button type="button" onClick={() => onSelect({ mapId: from.mapId, nodeId: from.id })}>{from.title}</button> {edge.direction === 'undirected' ? '↔' : '→'} <button type="button" onClick={() => onSelect({ mapId: to.mapId, nodeId: to.id })}>{to.title}</button></p>
+        <strong>{edge.label}</strong>{edge.description && <p>{edge.description}</p>}
+        <small>{edge.sourceMap !== edge.targetMap ? '跨图联系' : edge.basis === 'editorial' ? '编辑建议' : '材料关系'} · 依据 {edge.sources.join('、')} · {edge.verification}</small>
+      </div>;
+    });
+  }
+  return <section className={radial.graph} aria-label={map.title.replace('地图', '关系图')}>
+    <header className={radial.header}><div><strong>沿着联系，展开理解</strong><span>点击主题展开 · 点击知识点阅读 · 拖动节点或空白</span></div>
+      <div className={radial.scopes} role="group" aria-label="本图关系范围"><button type="button" aria-pressed={scope === 'core'} onClick={() => onScope('core')}>核心联系</button><button type="button" aria-pressed={scope === 'all'} onClick={() => onScope('all')}>全部联系</button></div>
     </header>
-    <RadialCanvas key={graph.hub} graph={graph} title={title} pinned={pinned} onSelect={onSelect} onExplore={explore}
-      onPin={line => setPinnedKey(pinned === line ? '' : keyFor(line.from, line.to))} />
-    <div className={radial.caption}>
-      <span>{point ? `${graph.displayed.length} 条直接联系` : `${graph.displayed.length} 条${graph.focus ? '主题内' : '跨主题'}联系`}</span>
-      <span>{graph.lines.length ? '点连线查看关系说明。' : '本层暂无符合条件的联系。'}{!graph.focus && '线上的数字表示合并的联系数。'}</span>
-    </div>
-    {pinned && <section ref={details} className={`${styles.graphTextList} ${radial.lineDetail}`} aria-label="所选连线">
-      <div><strong>{graph.byId.get(pinned.from)?.title} 与 {graph.byId.get(pinned.to)?.title}</strong>
-        <button type="button" onClick={() => setPinnedKey('')} aria-label="收起连线说明"><X size={16} /></button></div>
-      <GraphRelations edges={pinned.edges} byId={graph.byId} onSelect={onSelect} />
-    </section>}
-    <RelationList edges={graph.displayed} byId={graph.byId} onSelect={onSelect} />
+    <RadialCanvas graph={graph} pinned={pinnedKey} selected={selected} focus={focus} onPin={key => setPinnedKey(key === pinnedKey ? '' : key)} onSelect={onSelect} onToggle={onToggle} onCollapse={onCollapse} />
+    <div className={radial.caption}><span>{expanded.length} 个主题已展开 · {graph.relations.filter(edge => edge.sourceMap !== edge.targetMap).length} 条跨图联系</span><span>拖动后轻轻回摆 · 线上的数字表示联系数</span></div>
+    {pinned && <section ref={details} className={`${styles.graphTextList} ${radial.lineDetail}`} aria-label="所选连线"><div className={radial.detailHeading}><strong>这条联系</strong><button type="button" aria-label="收起连线说明" onClick={() => setPinnedKey('')}><X size={16} /></button></div>{relations(pinned.edges)}</section>}
+    <details className={styles.graphTextList}><summary>用文字查看当前 {graph.relations.length} 条联系</summary>{relations(graph.relations)}</details>
   </section>;
 }

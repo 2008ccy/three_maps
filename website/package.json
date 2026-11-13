@@ -12,7 +12,7 @@
     "check:content": "node scripts/check-content.mjs && node scripts/card-manifest.mjs",
     "check:export": "node scripts/check-export.mjs",
     "check": "npm run check:content && node scripts/check-feedback.mjs && npm run types:check && npm --prefix ../feedback-cloud run check",
-    "test": "node --test scripts/test-static.mjs scripts/test-maps.mjs scripts/test-catalog.mjs scripts/test-home.mjs scripts/test-feedback.mjs && npm --prefix ../feedback-cloud test"
+    "test": "node --test scripts/test-static.mjs scripts/test-maps.mjs scripts/test-catalog.mjs scripts/test-expanded-graph.mjs scripts/test-home.mjs scripts/test-feedback.mjs && npm --prefix ../feedback-cloud test"
   },
   "dependencies": {
     "@tencent-ai/workbuddy-cloud-sdk": "^0.1.4-dev.ca27990.202610161713",
