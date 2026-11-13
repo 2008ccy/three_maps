@@ -36,7 +36,9 @@ export function RadialGraph({ atlas, map, matches, expanded, selected, focus, sc
     </header>
     <RadialCanvas graph={graph} pinned={pinnedKey} selected={selected} focus={focus} onPin={key => setPinnedKey(key === pinnedKey ? '' : key)} onSelect={onSelect} onToggle={onToggle} onCollapse={onCollapse} />
     <div className={radial.caption}><span>{expanded.length} 个主题已展开 · {graph.relations.filter(edge => edge.sourceMap !== edge.targetMap).length} 条跨图联系</span><span>拖动后轻轻回摆 · 线上的数字表示联系数</span></div>
-    {pinned && <section ref={details} className={`${styles.graphTextList} ${radial.lineDetail}`} aria-label="所选连线"><div className={radial.detailHeading}><strong>这条联系</strong><button type="button" aria-label="收起连线说明" onClick={() => setPinnedKey('')}><X size={16} /></button></div>{relations(pinned.edges)}</section>}
-    <details className={styles.graphTextList}><summary>用文字查看当前 {graph.relations.length} 条联系</summary>{relations(graph.relations)}</details>
+    <div className={radial.notes}>
+      {pinned && <section ref={details} className={`${styles.graphTextList} ${radial.lineDetail}`} aria-label="所选连线"><div className={radial.detailHeading}><strong>这条联系</strong><button type="button" aria-label="收起连线说明" onClick={() => setPinnedKey('')}><X size={16} /></button></div>{relations(pinned.edges)}</section>}
+      <details className={styles.graphTextList}><summary>用文字查看当前 {graph.relations.length} 条联系</summary>{relations(graph.relations)}</details>
+    </div>
   </section>;
 }

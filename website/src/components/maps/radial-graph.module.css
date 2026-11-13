@@ -7,7 +7,10 @@
 }
 .viewLabel { display: flex; align-items: center; gap: 8px; font-size: 14px; }
 .viewLabel > span { color: var(--muted); font-size: 12px; margin-left: 8px; }
-.graph { --wire: var(--text-subtle); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; background: var(--surface); }
+.graph { --wire: var(--text-subtle); height: min(1000px,calc(100dvh - 144px)); display: flex; flex-direction: column; border: 1px solid var(--line); border-radius: 12px; overflow: hidden; background: var(--surface); }
+.graph > * { flex-shrink: 0; }
+/* Keep both toolbars inside the screen at the page end; only the canvas flexes. */
+.notes { max-height: 30%; min-height: 54px; overflow: auto; overscroll-behavior: contain; }
 .header,.canvasBar,.caption { display: flex; align-items: center; justify-content: space-between; gap: 12px 20px; flex-wrap: wrap; padding: 15px 20px; }
 .header { border-bottom: 1px solid var(--line); }
 .header > div:first-child { display: grid; gap: 7px; }
@@ -26,7 +29,7 @@
 .controls button { display: grid; place-items: center; width: 30px; height: 30px; border: 1px solid var(--line); border-radius: 6px; color: var(--text-body); }
 .controls button:hover { border-color: var(--accent); color: var(--accent); }
 .controls output { min-width: 36px; text-align: center; font-size: 11px; color: var(--muted); }
-.viewport { height: clamp(540px,72vh,790px); position: relative; overflow: clip; touch-action: none; user-select: none; cursor: grab; isolation: isolate;
+.viewport { flex: 1; min-height: 0; position: relative; overflow: clip; touch-action: none; user-select: none; cursor: grab; isolation: isolate;
   background: radial-gradient(ellipse at center, rgb(var(--accent-rgb) / .045), transparent 65%), var(--surface); }
 .viewport::before { content: ''; position: absolute; inset: 0; pointer-events: none; background-image: radial-gradient(rgb(var(--accent-rgb) / .13) .7px, transparent .7px); background-size: 24px 24px; opacity: .45; }
 .viewport[data-dragging=true],.viewport[data-dragging=true] button { cursor: grabbing; }
@@ -108,7 +111,6 @@
 @media (max-width:640px) {
   .header,.canvasBar,.caption { padding-inline: 12px; gap: 10px; }
   .header span { font-size: 11px; }
-  .viewport { height: 560px; }
   .legend { gap: 10px; }
   .controls { margin-left: auto; }
   .controls button { width: 32px; height: 32px; }
