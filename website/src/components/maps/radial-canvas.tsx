@@ -4,10 +4,10 @@ import { useEffect, useId, useMemo, useRef, useState, type CSSProperties } from 
 import { BookOpen, Focus, Minus, Plus, RotateCcw, Scan } from 'lucide-react';
 import { nodeKey, type ExpandedGraph, type NodeRef } from '@/lib/maps/expanded-graph';
 import { expandedLayout, graphBounds } from '@/lib/maps/expanded-layout';
-import { cameraTransitionDuration, interpolateCamera, dragThreshold, elasticPan, panInput, stepPanGravity, movingPath, stepGraphMotion, stillMotion, type Camera, type Motion } from '@/lib/maps/graph-motion';
+import { cameraTransitionDuration, interpolateCamera, constrainGraphCamera, explorationPanRadius, dragThreshold, elasticPan, panInput, stepPanGravity, movingPath, stepGraphMotion, stillMotion, type Camera, type Motion } from '@/lib/maps/graph-motion';
 import radial from './radial-graph.module.css';
 
-type Drag = { pointer: number; x: number; y: number; previousX: number; previousY: number; pan: { x: number; y: number }; key?: string; moved: boolean };
+type Drag = { pointer: number; x: number; y: number; previousX: number; previousY: number; camera: Camera; pan: { x: number; y: number }; key?: string; moved: boolean };
 type Props = { graph: ExpandedGraph; pinned: string; selected: NodeRef | null; focus: string; onPin: (key: string) => void; onSelect: (ref: NodeRef) => void; onToggle: (id: string) => void; onCollapse: () => void };
 
 export function RadialCanvas({ graph, pinned, selected, focus, onPin, onSelect, onToggle, onCollapse }: Props) {
@@ -33,6 +33,7 @@ export function RadialCanvas({ graph, pinned, selected, focus, onPin, onSelect, 
   const neighborRef = useRef(neighbors); neighborRef.current = neighbors;
   const nodeSignature = graph.nodes.map(node => node.key).join('|');
   const selectedKey = selected ? nodeKey(selected) : '';
+  const exploring = graph.expanded.length > 0;
   const active = highlight || selectedKey;
   const connected = new Set([active, ...graph.lines.filter(line => line.from === active || line.to === active).flatMap(line => [line.from, line.to])]);
 
@@ -46,16 +47,17 @@ export function RadialCanvas({ graph, pinned, selected, focus, onPin, onSelect, 
     cameraFlight.current = null;
     viewport.current?.setAttribute('data-camera-moving', 'false');
   }
-  // Only explicit fit, zoom, focus and resize actions change the resting view.
+  // Fits and focus transitions are animated; direct exploration panning is not.
   const updateCamera = (value: Camera, smooth = true) => {
     const current = cameraRef.current;
+    const target = exploring ? constrainGraphCamera(value, size, layout.boxes) : value;
     const from = { ...current, x: current.x+pan.current.x, y: current.y+pan.current.y };
     Object.assign(pan.current, stillMotion());
     if (!smooth || !size.measured || reduced.current || document.hidden) {
-      stopCameraTransition(); cameraRef.current = value; paintCamera(); return;
+      stopCameraTransition(); cameraRef.current = target; paintCamera(); return;
     }
     cameraRef.current = from;
-    cameraFlight.current = { from, to: value, startedAt: performance.now(), size };
+    cameraFlight.current = { from, to: target, startedAt: performance.now(), size };
     viewport.current?.setAttribute('data-camera-moving', 'true');
     wake();
   };
@@ -83,6 +85,15 @@ export function RadialCanvas({ graph, pinned, selected, focus, onPin, onSelect, 
   const zoom = (factor: number) => {
     const current = cameraFlight.current?.to ?? cameraRef.current, scale = Math.min(2, Math.max(.15, current.scale*factor)), ratio = scale/current.scale;
     updateCamera({ scale, x: size.width/2-(size.width/2-current.x)*ratio, y: size.height/2-(size.height/2-current.y)*ratio });
+  };
+  const panOrigin = () => panInput(pan.current, size, exploring ? explorationPanRadius(size) : undefined);
+  const panMap = (input: { x: number; y: number }, base: Camera) => {
+    if (exploring) {
+      const requested = { ...base, x: base.x+input.x, y: base.y+input.y };
+      const bounded = constrainGraphCamera(requested, size, layout.boxes);
+      cameraRef.current = bounded;
+      Object.assign(pan.current, elasticPan({ x: requested.x-bounded.x, y: requested.y-bounded.y }, size, explorationPanRadius(size)), { vx: 0, vy: 0 });
+    } else Object.assign(pan.current, elasticPan(input, size), { vx: 0, vy: 0 });
   };
   function paintMotion() {
     paintCamera();
@@ -170,9 +181,9 @@ export function RadialCanvas({ graph, pinned, selected, focus, onPin, onSelect, 
       onKeyDown={event => {
         const moves: Record<string, [number, number]> = { ArrowLeft: [60,0], ArrowRight: [-60,0], ArrowUp: [0,60], ArrowDown: [0,-60] };
         if (event.target !== event.currentTarget || !moves[event.key]) return;
-        event.preventDefault(); stopCameraTransition(); const [x,y] = moves[event.key], input = panInput(pan.current, size);
+        event.preventDefault(); stopCameraTransition(); const [x,y] = moves[event.key], input = panOrigin();
         keyboardPan.current = true;
-        Object.assign(pan.current, elasticPan({ x: input.x+x, y: input.y+y }, size), { vx: 0, vy: 0 });
+        panMap({ x: input.x+x, y: input.y+y }, cameraRef.current);
         wake();
       }}
       onKeyUp={event => { if (keyboardPan.current && event.key.startsWith('Arrow')) { keyboardPan.current = false; if (reduced.current) resetMotion(); else wake(); } }}
@@ -181,11 +192,10 @@ export function RadialCanvas({ graph, pinned, selected, focus, onPin, onSelect, 
       onPointerDown={event => {
         if (event.button !== 0 || drag.current) return;
         const target = event.target as Element;
-        if (target.closest('[data-relation]')) return;
         stopCameraTransition();
         suppressClick.current = false;
         const key = target.closest<HTMLElement>('[data-graph-node]')?.dataset.graphNode;
-        drag.current = { pointer: event.pointerId, x: event.clientX, y: event.clientY, previousX: event.clientX, previousY: event.clientY, pan: panInput(pan.current, size), key: key === graph.hub ? undefined : key, moved: false };
+        drag.current = { pointer: event.pointerId, x: event.clientX, y: event.clientY, previousX: event.clientX, previousY: event.clientY, camera: { ...cameraRef.current }, pan: panOrigin(), key: key === graph.hub ? undefined : key, moved: false };
         if (!drag.current.key) { pan.current.vx = 0; pan.current.vy = 0; }
       }}
       onPointerMove={event => {
@@ -196,7 +206,7 @@ export function RadialCanvas({ graph, pinned, selected, focus, onPin, onSelect, 
         if (origin.key) {
           const state = motion.current.get(origin.key); if (state) Object.assign(state, { x: Math.max(-260,Math.min(260,dx/cameraRef.current.scale)), y: Math.max(-260,Math.min(260,dy/cameraRef.current.scale)), vx: 0, vy: 0 });
         } else {
-          Object.assign(pan.current, elasticPan({ x: origin.pan.x+dx, y: origin.pan.y+dy }, size), { vx: 0, vy: 0 });
+          panMap({ x: origin.pan.x+dx, y: origin.pan.y+dy }, origin.camera);
           if (!reduced.current) motion.current.forEach((state, key) => {
             const weight = key === graph.hub ? .25 : .65;
             state.vx -= (event.clientX-origin.previousX)*weight*7; state.vy -= (event.clientY-origin.previousY)*weight*7;
@@ -243,7 +253,7 @@ export function RadialCanvas({ graph, pinned, selected, focus, onPin, onSelect, 
           </div>;
         })}
       </div>
-      <span className={radial.canvasHint}>拖动牵引 · 松手回到中央附近</span>
+      <span className={radial.canvasHint}>{exploring ? '拖动画布探索其他分支 · 边缘轻轻回摆' : '拖动牵引 · 松手回到中央附近'}</span>
     </div>
   </>;
 }

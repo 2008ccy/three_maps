@@ -25,20 +25,40 @@ export function interpolateCamera(from: Camera, to: Camera, progress: number, si
 export function panRadius(size: ViewportSize) {
   return Math.max(24, Math.min(300, Math.min(size.width, size.height) * .38));
 }
-export function elasticPan(input: Offset, size: ViewportSize): Offset {
-  const distance = Math.hypot(input.x, input.y), radius = panRadius(size), free = radius * .55;
+export function elasticPan(input: Offset, size: ViewportSize, radius = panRadius(size)): Offset {
+  const distance = Math.hypot(input.x, input.y), free = radius * .55;
   if (distance <= free) return { ...input };
   const span = radius-free, excess = distance-free;
   const ratio = (free + excess / (1 + excess/span)) / distance;
   return { x: input.x * ratio, y: input.y * ratio };
 }
 // Re-grabbing a returning map must start exactly where it currently appears.
-export function panInput(offset: Offset, size: ViewportSize): Offset {
-  const distance = Math.hypot(offset.x, offset.y), radius = panRadius(size), free = radius * .55;
+export function panInput(offset: Offset, size: ViewportSize, radius = panRadius(size)): Offset {
+  const distance = Math.hypot(offset.x, offset.y), free = radius * .55;
   if (distance <= free) return { ...offset };
   const span = radius-free, excess = distance-free;
   const ratio = (free + excess / Math.max(.001, 1-excess/span)) / distance;
   return { x: offset.x * ratio, y: offset.y * ratio };
+}
+export function explorationPanRadius(size: ViewportSize) {
+  return Math.min(48, Math.min(size.width, size.height) * .12);
+}
+
+// Expanded maps can rest anywhere that keeps a node reachable. Project empty
+// views to the nearest such position, including empty corners of the graph bounds.
+export function constrainGraphCamera(camera: Camera, size: ViewportSize, boxes: readonly (Offset & { width: number; height: number })[]): Camera {
+  let result = camera, nearest = Infinity;
+  const edge = explorationPanRadius(size) + 12;
+  for (const box of boxes) {
+    const insetX = Math.min(size.width/2, box.width*camera.scale/2+edge);
+    const insetY = Math.min(size.height/2, box.height*camera.scale/2+edge);
+    const x = Math.max(insetX-box.x*camera.scale, Math.min(size.width-insetX-box.x*camera.scale, camera.x));
+    const y = Math.max(insetY-box.y*camera.scale, Math.min(size.height-insetY-box.y*camera.scale, camera.y));
+    const distance = Math.hypot(x-camera.x, y-camera.y);
+    if (!distance) return { ...camera };
+    if (distance < nearest) { nearest = distance; result = { ...camera, x, y }; }
+  }
+  return { ...result };
 }
 export function stepPanGravity(state: Motion, elapsed: number) {
   const duration = Math.max(0, Math.min(elapsed, .04));

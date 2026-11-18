@@ -4,7 +4,7 @@ import { maps } from '../src/lib/maps/content.ts';
 import { buildAtlas, buildExpandedGraph, resolveRef } from '../src/lib/maps/expanded-graph.ts';
 import { expandedLayout } from '../src/lib/maps/expanded-layout.ts';
 import { explorerUrl, readExplorerState, initialExplorerState } from '../src/lib/maps/explorer-state.ts';
-import { cameraTransitionDuration, interpolateCamera, stepGraphMotion, stillMotion, movingPath, dragThreshold, elasticPan, panInput, panRadius, stepPanGravity } from '../src/lib/maps/graph-motion.ts';
+import { cameraTransitionDuration, interpolateCamera, constrainGraphCamera, explorationPanRadius, stepGraphMotion, stillMotion, movingPath, dragThreshold, elasticPan, panInput, panRadius, stepPanGravity } from '../src/lib/maps/graph-motion.ts';
 const atlas = buildAtlas(maps);
 for (const map of maps) {
   const nodes = atlas.catalogs.get(map.id);
@@ -173,3 +173,74 @@ test('interrupting a camera transition starts the next move from the visible fra
   assert.ok(after.scale>frame.scale&&after.scale<next.scale);
   assert.deepEqual(interpolateCamera(frame,next,1,size),next);
 });
+
+function* expandedViews(map) {
+  for(const size of [{width:356,height:221},{width:740,height:348}]) {
+    for(const expanded of [...map.branches.map(branch=>[branch.id]),map.branches.map(branch=>branch.id)]) {
+      const graph=buildExpandedGraph(atlas,map,atlas.catalogs.get(map.id),expanded,'all',null);
+      const layout=expandedLayout(graph,size.width<600);
+      const themes=graph.nodes.filter(node=>node.kind==='theme').map(node=>layout.byId.get(node.key));
+      for(const scale of [.75,1,2]) yield {size,scale,boxes:layout.boxes,themes,label:`${map.id} ${expanded.join(',')} ${size.width}×${size.height} @${scale}`};
+    }
+  }
+}
+function nodeRemainsReachable(boxes,camera,size,offset={x:0,y:0}) {
+  return boxes.some(box=>{
+    const x=box.x*camera.scale+camera.x+offset.x, y=box.y*camera.scale+camera.y+offset.y;
+    return x>=12-1e-8&&x<=size.width-12+1e-8&&y>=12-1e-8&&y<=size.height-12+1e-8;
+  });
+}
+for(const map of maps) {
+  test(`${map.id}: expanded panning can center every theme at narrow and desktop sizes`, () => {
+    for(const {size,scale,boxes,themes,label} of expandedViews(map)) {
+      const first=themes[0], initial={x:size.width/2-first.x*scale,y:size.height/2-first.y*scale,scale};
+      let reachesBeyondOverviewLimit=false;
+      for(const theme of themes) {
+        const requested={x:size.width/2-theme.x*scale,y:size.height/2-theme.y*scale,scale};
+        assert.deepEqual(constrainGraphCamera(requested,size,boxes),requested,`${label}: ${theme.id}`);
+        reachesBeyondOverviewLimit ||= Math.hypot(requested.x-initial.x,requested.y-initial.y)>panRadius(size);
+      }
+      assert.ok(reachesBeyondOverviewLimit,`${label}: exploration must reach beyond the old spring radius`);
+    }
+  });
+  test(`${map.id}: extreme and repeated diagonal drags retain a reachable node, including overscroll`, () => {
+    for(const {size,scale,boxes,themes,label} of expandedViews(map)) {
+      const radius=explorationPanRadius(size);
+      let camera={x:size.width/2-themes[0].x*scale,y:size.height/2-themes[0].y*scale,scale};
+      for(const [dx,dy] of [[1e7,1e7],[-1e7,1e7],[-1e7,-1e7],[1e7,-1e7],[1e7,100],[-100,-1e7],[1e7,1e7]]) {
+        const requested={...camera,x:camera.x+dx,y:camera.y+dy};
+        camera=constrainGraphCamera(requested,size,boxes);
+        const residual=elasticPan({x:requested.x-camera.x,y:requested.y-camera.y},size,radius);
+        assert.equal(camera.scale,scale);
+        assert.ok(Number.isFinite(camera.x)&&Number.isFinite(camera.y),label);
+        assert.ok(Math.hypot(residual.x,residual.y)<radius,label);
+        assert.ok(nodeRemainsReachable(boxes,camera,size,residual),`${label}: graph disappears during edge drag`);
+        assert.deepEqual(constrainGraphCamera(camera,size,boxes),camera,`${label}: resting boundary must be stable`);
+      }
+    }
+  });
+  test(`${map.id}: boundary spring settles at the new camera and re-grabbing is continuous`, () => {
+    for(const {size,scale,boxes,themes,label} of expandedViews(map)) {
+      const initial={x:size.width/2-themes[0].x*scale,y:size.height/2-themes[0].y*scale,scale};
+      const requested={...initial,x:initial.x+1100,y:initial.y-700};
+      const camera=constrainGraphCamera(requested,size,boxes), retained={...camera};
+      const radius=explorationPanRadius(size);
+      const residual={...elasticPan({x:requested.x-camera.x,y:requested.y-camera.y},size,radius),vx:0,vy:0};
+      assert.ok(Math.hypot(camera.x-initial.x,camera.y-initial.y)>panRadius(size),label);
+      for(let frame=0;frame<240;frame++) {
+        if([0,5,20,60].includes(frame)) {
+          const input=panInput(residual,size,radius);
+          const nextRequested={...camera,x:camera.x+input.x,y:camera.y+input.y};
+          const nextCamera=constrainGraphCamera(nextRequested,size,boxes);
+          const nextResidual=elasticPan({x:nextRequested.x-nextCamera.x,y:nextRequested.y-nextCamera.y},size,radius);
+          assert.ok(Math.hypot(nextCamera.x+nextResidual.x-camera.x-residual.x,nextCamera.y+nextResidual.y-camera.y-residual.y)<1e-7,`${label}: re-grab must not jump`);
+        }
+        stepPanGravity(residual,1/60);
+        assert.ok(nodeRemainsReachable(boxes,camera,size,residual),label);
+      }
+      assert.deepEqual(residual,stillMotion(),label);
+      assert.deepEqual(camera,retained,`${label}: settling must retain the new camera`);
+      assert.equal(stepPanGravity(residual,1/60),false);
+    }
+  });
+}
